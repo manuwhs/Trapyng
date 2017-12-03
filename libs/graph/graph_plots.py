@@ -1,12 +1,7 @@
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import utilities_lib as ul
-import matplotlib.gridspec as gridspec
-import copy
-import graph_basic as grba
 import datetime as dt
-import pylab as pl
+
 from matplotlib import collections  as mc
 # The common properties will be explained here once and shortened in the rest
 def plot(self, X = [],Y = [],           # X-Y points in the graph.
@@ -262,7 +257,7 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
     NpX, NcX = X.shape
     NpY, NcY = Y.shape
     
-    print X.shape
+#    print (X.shape)
     D = []
     for i in range(NpX):
         D.append(X[i,0])
@@ -531,10 +526,10 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
     plots,plots_typ =  self.init_WidgetData(ws)
     
     ## We asume that X and Y have the same dimensions
-    print self.formatXaxis
+    print (self.formatXaxis)
     if (self.formatXaxis == "dates" or self.formatXaxis == "intraday"):
         X = ul.preprocess_dates(X)
-        print "Formating bar X to dates"
+        print ("Formating bar X to dates")
     if (type(barwidth) == type(None)):
         barwidth = self.get_barwidth(X, barwidth) * 0.8
         

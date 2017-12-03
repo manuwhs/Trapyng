@@ -36,8 +36,8 @@ def add_hidebox(self, plots_affected = [],
         for i in range(nh):
             activation.append(True)
     
-    print names
-    print activation
+    print (names)
+    print (activation)
     
     check = CheckButtons(rax, names, activation)
 
@@ -284,7 +284,7 @@ def add_selector(self, listing):
         indmin = xmin
         indmax = xmax
         onselect.listing.append([indmin, indmax])
-        print onselect.listing
+        print (onselect.listing)
     
     onselect.listing = listing
     

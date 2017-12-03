@@ -1,19 +1,7 @@
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import pylab
 import utilities_lib as ul
-import matplotlib.gridspec as gridspec
 import copy
-import matplotlib.ticker as mticker
-import matplotlib.dates as mdates
-import time
-
-from graph_setting import *
-from graph_axis import *
-from graph_axes import *
-from graph_subplots import *
-from trapyngColors import *
+from trapyngColors import cd
 #####  BUILDING FUNCTIONS #####
 
 def init_variables(self,w = 20, h = 12, lw = 2):

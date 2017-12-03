@@ -1,14 +1,6 @@
-import pandas as pd
-import numpy as np
+
 import matplotlib.pyplot as plt
-import pylab
-import utilities_lib as ul
 import matplotlib.gridspec as gridspec
-import copy
-import matplotlib.ticker as mticker
-import matplotlib.dates as mdates
-import basicMathlib as bMa
-import time
 #####  BUILDING FUNCTIONS #####
 
 def subplot2grid(self, *args, **kwargs): #divisions, selection):
@@ -90,7 +82,7 @@ def next_subplot(self, projection = "2d", sharex = None, sharey = None):
 #            ax.axis('off')
 ##            print position
 #            ax = self.fig.add_axes(position, projection = projection)
-            print "subplot"
+            print ("subplot")
             
     elif(self.subplotting_mode == 0):
         if (projection == "2d"):
@@ -99,7 +91,7 @@ def next_subplot(self, projection = "2d", sharex = None, sharey = None):
             ax = plt.subplot2grid((self.nr,self.nc),(self.nri, self.nci), projection='3d', sharex = sharex , sharey = sharey )
         elif(projection == "polar"):
             ax = plt.subplot2grid((self.nr,self.nc),(self.nri, self.nci), projection= 'polar', sharex = sharex , sharey = sharey )
-            print "subplot2grid"
+            print ("subplot2grid")
     if (self.nci + self.nri == 0):
         plt.tight_layout()  # So that the layout is tight
 

@@ -52,7 +52,7 @@ def create_axes(self, position = [], projection = "2d",
         ax = self.fig.add_axes(position, projection = projection)
 
     else:
-        print "No valid projection"
+        print ("No valid projection")
         
     self.axes = ax
     self.axes_list.append(ax)

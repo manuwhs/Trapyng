@@ -53,6 +53,34 @@ def mean_function(tgrid, f1 = 1, f2 = 5, a1 = 0.4, a2 = 0.2,
 
     return X
 
+
+def get_Kernel (tgrid, kernel_type = "1", l = 0.001, sigma_noise = 1):
+    if (kernel_type == "1"):
+        # Hyperparameters
+        #l = 0.0001  # 
+        # k = 1;   #
+        distances = spatial.distance.cdist(tgrid,tgrid,'euclidean')
+        K = np.exp(-np.power(distances,2)/(2*l))
+        K = K/ K[0,0] 
+        K = K* sigma_noise
+        
+    elif (kernel_type == "2"):
+        """
+        This is the most noisy possible kernel since each sample has its own noise
+        that is independent from the rest. Knowing the previous noise value
+        gives no information about this one.
+        
+        The Marginal error is the same, but if the samples are uncorrelated then the signal
+        if just completely noisy, no smoothness.
+        
+        """
+        # Hyperparameters
+        # sigma_noise = 1
+        K = np.eye(N) * sigma_noise
+    
+    return K
+
+
 #######################################################################
 ############### Generate the signal ###################################
 #######################################################################
@@ -97,32 +125,6 @@ if (plot_mean_signal):
 ################  Covariance Matrix "K" #################################
  #We compute the distances among each pair of points in X_grid
 
-def get_Kernel (tgrid, kernel_type = "1", l = 0.001, sigma_noise = 1):
-    if (kernel_type == "1"):
-        # Hyperparameters
-        #l = 0.0001  # 
-        # k = 1;   #
-        distances = spatial.distance.cdist(tgrid,tgrid,'euclidean')
-        K = np.exp(-np.power(distances,2)/(2*l))
-        K = K/ K[0,0] 
-        K = K* sigma_noise
-        
-    elif (kernel_type == "2"):
-        """
-        This is the most noisy possible kernel since each sample has its own noise
-        that is independent from the rest. Knowing the previous noise value
-        gives no information about this one.
-        
-        The Marginal error is the same, but if the samples are uncorrelated then the signal
-        if just completely noisy, no smoothness.
-        
-        """
-        # Hyperparameters
-        # sigma_noise = 1
-        K = np.eye(N) * sigma_noise
-    
-    return K
-
 K = get_Kernel(tgrid, kernel_type = "1", l = 0.01, sigma_noise = 0.5)
 
 ############# Compute properties of the Kernel ########################
@@ -131,8 +133,8 @@ N_det = 30 # Number of samples to compute the determinant from
 det_K2 = mpm.det(K[:N_det,:N_det]+ 1e-10*np.eye(N_det))
 det_K = np.linalg.det(K[:N_det,:N_det]+ 1e-10*np.eye(N_det))   # Determinant ! "Noisiness of the kernel"
                            # The bigger the determinant, the more random ? 
-print "Determinant by mpm:", det_K2
-print "Determinant by numpy:", det_K
+print (["Determinant by mpm:", det_K2])
+print (["Determinant by numpy:", det_K])
 # Choleski factorization ! To sample from the Multivatiate Gaussian.
 # To ensure that it is positive definite we add a small noise to the diagonal
 L = np.linalg.cholesky(K+1e-10*np.eye(N))
@@ -214,7 +216,7 @@ if (plot_realizations_signal):
 # Gaussian Proces
 
 ###########################################################################
-############### Getting a noist signal and label it #########################
+############### Getting a noisy signal and label it #########################
 ###########################################################################
 
 # Generate noisy signal:

@@ -1,16 +1,8 @@
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import pylab
 import utilities_lib as ul
-import matplotlib.gridspec as gridspec
 import copy
-import matplotlib.ticker as mticker
-import matplotlib.dates as mdates
-import basicMathlib as bMa
-import time
-import datetime as dt
-from trapyngColors import *
+
+from trapyngColors import cd
 #####  BUILDING FUNCTIONS #####
 
 def format_legend(self, ax = None, handlelength=None, # Length of handle

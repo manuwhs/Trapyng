@@ -445,14 +445,14 @@ def get_Elliot_Trends (yt, Nmin = 4, Noise = -1):
     
     Nsamples, Nsec = yt.shape
     if (Nsec != 1):
-        print "Deberia haber solo una senal temporal"
+        print ("Deberia haber solo una senal temporal")
         return -1;
         
 #    yt = yt.ravel()
     
 #    yt = np.array(yt.tolist()[0])
     
-    print yt.shape
+    print (yt.shape)
     trends_list = []   # List of the trends
     
     support_t = 0   # Support index

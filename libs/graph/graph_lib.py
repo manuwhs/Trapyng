@@ -1,8 +1,3 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import utilities_lib as ul
-
 import graph_basic as grba
 import graph_plots as grpl
 import graph_advanced as grad
@@ -11,59 +6,65 @@ import graph_3D as gr3D
 import graph_GUI as grGUI
 import trading_graphs as trgr
 
+
+
+import graph_setting as grset
+import graph_axes as graxes
+import graph_axis as graxis
+import graph_subplots as grsp
 class CGraph ():
     
     def __init__(self,w = 20, h = 12, lw = 2):
         self.init_variables(w = w, h = h, lw = lw)
-    
+        
+    ####################### Basic functions  #######################
+    figure_management = grba.figure_management
     init_variables = grba.init_variables
     savefig = grba.savefig
-    set_labels = grba.set_labels
     init_figure = grba.init_figure
     close = grba.close
     
-    update_legend = grba.update_legend
+    update_legend = grset.update_legend
     
-    # Axis functions !!
-    format_xaxis = grba.format_xaxis
-    format_yaxis = grba.format_yaxis
+    ####################### Axis functions #######################
+    format_xaxis = graxis.format_xaxis
+    format_yaxis = graxis.format_yaxis
     
-    format_axis2 = grba.format_axis2
-    color_axis = grba.color_axis
-    hide_xaxis =  grba.hide_xaxis
-    hide_yaxis =  grba.hide_yaxis
+    format_axis2 = graxis.format_axis2
+    color_axis = graxis.color_axis
+    hide_xaxis =  graxis.hide_xaxis
+    hide_yaxis =  graxis.hide_yaxis
     
-    # Setting functions !
-    format_legend = grba.format_legend
-    set_textRotations = grba.set_textRotations
-    set_fontSizes = grba.set_fontSizes
-    apply_style = grba.apply_style
-    preprocess_data = grba.preprocess_data
-    get_color = grba.get_color
+    ####################### Setting functions #######################
+    format_legend = grset.format_legend
+    set_textRotations = grset.set_textRotations
+    set_fontSizes = grset.set_fontSizes
+    preprocess_data = grset.preprocess_data
+    get_color = grset.get_color
+    set_labels = grset.set_labels
     
-    # Basic functions
-    figure_management = grba.figure_management
+    store_WidgetData = grset.store_WidgetData
+    init_WidgetData = grset.init_WidgetData
+    get_barwidth = grset.get_barwidth
+    add_text = grset.add_text
+    ######################## Axes functions #######################
+    manage_axes = graxes.manage_axes
+    create_axes = graxes.create_axes
+    twin_axes = graxes.twin_axes
+    get_axes = graxes.get_axes
+    set_xlim = graxes.set_xlim
+    set_ylim = graxes.set_ylim
+    set_zoom = graxes.set_zoom
 
-    
-    # Axes functions !
-    manage_axes = grba.manage_axes
-    create_axes = grba.create_axes
-    twin_axes = grba.twin_axes
-    get_axes = grba.get_axes
-    set_xlim = grba.set_xlim
-    set_ylim = grba.set_ylim
-    set_zoom = grba.set_zoom
-    store_WidgetData = grba.store_WidgetData
-    init_WidgetData = grba.init_WidgetData
-    get_barwidth = grba.get_barwidth
-    
-    # Subplots functions 
-    set_subplots = grba.set_subplots
-    next_subplot = grba.next_subplot
-    subplots_adjust =  grba.subplots_adjust
-    subplot2grid = grba.subplot2grid
-    
-    # Basic graph functions
+ 
+    ####################### Subplots functions #######################
+    set_subplots = grsp.set_subplots
+    next_subplot = grsp.next_subplot
+    subplots_adjust =  grsp.subplots_adjust
+    subplot2grid = grsp.subplot2grid
+    apply_style = grsp.apply_style
+
+    ####################### Basic graph functions #######################
     plot = grpl.plot
     scatter = grpl.scatter
     stem = grpl.stem
@@ -77,14 +78,15 @@ class CGraph ():
     add_hlines = grpl.add_hlines
     add_vlines = grpl.add_vlines
 
-    # 3D functions
+    ####################### 3D functions #######################
     preproces_data_3D = gr3D.preproces_data_3D
     format_axis_3D = gr3D.format_axis_3D
     plot_3D = gr3D.plot_3D
     bar_3D = gr3D.bar_3D
     scatter_3D = gr3D.scatter_3D
-    add_text = grba.add_text
-    ###### Advanced  #####
+
+    
+    ####################### Advanced  #######################
     barchart = grad.barchart
     candlestick = grad.candlestick
 
@@ -93,18 +95,18 @@ class CGraph ():
     plot_timeSeriesRange = grad.plot_timeSeriesRange
 
     
-    ######## Specific Math graphs ##########
+    ####################### Specific Math graphs #######################
     plot_timeRegression = grad.plot_timeRegression
     histogram = grad.histogram
     
-    ###### Widgets ######
+    ####################### Widgets #######################
     add_slider = grGUI.add_slider
     add_hidebox = grGUI.add_hidebox
     plot_wid = grGUI.plot_wid
     add_selector = grGUI.add_selector
     add_onKeyPress = grGUI.add_onKeyPress
     
-    #### Trading ######
+    ####################### Trading #######################
     tradingLineChart = trgr.tradingLineChart
     tradingVolume =  trgr.tradingVolume
     
