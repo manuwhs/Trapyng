@@ -92,6 +92,6 @@ def load_symbols_info(file_dir = "./storage/"):
                               sep = ',')
     except IOError:
         error_msg = "Empty file: " + whole_path 
-        print error_msg
+        print (error_msg)
         
     return infoCSV

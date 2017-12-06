@@ -280,6 +280,7 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
         
         scatter_i =  ax.scatter(X,Y, lw = lw, alpha = alpha, color = colorFinal,
                     label = legend_i, zorder = self.zorder)
+        # TODO: marker = marker[0], markersize = marker[1], markerfacecolor = marker[2]
         plots.append(scatter_i)
         plots_typ.append("scatter")
 

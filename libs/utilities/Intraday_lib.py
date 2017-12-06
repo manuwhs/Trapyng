@@ -114,7 +114,7 @@ def find_interval_date_index(TD, dstat, dend):
 
     ## TODO !! Improve this shit !! 
     
-    print time_index1.isoformat()
+    print (time_index1.isoformat())
     return time_index
     
 def get_dayCompleteTable(TD, seriesName = "Close"):
@@ -245,7 +245,7 @@ def get_pdintra_by_days(df):
     
     index = df.index
     sdate = index[0]  #.date
-    print sdate 
+    print (sdate) 
     
     ##################################################
     ############### Obtain the dayly range of times 
@@ -276,7 +276,7 @@ def get_pdintra_by_days(df):
         # We create index of the dayly timeframes that should be observed.
         freq = str(int(min_diff.total_seconds())) + "S"
         
-        print nperiods 
+        print (nperiods) 
         idx = pd.date_range(sdate, periods = nperiods,  freq = freq)
 
     elif(method == 2):

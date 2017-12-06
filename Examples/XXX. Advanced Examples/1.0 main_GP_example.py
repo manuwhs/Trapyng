@@ -30,6 +30,7 @@ from matplotlib import cm as cm
 import pickle_lib as pkl
 plt.close("all") # Close all previous Windows
 
+folder_images = older_images = "../pics/Trapying/GPs/"
 ### Generation of the easy signal
 
 def mean_function(tgrid, f1 = 1, f2 = 5, a1 = 0.4, a2 = 0.2, 
@@ -87,7 +88,7 @@ def get_Kernel (tgrid, kernel_type = "1", l = 0.001, sigma_noise = 1):
 
 t0 = 0          # Initial time         
 tf = 2        # Final time
-delta_t = 0.02   # Period of sampling
+delta_t = 0.03   # Period of sampling
 
 # Create the t- values
 tgrid = np.linspace(t0,tf, int(float(tf-t0)/delta_t))
@@ -102,10 +103,11 @@ plot_mean_signal = 1
 if (plot_mean_signal):
     ## Plot the orginal function
     gl.scatter(tgrid,X, lw = 1, alpha = 0.9, color = "k", nf = 1, 
-               labels = ["The true signal to estimate", "t", "X(t)" ])
+               labels = ["The true determinist signal mu(t)", "t", "mu(t)" ])
     gl.plot(tgrid,X, lw = 2, color = "k", ls = "--",  legend = ["True signal"])
 
-
+    gl.savefig(folder_images +'GP_mean.png', 
+               dpi = 100, sizeInches = [2*8, 2*2])
 ###########################################################################
 ############### Generate the structural noise #############################
 ###########################################################################
@@ -146,8 +148,8 @@ if (plot_stochastic_process):
     # Show the Nshow first samples
     
     Nshow = 20
-    fig = plt.figure()
-    ax1 = fig.add_subplot(111)
+    gl.init_figure();
+    ax1 = gl.subplot2grid((1,1), (0,0), rowspan=1, colspan=1)
     cmap = cm.get_cmap('jet', 30)
     cax = ax1.imshow(K[0:Nshow,0:Nshow], interpolation="nearest", cmap=cmap)
     
@@ -157,22 +159,24 @@ if (plot_stochastic_process):
 #    ax1.set_xticklabels(labels,fontsize=20)
 #    ax1.set_yticklabels(labels,fontsize=20)
     # Add colorbar, make sure to specify tick locations to match desired ticklabels
-    fig.colorbar(cax)
+    
     plt.show()
     
+    gl.savefig(folder_images +'GP_covMatrix.png', 
+           dpi = 100, sizeInches = [2*8, 2*2])
     
     ## Plot realizations of the Gaussian process
     Nrealizations = 10
     
     flag = 1;
-    legend = ["Realizations of the Gaussian process"]
-    labels = ["Gaussian Process","t", "e(t)"]
+    legend = ["Realizations"]
+    labels = ["Gaussian Process  noise e(t)","t", "e(t)"]
     
     for i in range(Nrealizations):
         f_prime = np.random.randn(N,1)
         error = L.dot(f_prime) 
         gl.plot(tgrid,error, lw = 3, color = "b", ls = "-", alpha = 0.5, 
-                nf = flag, legend = legend)
+                nf = flag, legend = legend, labels = labels)
 #        gl.scatter(tgrid,f_prime, lw = 1, alpha = 0.3, color = "b")
         
         if (flag == 1):
@@ -181,18 +185,22 @@ if (plot_stochastic_process):
     
     #Variance of each prediction
     v = np.diagonal(K)
-    gl.fill_between(tgrid, -2*np.sqrt(v), 2*np.sqrt(v), lw = 3, alpha = 0.5, color = "yellow", legend = ["95% confidence interval"]);
+    gl.fill_between(tgrid, -2*np.sqrt(v), 2*np.sqrt(v), lw = 3, alpha = 0.5, color = "yellow", 
+                    legend = ["95% confidence interval"]);
     gl.plot(tgrid,  2*np.sqrt(v), lw= 1, alpha =  0.5, color = "yellow", legend = ["95% confidence interval"]);
     gl.plot(tgrid,  2*np.sqrt(v), lw= 1, alpha =  0.5, color = "yellow");
 
-
+    gl.savefig(folder_images +'GP_noise_realizations.png', 
+           dpi = 100, sizeInches = [2*8, 2*2])
 ###########################################################################
 ############### Getting the combined noisy signal #########################
 ###########################################################################
 plot_realizations_signal = 1
 if (plot_realizations_signal):
     flag = 1;
-    legend = ["Realizations of X(t) = mu(t) + e(t)"]
+    legend = ["Realizations"]
+    labels = ["Gaussian Process X(t) = mu(t) + e(t)","t", "X(t)"]
+    
     for i in range(10):
         f_prime = np.random.randn(N,1)
         error = L.dot(f_prime)
@@ -211,7 +219,8 @@ if (plot_realizations_signal):
     gl.plot(tgrid, X+ 2*np.sqrt(v), lw= 1, alpha =  0.5, color = "yellow", legend = ["95% confidence interval"]);
     gl.plot(tgrid, X- 2*np.sqrt(v), lw= 1, alpha =  0.5, color = "yellow");
     
-    
+    gl.savefig(folder_images +'GP_realizations.png', 
+           dpi = 100, sizeInches = [2*8, 2*2])
 # Parameters of the model:
 # Gaussian Proces
 
@@ -228,20 +237,24 @@ X_noisy = X + error
 Y = np.sign(np.diff(X,n=1,axis = 0))
 Y_noisy = np.sign(np.diff(X_noisy,n=1,axis = 0))
 
+## Subselect both the signals X and the labels Y since we cannot know the prediction of the last sample.
+
 gl.set_subplots(4,1)
 # Plot the original signal and its labelling ! 
 ax1 = gl.scatter(tgrid,X, lw = 1, alpha = 0.9, color = "k", nf = 1,
-                 labels = ["Original signal","","X(t)"])
+                 labels = ["Original signal","","mu(t)"])
 gl.plot(tgrid,X, lw = 2, color = "k", ls = "--")
-gl.stem(tgrid[1:,0], Y, sharex = ax1, nf = 1, labels = ["", "t","Y(t)"])
+gl.stem(tgrid[:-1,0], Y, sharex = ax1, nf = 1, labels = ["", "t","Y(t)"])
 
 # Plot noisy part
 gl.scatter(tgrid,X_noisy, lw = 1, alpha = 0.9, color = "k", nf = 1,
-                 labels = ["Noisy signal","","X_noise(t)"])
+                 labels = ["Noisy signal","","X(t)"])
 gl.plot(tgrid,X_noisy, lw = 2, color = "k", ls = "--")
-gl.stem(tgrid[1:,0], Y_noisy, sharex = ax1, nf = 1, labels = ["", "t","Y_noise(t)"])
+gl.stem(tgrid[:-1,0], Y_noisy, sharex = ax1, nf = 1, labels = ["", "t","Y_noise(t)"])
 
-
+gl.savefig(folder_images +'GP_labelling_of_the_signal.png', 
+       dpi = 100, sizeInches = [2*8, 5*2])
+    
 ## It would be nice to see !! 
 # Generate a lot of random signals and compute the mean prediction of Y
 
@@ -271,6 +284,9 @@ gl.stem(tgrid[1:,0], Y, sharex = ax1, nf = 1, labels = ["", "t","Y(t)"])
 
 # Plot noisy part
 gl.stem(tgrid[1:,0], Y_noisy_total, sharex = ax1, nf = 1, labels = ["", "t","Y_noise(t)"])
+
+gl.savefig(folder_images +'GP_best_prediction.png', 
+       dpi = 100, sizeInches = [2*8, 4*2])
 
 # This is gonna plot the probability that the signal is gonna go up or down !!
 # It goes assintotically to that, but the more initial noise, the more variance of this shit. 

@@ -109,11 +109,11 @@ def download_TD_yahoo2(symbol = "AAPL", precision = "1mo",
     for i in range(nlines):
         data[i] = data[i].split(",")
         
-    print data[0:4]
+    print (data[0:4])
     df = pd.DataFrame(data)
     df.columns = ['Date','Open', 'High', 'Low', 'Close', 'Volume', "Adj Close"]
     
-    print df.columns
+    print (df.columns)
     df.index = df.Date
 #    del df['Date']
     return df
@@ -160,9 +160,9 @@ def download_TD_google(symbolID, period, timeInterval):
         response = urllib2.urlopen(url_root)
 
     except urllib2.HTTPError as err:
-        print "Error downloading from google ",  symbolID, "Period: " + str(period)
-        print "Error code ", err.code
-        print "Meaning of 503: HTTP Error 503: Service Unavailable"
+        print ("Error downloading from google ",  symbolID, "Period: " + str(period))
+        print ("Error code ", err.code)
+        print ("Meaning of 503: HTTP Error 503: Service Unavailable")
         return ul.empty_df
     data = response.read().split('\n')
     #actual data starts at index = 7
@@ -187,14 +187,14 @@ def download_TD_google(symbolID, period, timeInterval):
                 pass # for time zone offsets thrown into data
     df = pd.DataFrame(parsed_data)
     if (df.shape[1] == 0):
-        print "We could not download data for ", symbolID, "Period: " + str(period)
+        print ("We could not download data for ", symbolID, "Period: " + str(period))
         return ul.empty_df
 #    print df
     df.columns = ['Date','Open', 'High', 'Low', 'Close', 'Volume']
     df.index = df.Date
     del df['Date']
     TD = df
-    print "Downloaded: " + str(TD.shape[0]) + " samples", symbolID, period
+    print ("Downloaded: " + str(TD.shape[0]) + " samples", symbolID, period)
     return TD
 
 

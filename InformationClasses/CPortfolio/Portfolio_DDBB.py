@@ -7,13 +7,12 @@ Created on Sun Jan 31 03:04:26 2016
 
 import pandas as pd
 import numpy as np
-import urllib2
+
 import datetime as dt
 import matplotlib.pyplot as plt
 import copy as copy
 import time as time
 
-from pandas_datareader import wb
 import datetime
 import gc
 import CSymbol as CSy
