@@ -55,6 +55,9 @@ def fnp(ds):
         for i in range(len(ds)):
             ds2.append(ds[i])
         ds = ds2
+    # Convert range into list (Python 3)
+    if (type(ds).__name__ == "range"):
+        ds = list(ds)
         
     if (type(ds).__name__ == "list"):
         # If the type is a list 

@@ -78,7 +78,7 @@ def get_ATR(self):
     diffPrevCloseCurrMin = self.get_diffPrevCloseCurrMin()
     diffPrevCloseCurrMax = self.get_diffPrevCloseCurrMax()
     
-    print rangeOC.shape, magicDelta.shape, diffPrevCloseCurrMin.shape, diffPrevCloseCurrMax.shape
+    print (rangeOC.shape, magicDelta.shape, diffPrevCloseCurrMin.shape, diffPrevCloseCurrMax.shape)
 #    print dailyDelta.shape, magicDelta.shape, diffPrevCloseCurrMin.shape,diffPrevCloseCurrMax.shape
     All_diff = np.concatenate((rangeOC,magicDelta,diffPrevCloseCurrMin,diffPrevCloseCurrMax), axis = 1)
     All_diff = np.abs(All_diff)

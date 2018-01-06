@@ -36,7 +36,7 @@ def load_csv_timeData_period(self, file_dir = "./storage/", period = 1440):
         
     except IOError:
         error_msg = "File does not exist: " + whole_path 
-        print error_msg
+        print (error_msg)
         dataCSV = ul.empty_df
         
     return dataCSV
@@ -54,7 +54,7 @@ def load_info(self, file_dir = "./storage/"):
                               sep = ',')
     except IOError:
         error_msg = "Empty file: " + whole_path 
-        print error_msg
+        print (error_msg)
     
     self.set_info(infoCSV)
     

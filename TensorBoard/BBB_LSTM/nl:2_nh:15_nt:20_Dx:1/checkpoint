@@ -1,0 +1,5 @@
+model_checkpoint_path: "-5000"
+all_model_checkpoint_paths: "model.ckpt-0"
+all_model_checkpoint_paths: "model.ckpt-2315"
+all_model_checkpoint_paths: "model.ckpt-4746"
+all_model_checkpoint_paths: "-5000"

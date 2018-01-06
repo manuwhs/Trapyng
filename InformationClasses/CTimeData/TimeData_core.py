@@ -211,7 +211,7 @@ def get_indexDictByDay(self, TD = None):
     groups_of_index_dict = caca.groups # This is a dictionary with the dates as keys and the indexes of the TD as values
     
     days_dict = caca.indices # This is a dictionary with the dates as keys and the indexes of the TD as valu
-    days_keys = days_dict.keys()# list of datetime.date objects
+    days_keys = list(days_dict.keys())# list of datetime.date objects
     days_keys.sort() 
     
     if(0):

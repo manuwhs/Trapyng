@@ -111,6 +111,8 @@ def convert_dates_str(X):
 def detect_AxisFormat(values):
     # This function automatically detects the formating that should be given
     # to the information when plotting.
+#    print (type(values))
+#    print (values.shape)
     V_type = type(values[0,0]).__name__ 
     if ( V_type == "str" or V_type == "string_" or  V_type == 'numpy.string_'):
         V_format = "categorical"
@@ -204,11 +206,11 @@ def add_text(self, positionXY = [], text = r'an equation: $E=mc^2$',fontsize = 1
     self.axes.text(positionXY[0], positionXY[1], text, fontsize=fontsize)
 
 
-def get_barwidth(self,X, width = -1):
+def get_barwidth(self,X, width = None):
     # The Xaxis could be dates and so on, so we want to calculate
     # the with of this bastard independently of that
 
-    if (width < 0):
+    if (type(width) == type(None)):
         width = 1
 #        print width
     if (type(X[0]).__name__ == "Timestamp"):

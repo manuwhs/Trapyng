@@ -331,7 +331,7 @@ def kde_sklearn(x, x_grid, bandwidth=0.2, **kwargs):
     
     x = ul.fnp(x)
     x_grid = ul.fnp(x_grid)
-    print x.shape
+    print (x.shape)
 #    if (x.shape[1] == 1):
 #        x = x[:, np.newaxis]
 #        x_grid = x_grid[:, np.newaxis]
@@ -351,8 +351,8 @@ def kde2D(x, y, bandwidth, xbins=10j, ybins=10j, **kwargs):
     xy_sample = np.vstack([yy.ravel(), xx.ravel()]).T
     xy_train  = np.vstack([y.T, x.T]).T
     
-    print xy_train.shape
-    print xy_sample.shape
+    print (xy_train.shape)
+    print (xy_sample.shape)
     kde_skl = KernelDensity(bandwidth=bandwidth, **kwargs)
     kde_skl.fit(xy_train)
 

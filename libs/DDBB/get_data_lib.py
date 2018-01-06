@@ -7,7 +7,14 @@ Created on Sun Jan 31 03:04:26 2016
 
 import pandas as pd
 import numpy as np
-import urllib2
+
+## The library is called different for Python 2 and 3
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
+
+
 import datetime as dt
 import matplotlib.pyplot as plt
 import copy as copy
@@ -49,7 +56,7 @@ def download_TD_yahoo(symbol = "AAPL", precision = "m",
     url_root += "&ignore=.csv"
     
 #    print url_root
-    response = urllib2.urlopen(url_root)
+    response = urlopen(url_root)
     data = response.read().split('\n')
     nlines = len(data)
     for i in range(nlines):
@@ -103,7 +110,7 @@ def download_TD_yahoo2(symbol = "AAPL", precision = "1mo",
     url_root += "&ignore=.csv"
     
 #    print url_root
-    response = urllib2.urlopen(url_root)
+    response = urlopen(url_root)
     data = response.read().split('\n')
     nlines = len(data)
     for i in range(nlines):

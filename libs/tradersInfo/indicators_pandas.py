@@ -272,7 +272,7 @@ def RSI(df, n = 20):
     ## Vector of positive and negative
     dUp[dUp < 0] = 0
     dDown[dDown > 0] = 0
-    print dUp
+    print (dUp)
     # Calculate the rolling mean, the Window !!
     # Calculates the average dUp and dDown in time
     RolUp = pd.rolling_mean(dUp, n)

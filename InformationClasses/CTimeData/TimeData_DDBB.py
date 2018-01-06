@@ -83,7 +83,7 @@ def preprocess_RAW_TD(self, Raw_TD):
 def save_to_csv(self, file_dir = "./storage/", force = False):
     # This function saves the TD to a csv file
     if (self.trimmed == True and force == False):
-        print "You cannot save the file since you trimmed it, Use force = True"
+        print ("You cannot save the file since you trimmed it, Use force = True")
     else:
         ul.create_folder_if_needed(file_dir)
         whole_path = file_dir + ul.period_dic[self.period] + "/" + \
@@ -146,7 +146,7 @@ def fill_data(self):
     self.set_TD(data_TD)
     if (nend > ninit):
         msg = "Missing : %i / %i" % (nend - ninit, nend)
-        print msg
+        print (msg)
         
 def get_intra_by_days(self):
     result = intl.get_intra_by_days(self.dates, self.get_timeSeries())
@@ -154,7 +154,7 @@ def get_intra_by_days(self):
     
 def check_data(self):  # TODO
     # Check that there are no blanck data or wrong
-    print "checking"
+    print ("checking")
     
 def data_filler(self): # In case we lack some data values
     # We can just fill them with interpolation
@@ -164,7 +164,7 @@ def data_filler(self): # In case we lack some data values
     start_date = self.dailyData.index[0].strftime("%Y-%m-%d")   #strptime("%Y-%m-%d")
     end_date = dt.datetime(self.dailyData.index[-1].strftime("%Y-%m-%d"))
     
-    print start_date
+    print (start_date)
     # We have to get all working days between these 2 dates and check if
     # they exist, if they dont, we fill them
     # Create days of bussines
@@ -182,13 +182,13 @@ def data_filler(self): # In case we lack some data values
     Ndays_list = len(busday_list)   # Number of days that there should be
     Ndays_DDBB = len(self.dailyData.index.tolist())
     
-    print Ndays_list, Ndays_DDBB  ## TODO
+    print (Ndays_list, Ndays_DDBB)  ## TODO
     
     
 #    for i in range (Ndays_list):
 #        print "e"
         
-    print start_date, end_date
+    print (start_date, end_date)
 
 
 def fill_in_missing_dates(df, date_col_name = 'date',date_order = 'asc', fill_value = 0, days_back = 30):
@@ -218,7 +218,7 @@ def data_filler_main_TD():
     timeData2.set_timeData(filled_all)
     timeData2.get_timeSeries(["Close"])
     timeData2.plot_timeSeries()
-    print timeData2.get_timeSeries().shape
+    print (timeData2.get_timeSeries().shape)
     
     ## Fill missing values by first filling everythin
     filled = intl.fill_by_filling_everything(self.get_timeData())
@@ -226,7 +226,7 @@ def data_filler_main_TD():
     timeData2.set_timeData(filled)
     timeData2.get_timeSeries(["Close"])
     timeData2.plot_timeSeries(nf = 0)
-    print timeData2.get_timeSeries().shape
+    print (timeData2.get_timeSeries().shape)
     
     ### Get the day table
     pd_dayly = intl.get_dayCompleteTable(timeData.get_timeData())

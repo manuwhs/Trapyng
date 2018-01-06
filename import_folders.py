@@ -42,6 +42,9 @@ sys.path.append(base_path + "/libs/Distributions/Watson")
 sys.path.append(base_path + "/libs/Distributions/Gaussian")
 sys.path.append(base_path + "/libs/Distributions/vonMisesFisher")
 
+### For the Deep Learning
+sys.path.append(base_path + "/libs/BBBLSTM")
+
 sys.path.append(base_path + "/RainMaking/")
 #imp_folders(os.path.abspath(''))
     

@@ -5,7 +5,7 @@
 
 import pandas as pd
 import numpy as np
-import urllib2
+
 import datetime as dt
 import utilities_lib as ul
 import get_data_lib as gdl
@@ -35,9 +35,9 @@ def load_csv_timeData(symbol, file_dir = "./storage/"):
         
     except IOError:
         error_msg = "File does not exist: " + whole_path 
-        print error_msg
+        print (error_msg)
     except:
-        print "Unexpected error in file: " + whole_path
+        print ("Unexpected error in file: " + whole_path)
     # We transform the index to the real ones
     return dataCSV
 
@@ -68,7 +68,7 @@ def load_TD_from_csv(file_dir = "./storage/",symbolID = None, period = None):
         dataCSV.index = processed_dates
     except IOError:
         error_msg = "File does not exist: " + whole_path 
-        print error_msg
+        print (error_msg)
         dataCSV = ul.empty_df
     TD = dataCSV
     return TD

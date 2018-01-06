@@ -169,8 +169,8 @@ def get_TrCrMr (time_series, alpha = -1):
 
 def get_HMA (time_series, L, cval = np.NaN):
     """ Hulls Moving Average !! L = 200 usually"""
-    WMA1 = get_WMA(time_series, L/2, cval = cval) * 2
-    WMA2 = get_WMA(time_series, L, cval = cval)
+    WMA1 = get_WMA(time_series, int(L/2), cval = cval) * 2
+    WMA2 = get_WMA(time_series, int(L), cval = cval)
     
     HMA = get_WMA(WMA1 - WMA2, int(np.sqrt(L)), cval =cval)
     

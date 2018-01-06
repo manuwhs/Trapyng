@@ -22,7 +22,8 @@ def default_select(self, symbolIDs, period):
         symbolIDs = self.get_symbolIDs()
         
     if (type(period) == type(None)): # If no period specified we take all
-        if (1440 in self.symbols[symbolIDs[0]].get_periods()):
+#        print (self.symbols[symbolIDs[0]].get_periods())
+        if (1440 in list(self.symbols[symbolIDs[0]].get_periods())):
             period = 1440
         else:
             period = max(self.symbols[symbolIDs[0]].get_periods())
