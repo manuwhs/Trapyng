@@ -210,7 +210,7 @@ def add_slider(self, plots_affected = [],
         
         # Set the new limits of Y axes
         
-        self.format_axis(val = val, wsize = wsize)
+        self.format_Xaxis(val = val, wsize = wsize)
         for ax in self.axes_list:
             ax.relim()
             ax.autoscale_view()

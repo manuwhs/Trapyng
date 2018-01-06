@@ -40,12 +40,12 @@ timeData = CTD.CTimeData(symbols[0],periods[0])
 timeData.set_csv(storage_folder)  # Load the data into the model
 timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 
-MOM_ROCw_f = 1
+MOM_ROCw_f = 0
 MOM_ROC_f = 0
 ACFE = 0
 STO_f = 0
 TRIX_f = 0
-RSI_f = 0
+RSI_f = 1
 folder_images = "../pics/Trapying/Oscillators/"
 
 if (MOM_ROCw_f == 1):
@@ -53,7 +53,6 @@ if (MOM_ROCw_f == 1):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
     # For comparing SMA, EMA, WMA
     nHMA = 10
@@ -148,7 +147,6 @@ if (MOM_ROC_f == 1):
     
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     # Momentum and Rate of convergence
     nMOM = 20
@@ -183,7 +181,6 @@ if (MOM_ROC_f == 1):
     
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     # Momentum and Rate of convergence obtained from the real price.
     nMOMs = [10, 20, 30]
@@ -216,7 +213,7 @@ if (ACFE == 1):
       
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
+
     # Momentum and Rate of convergence
     nAD = 5
     ACCDIST = timeData.ACCDIST(n = nAD)
@@ -248,7 +245,6 @@ if (ACFE == 1):
 if (STO_f):
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     n , SK, SD = 14, 6,6
     STO = timeData.STO(n = n, SK = SK, SD = SD)
@@ -274,7 +270,6 @@ if (STO_f):
 if (TRIX_f):
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     L1 , L2, L3 = 14, 9,12
     EX1,EX2,EX3,TRIX = timeData.TRIX(L1 , L2, L3)
@@ -302,8 +297,7 @@ if (TRIX_f):
 if (RSI_f):
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
-    
+
     L = 14
     RS, RSI = timeData.RSI(n = L)
 #    RSI2 = oscl.get_RSI2(price, n = L)

@@ -62,13 +62,13 @@ def scatter_deltaDailyMagic(self):
 
     gl.scatter(mdelta,ddelta, 
                labels = labels,
-               legend = [self.symbol],
+               legend = [self.symbolID],
                nf = 1)
     
 #    gl.set_subplots(1,1)
     gl.scatter_3D(mdelta,ddelta, hldelta,
                    labels = labels,
-                   legend = [self.symbol],
+                   legend = [self.symbolID],
                    nf = 1)
 
 ######################################################################

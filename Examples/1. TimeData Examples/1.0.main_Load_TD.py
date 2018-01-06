@@ -28,8 +28,6 @@ dataSource =  "GCI"  # Hanseatic  FxPro GCI Yahoo
  updates_folder] = ul.get_foldersData(source = dataSource)
 folder_images = "../pics/gl/"
 ######## SELECT SYMBOLS AND PERIODS ########
-symbols = ["XAUUSD","Mad.ITX", "EURUSD"]
-symbols = ["Alcoa_Inc"]
 symbols = ["Amazon", "Alcoa_Inc"]
 periods = [15]
 
@@ -47,22 +45,29 @@ timeData.set_TD(TD)
 cmplist = DBl.read_NASDAQ_companies(whole_path = "../storage/Google/companylist.csv")
 cmplist.sort_values(by = ['MarketCap'], ascending=[0],inplace = True)
 symbolIDs = cmplist.iloc[0:30]["Symbol"].tolist()
-## Download the data from website maybe:
-#TD2 = gdl.get_data_yahoo2(symbol = "AAPL", precision = "m", 
-#                   start_date = "01-12-2011", end_date = "01-12-2015")
 
-#TD_yahoo = gdl.download_D1_TD_yahoo("AAPL", sdate,edate)
-#TD_yahoo2 = gdl.download_D1_TD_yahoo_prev("AAPL", sdate,edate)
-#TD_yahoo3 = gdl.download_TD_yahoo(symbol = "AAPL", precision = "m", 
-#                   start_date = dt.datetime(2016,1,1), end_date = dt.datetime(2017,1,1))
 
-# Visualize some data multivariate guaasian converted to circular.
-#Convert stock marhet in circular
-#TD_google = gdl.download_TD_google ("AAPL", period_seconds = 60 * 1440 * 7, timeInterval = "15d")
-#TD_google = gdl.download_D1_TD_google ("AAPL", sdate,edate)
-#timeData.set_TD(TD_google)
+if (0):
+    """
+    Shitty example to download data that do not work anymore because Yahoo and Google
+    are cunts and they change their interfaces and remove services
+    """
 
-timeData.set_TD_from_google("ONT",5,"10d")
+    # Download the data from website maybe:
+    TD2 = gdl.get_data_yahoo2(symbol = "AAPL", precision = "m", 
+                       start_date = "01-12-2011", end_date = "01-12-2015")
+    
+    TD_yahoo = gdl.download_D1_TD_yahoo("AAPL", sdate,edate)
+    TD_yahoo2 = gdl.download_D1_TD_yahoo_prev("AAPL", sdate,edate)
+    TD_yahoo3 = gdl.download_TD_yahoo(symbol = "AAPL", precision = "m", 
+                       start_date = dt.datetime(2016,1,1), end_date = dt.datetime(2017,1,1))
+    
+    TD_google = gdl.download_TD_google ("AAPL", period_seconds = 60 * 1440 * 7, timeInterval = "15d")
+    TD_google = gdl.download_D1_TD_google ("AAPL", sdate,edate)
+    timeData.set_TD(TD_google)
+    
+    timeData.set_TD_from_google("ONT",5,"10d")
+    
 #####################################################################3
 timeData.set_interval(sdate, edate)
 opentime, closetime = timeData.guess_openMarketTime()
@@ -74,5 +79,5 @@ dataTransform = ["intraday", opentime, closetime]
 dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
 dates = timeData.get_dates()
 
-gl.barchart(dates, dataHLOC, lw = 2, dataTransform = dataTransform, color = "k",
+gl.barchart(dates, dataHLOC, lw = 2, dataTransform = dataTransform, color = "k", labels = [symbols[0],"","Price"], legend= [symbols[0]],
             AxesStyle = "Normal")

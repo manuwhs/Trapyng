@@ -1,4 +1,7 @@
-""" BASIC TRADING INDICATORS AND OSCILLATORS PLOTTING"""
+""" 
+In this file we can plot different Moving Averages
+
+"""
 # Change main directory to the main folder and import folders
 import os
 os.chdir("../../")
@@ -48,15 +51,14 @@ folder_images = "../pics/Trapying/MA/"
 comparing_SEW_MAs = 0
 comparing_lags = 0
 viewing_SEW_windows = 0
-MAMAs = 1
-HullsMA = 0
+MAMAs = 0
+HullsMA = 1
 
 if (comparing_SEW_MAs):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
-
+    
     # For comparing SMA, EMA, WMA
     nMA1 = 30
     # For comparing SMA, EMA, WMA
@@ -79,7 +81,6 @@ if (comparing_lags):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     nSMAs = [7,20,50]
     nEMAs = [7,20,50]
@@ -118,11 +119,9 @@ if (viewing_SEW_windows):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
     nMA1 = 10
     nMA2 = 20
-
 
     SMAw = indl.get_SMA(bMA.delta(nMA1), nMA1, cval = 1)
     EMAw = indl.get_EMA(bMA.delta(nMA1), nMA1, cval = 1)
@@ -205,12 +204,10 @@ if (MAMAs):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_TD()
 
     # For comparing SMA, EMA, WMA
     nHMA = 10
     # Lag of different amplitudes.
-    # 
     
     delta = bMA.delta(31)
     SMASMA  = indl.get_SMA(delta, nHMA, cval = 1)
@@ -250,8 +247,7 @@ if (HullsMA):
     # Some basic indicators.
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
-
+    
     # For comparing SMA, EMA, WMA
     nHMA = 20
     # Lag of different amplitudes.

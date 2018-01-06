@@ -16,7 +16,7 @@ import pylab
 # Own graphical library
 from graph_lib import gl
 import mpmath as mpm
-import utilities_lib as utils 
+import utilities_lib as ul
 
 # Import specific model libraries
 import GaussianProcess as GPown
@@ -306,10 +306,10 @@ so the common terms dissapear nicely :)
 ############### GENERATE THE DATA TO SAVE TO DISK !! #########################
 ###########################################################################
 
-Nchains = 100           # Number of chains to generate !
-Lenght_chains = 60      # Length of the correlated chains
+Nchains = 300           # Number of chains to generate !
+Lenght_chains = 50      # Length of the correlated chains
 
-
+Lenght_chains = Lenght_chains +1 # Since the first sample is not useful because we cannot compute its increase.
 # Compute the kernel and the realizations
 N = Lenght_chains
 X_list = []
@@ -336,28 +336,26 @@ for i in range(Nchains):
     error = L.dot(f_prime)
     
     X_noisy = X + error
-    # Label the original and new signal
-    Y = np.sign(np.diff(X,n=1,axis = 0))
     Y_noisy = np.sign(np.diff(X_noisy,n=1,axis = 0))
 
-    X_list.append(X_noisy)
-    Y_list.append(Y_noisy)
+    X_list.append(X_noisy[:-1,[0]])
+    Y_list.append(Y_noisy[:,[0]])
 
 
 ########## Using Pickle ###############
 
 Ndivisions = 10;
 folder_data = "./artificial_data/"
-utils.create_folder_if_needed(folder_data)
+ul.create_folder_if_needed(folder_data)
     
-if(1):
-    # Cannot use it due to incompatibilities Python 2 and 3
-    pkl.store_pickle(folder_data +"X_values.pkl",X_list,Ndivisions)
-    pkl.store_pickle(folder_data +"Y_values.pkl",Y_list,Ndivisions)
-    
-    ## Test to load the files back 
-    X_list2 = pkl.load_pickle(folder_data +"X_values.pkl",Ndivisions)
-    Y_list2 = pkl.load_pickle(folder_data +"Y_values.pkl",Ndivisions)
+
+# Cannot use it due to incompatibilities Python 2 and 3
+pkl.store_pickle(folder_data +"X_values.pkl",X_list,Ndivisions)
+pkl.store_pickle(folder_data +"Y_values.pkl",Y_list,Ndivisions)
+
+## Test to load the files back 
+X_list2 = pkl.load_pickle(folder_data +"X_values.pkl",Ndivisions)
+Y_list2 = pkl.load_pickle(folder_data +"Y_values.pkl",Ndivisions)
 
 ###### Using Json ###############
 if (0):

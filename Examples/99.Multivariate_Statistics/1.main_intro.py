@@ -1,3 +1,7 @@
+"""
+In this document we download the 15M data for 2 companies and plot it
+"""
+
 import os
 os.chdir("../../")
 import import_folders
@@ -26,7 +30,7 @@ plt.close("all")
 
 ##############################################
 ########## FLAGS ############################
-trading_graph = 0
+trading_graph = 1
 distribution_graph = 1
 ellipse_graph = 1
 
@@ -53,7 +57,7 @@ for period in periods:
     Cartera.set_csv(storage_folder)
     
 sdate = dt.datetime.strptime("6-8-2017", "%d-%m-%Y")
-edate = dt.datetime.strptime("11-8-2017", "%d-%m-%Y")
+edate = dt.datetime.strptime("15-8-2017", "%d-%m-%Y")
 #edate = dt.datetime.now()
 
 Cartera.set_interval(sdate, edate)
@@ -109,8 +113,10 @@ NonNan_index =  np.logical_not(np.isnan(ret1))
 ret1 = ret1[NonNan_index[:,0],:]
 ret2 = ret2[NonNan_index[:,0],:]
 
-ret2 = ret2[1:,:]
-ret1 = ret1[:-1,:]
+#### Apply some shifting if we want crosscorrelations though time
+if(0):
+    ret2 = ret2[1:,:]
+    ret1 = ret1[:-1,:]
 ## Final data
 dates = dates[NonNan_index[:,0]]
 data = np.concatenate((ret1,ret2),axis = 1)
@@ -148,6 +154,7 @@ if(distribution_graph):
     x_grid, y_val = bMA.gaussian1D_points(X = ret2, std_K = 3)
     gl.plot(y_val, x_grid, color = "k",
             labels = ["","",""], legend = ["M: %.2e, std: %.2e"%(mean[0], cov[1,1])])
+    
     gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)
 
     if(ellipse_graph):

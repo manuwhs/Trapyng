@@ -115,7 +115,7 @@ def tradingPV(self, timeData, ax = None,
         colorVolume = '#00ffe8'
         
     gl = self
-    stockTD = timeData.get_timeData()
+    stockTD = timeData.get_TD()
     date = stockTD.index.values
     date = ul.fnp(date)
     date = ul.preprocess_dates(date)
@@ -147,7 +147,7 @@ def tradingPV(self, timeData, ax = None,
     if (ax is None):
         ax = self.axes
 
-    gl.candlestick(newAr, ax = ax, width = width,colorup=colorup, colordown=colordown)
+    gl.candlestick(newAr, ax = ax, barwidth = width,colorup=colorup, colordown=colordown)
 
 #    return 1
 #    pylab.setp(ax1 , axis_bgcolor = bg_color)

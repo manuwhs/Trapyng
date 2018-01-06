@@ -46,6 +46,12 @@ def plot(self, X = [],Y = [],           # X-Y points in the graph.
     # Management of the figure and properties
     ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
                       projection = projection, position = position)
+    
+    ## Sometimes we just want an empty plot with the graph, so we just return the axes.
+    if (type(Y == type([]))):
+        if (len(Y) == 0):
+            return ax;
+        
     ## Preprocess the data given so that it meets the right format
     X, Y = self.preprocess_data(X,Y, dataTransform = dataTransform)
     NpY, NcY = Y.shape
@@ -252,6 +258,9 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
         marker = [" ", None, None]
        ):         
 
+    ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
+                  projection = projection, position = position)
+        
     ## Preprocess the data given so that it meets the right format
     X, Y = self.preprocess_data(X,Y,dataTransform)
     NpX, NcX = X.shape
@@ -265,12 +274,10 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
     X = D
 #    print X
     
-    ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
-                      projection = projection, position = position)
+
     ## Preprocess the data given so that it meets the right format
     NpY, NcY = Y.shape
     plots,plots_typ =  self.init_WidgetData(ws)
-
 
     ############### CALL SCATTERING FUNCTION ###########################
     for i in range(NcY):  # We plot once for every line to plot
@@ -298,84 +305,68 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
 
 
 def step(self, X = [],Y = [],  # X-Y points in the graph.
-        labels = [],     # Labels for tittle, axis and so on.
-        legend = [],     # Legend for the curves plotted
-        nf = 1,          # New figure
-        na = 0,          # New axis. To plot in a new axis
-        # Basic parameters that we can usually find in a plot
-        color = None,    # Color
-        lw = 2,          # Line width
-        alpha = 1.0,      # Alpha
-        
-        fontsize = 20,   # The font for the labels in the title
-        fontsizeL = 10,  # The font for the labels in the legeng
-        fontsizeA = 15,  # The font for the labels in the axis
-        loc = "best",
-        
+        labels = [], legend = [],       # Basic Labelling
+        color = None,  lw = 2, alpha = 1.0,  # Basic line properties
+        nf = 0, na = 0,          # New axis. To plot in a new axis         # TODO: shareX option
+        ax = None, position = [], projection = "2d", # Type of plot
+        sharex = None, sharey = None,
+        fontsize = 20,fontsizeL = 10, fontsizeA = 15,  # The font for the labels in the axis
+        xlim = None, ylim = None, xlimPad = None, ylimPad = None, # Limits of vision
+        ws = None, Ninit = 0,     
+        loc = "best",    
+        dataTransform = None,
+        xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
+        marker = [" ", None, None],
         where = "pre", # pre post mid ## TODO, part of the step. How thw shit is done
-        ### Super Special Shit !!
-        fill = 0,  #  0 = No fill, 1 = Fill and line, 2 = Only fill
-        
-        # Widgets shit !!
-        ws = -1      # Only plotting the last window of the data.
+        fill = 0,
+        fill_offset = 0, 
         ):         
 
+    # Management of the figure and properties
+    ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
+                      projection = projection, position = position)
     ## Preprocess the data given so that it meets the right format
-    self.preprocess_data(X,Y,dataTransform)
-    X = self.X
-    Y = self.Y
-    
-    NpX, NcX = X.shape
+    X, Y = self.preprocess_data(X,Y,dataTransform)
     NpY, NcY = Y.shape
-    
-    # Management of the figure
+    plots,plots_typ =  self.init_WidgetData(ws)
 
-
-    
     ##################################################################
     ############### CALL PLOTTING FUNCTION ###########################
     ##################################################################
     ## TODO. Second case where NcY = NcX !!
 
-    if (ws == -1):  # We only show the last ws samples
-        ws = NpX
-        
-    plots = []
-    plots_typ = []
-    for i in range(NcY):  # We plot once for every line to plot
-        self.zorder = self.zorder + 1
-        colorFinal = self.get_color(color)
-        if (i >= len(legend)):
-            plot_i, = plt.step(X[(NpX-ws):],Y[(NpX-ws):,i], lw = lw, alpha = alpha, 
-                     color = colorFinal, zorder = self.zorder,  where = where)
-        else:
-#            print X.shape
-#            print Y[:,i].shape
-            plot_i, = plt.step(X[(NpX-ws):],Y[(NpX-ws):,i], lw = lw, alpha = alpha, color = colorFinal,
-                     label = legend[i], zorder = self.zorder, where = where)
-        
-        if (fill == 1):  ## Fill this shit !!
-            XX,YY1, YY2 = ul.get_stepValues(X[(NpX-ws):],Y[(NpX-ws):,i], y2 = 0, step_where = where)
-            fill_i = self.fill_between(XX,YY1,y2 = 0, color = colorFinal,alpha = alpha)
-        plots.append(plot_i)
-        plots_typ.append("plot")
-        
+    if (Y.size != 0):  # This would be just to create the axes
+    ############### CALL PLOTTING FUNCTION ###########################
+        for i in range(NcY):  # We plot once for every line to plot
+            self.zorder = self.zorder + 1  # Setting the properties
+            colorFinal = self.get_color(color)
+            legend_i = None if i >= len(legend) else legend[i]
+            alpha_line = alpha if fill == 0 else 1
+            plot_i, = ax.step(X[self.start_indx:self.end_indx],Y[self.start_indx:self.end_indx:,i], 
+                     lw = lw, alpha = alpha_line, color = colorFinal,
+                     label = legend_i, zorder = self.zorder,
+                     where = where)
+            plots.append(plot_i)
+            plots_typ.append("plot")
+            # Filling if needed
+            if (fill == 1):  
+                XX,YY1, YY2 = ul.get_stepValues(X[self.start_indx:self.end_indx],Y[self.start_indx:self.end_indx:,i], y2 = 0, step_where = where)
+                self.fill_between(x = XX,
+                                  y1 = YY1,
+                                    y2 = fill_offset, color = colorFinal,alpha = alpha,
+                                    step_where = where)
 
-    ## Store pointers to variables for interaction
-    self.plots_type.append(plots_typ)
-    self.plots_list.append(plots) # We store the pointers to the plots
-    
-    data_i = [X,Y]
-    self.Data_list.append(data_i)
-    
-    self.update_legend(legend,NcY,loc = loc)
-    self.format_axis( nf, fontsize = fontsizeA, wsize = ws, val = NpX-ws)
-    
 
-    if (na == 1 or nf == 1):
-        self.format_plot()
+    ############### Last setting functions ###########################
+    self.store_WidgetData(plots_typ, plots)     # Store pointers to variables for interaction
     
-    ax = self.axes
+    self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
+    self.set_labels(labels)
+    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
+    self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
+    self.apply_style(nf,na,AxesStyle)
+    
     return ax
 
 def plot_filled(self, X = [],Y = [],  # X-Y points in the graph.
@@ -391,7 +382,10 @@ def plot_filled(self, X = [],Y = [],  # X-Y points in the graph.
         dataTransform = None,
         xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
         marker = [" ", None, None],
-        fill_mode =  "independent" # "between", "stacked","independent"
+        fill_mode =  "independent", # "between", "stacked","independent"
+        step_mode = "no",
+        where = "pre"
+        
        ):         
 
     # Management of the figure and properties
@@ -404,22 +398,25 @@ def plot_filled(self, X = [],Y = [],  # X-Y points in the graph.
 
     x = X[self.start_indx:self.end_indx]
     ############### CALL PLOTTING FUNCTION ###########################
-    for i in range(0,NcY -1):  # We plot once for every line to plot
+    for i in range(0,NcY):  # We plot once for every line to plot
 
         if (fill_mode ==  "stacked"):
+#            print "FFFFFFFFFFFFFFFFFFFFFFF"
             if (i == 0):   # i  for i in range(NcY)
                 y1 = Y[self.start_indx:self.end_indx,i]
-                y2 = 0 + y1
+                y2 = 0 
             else:
-                y2 += Y[self.start_indx:self.end_indx,i-1]
+                y2 = y1 
                 y1 = y2 + Y[self.start_indx:self.end_indx,i]
                 
         elif(fill_mode ==  "between"):
                 y2 = Y[self.start_indx:self.end_indx,i-1]
                 y1 = Y[self.start_indx:self.end_indx,i]
-                
-        y2 = Y[self.start_indx:self.end_indx,i]
-        y1 = Y[self.start_indx:self.end_indx,i+1]
+        else:
+            if (i == NcY -1):
+                break;
+            y2 = Y[self.start_indx:self.end_indx,i]
+            y1 = Y[self.start_indx:self.end_indx,i+1]
         
         self.zorder = self.zorder + 1  # Setting the properties
         colorFinal = self.get_color(color)
@@ -427,7 +424,15 @@ def plot_filled(self, X = [],Y = [],  # X-Y points in the graph.
         # With this we add the legend ?
 #        plot_i, = ax.plot([X[0],X[0]],[y1[0],y1[0]], lw = lw, alpha = alpha, 
 #                 color = colorFinal, zorder = self.zorder)
-        fill_i = self.fill_between(x = x,y1 = y1 ,y2 = y2, color = colorFinal,alpha = alpha)
+        
+        if (step_mode == "yes"):
+            XX,YY1, YY2 = ul.get_stepValues(x,y1, y2, step_where = where)
+            fill_i = self.fill_between(x = XX,
+                              y1 = YY1,
+                                y2 = YY2, color = colorFinal,alpha = alpha,
+                                step_where = where)
+        else:
+            fill_i = self.fill_between(x = x,y1 = y1 ,y2 = y2, color = colorFinal,alpha = alpha, legend = [legend_i])
         
         plots.append(fill_i)
         plots_typ.append("plot")
@@ -485,8 +490,12 @@ def fill_between(self, x, y1,  y2 = 0,
 #    print len(where)
 #    print x[0:5], y1[0:5]
     
+    if (len(legend) == 0):
+        legend = None
+    else:
+        legend = legend[0]
     ln = ax.fill_between(x = x, y1 = y1, y2 = y2, where = where,
-                     color = color, alpha = alpha, zorder = self.zorder) #  *args, **kwargs) 
+                     color = color, alpha = alpha, zorder = self.zorder, label = legend) #  *args, **kwargs) 
 
     self.plots_type.append(["fill"])
     self.plots_list.append([ln]) # We store the pointers to the plots
@@ -514,8 +523,9 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
         orientation = "vertical",
         barwidth = None,      # Rectangle width
         bottom = None,    ## If the y-axis start somewhere else
-        despx = 0      # Displacement in the x axis, it is done for the dates
+        despx = 0,      # Displacement in the x axis, it is done for the dates
                         # so that we can move some other things (Velero graph)
+        align = "edge"  #  "center"   
        ):         
 
     # Management of the figure and properties
@@ -544,13 +554,13 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
                 bottom = bottom[self.start_indx:self.end_indx]
             if (orientation == "vertical"):
                 plot_i  = self.axes.bar(X[self.start_indx:self.end_indx], Y[self.start_indx:self.end_indx:,i], 
-                            width = barwidth, align='center',
+                            width = barwidth, align=align,
                               facecolor= colorFinal,alpha=alpha,
                               label = legend_i, zorder = self.zorder,
                               bottom = bottom)
             else:  # horixontal
                 plot_i  = self.axes.bar(width = Y[self.start_indx:self.end_indx:,i], 
-                              height = barwidth, align='center',
+                              height = barwidth, align=align,
                               facecolor= colorFinal,alpha=alpha,
                               label = legend_i, zorder = self.zorder,
                               left = bottom,

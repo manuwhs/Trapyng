@@ -1,3 +1,8 @@
+"""
+We generate random Gaussian data and project into another base.
+It is a didactic shit
+"""
+
 import os
 os.chdir("../../")
 import import_folders
@@ -29,13 +34,12 @@ plt.close("all")
 folder_images = "../pics/Trapying/MultivariateStat/"
 ##############################################
 ########## FLAGS ############################
-trading_graph = 0
 distribution_graph = 1
 ellipse_graph = 1
 
 
 ############################################################
-################# PLOT DATA ###############################
+################# Create Data DATA ###############################
 ###########################################################
 
 mus = np.array([0,0])
@@ -134,8 +138,7 @@ if(distribution_graph):
         ################# Draw the error ellipse  #################
         mean,w,h,theta = bMA.get_gaussian_ellipse_params( mu = mu_Y, Sigma = SigmaY, Chi2val = 2.4477)
 #        mean,vecs = bMA.get_gaussian_mean_and_vects(Y.T)
-        vecs = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
-        
+        vecs,vals = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
         r_ellipse = bMA.get_ellipse_points(mean,w,h,theta)
         gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "--",color = "k", lw = 2,
                  legend = ["Corr: .2f"],AxesStyle = "Normal2")
@@ -187,7 +190,7 @@ if(distribution_graph):
         ################# Draw the error ellipse  #################
         mean,w,h,theta = bMA.get_gaussian_ellipse_params( mu = mu_Y, Sigma = SigmaY, Chi2val = 2.4477)
 #        mean,vecs = bMA.get_gaussian_mean_and_vects(Y.T)
-        vecs = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
+        vecs,vals = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
         
         r_ellipse = bMA.get_ellipse_points(mean,w,h,theta)
         gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "--",color = "k", lw = 2,
@@ -223,7 +226,7 @@ if(distribution_graph):
         ################# Draw the error ellipse  #################
         mean,w,h,theta = bMA.get_gaussian_ellipse_params( mu = mu_Y, Sigma = SigmaY, Chi2val = 2.4477)
 #        mean,vecs = bMA.get_gaussian_mean_and_vects(Y.T)
-        vecs = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
+        vecs,vals = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
         
         r_ellipse = bMA.get_ellipse_points(mean,w,h,theta)
         gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "--",color = "k", lw = 2,
@@ -250,7 +253,7 @@ if(distribution_graph):
         ################# Draw the error ellipse  #################
         mean,w,h,theta = bMA.get_gaussian_ellipse_params( mu = mu_Z, Sigma = SigmaZ, Chi2val = 2.4477)
 #        mean,vecs = bMA.get_gaussian_mean_and_vects(Y.T)
-        vecs = bMA.get_eigenVectorsAndValues(Sigma = SigmaZ)
+        vecs,vals = bMA.get_eigenVectorsAndValues(Sigma = SigmaY)
         
         r_ellipse = bMA.get_ellipse_points(mean,w,h,theta)
         gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "--",color = "k", lw = 2,

@@ -29,7 +29,7 @@ folder_images = "../pics/Trapying/MultivariateStat/"
 ##############################################
 ########## FLAGS ############################
 
-use_real_data_flag = 1
+use_real_data_flag = 0
 plot_explained_var = 0
 plot_projections_2Assets = 0
 plot_projections_AllAssets = 0
@@ -59,7 +59,7 @@ if (use_real_data_flag == 0):
     X = np.concatenate((X),axis = 1)
     
 else:
-    Nx = 25
+    Nx = 7
     dataSource =  "Google"  # Hanseatic  FxPro GCI Yahoo
     [storage_folder, info_folder, 
      updates_folder] = ul.get_foldersData(source = dataSource)
@@ -74,8 +74,8 @@ else:
     for period in periods:
         Cartera = CPfl.Portfolio("BEST_PF", symbolIDs, [period]) 
         Cartera.set_csv(storage_folder)
-    sdate = dt.datetime.strptime("6-8-2017", "%d-%m-%Y")
-    edate = dt.datetime.strptime("11-8-2017", "%d-%m-%Y")
+    sdate = dt.datetime.strptime("11-8-2017", "%d-%m-%Y")
+    edate = dt.datetime.strptime("15-8-2017", "%d-%m-%Y")
     Cartera.set_interval(sdate, edate)
     opentime, closetime = Cartera.get_timeData(symbolIDs[0],15).guess_openMarketTime()
     dataTransform = ["intraday", opentime, closetime]
@@ -84,9 +84,10 @@ else:
     #Cartera.get_timeData(symbolIDs[1],15).fill_data()
     symbolIDs = Cartera.get_symbolIDs()
     X = Cartera.get_timeSeriesReturn(symbolIDs,15)
-    Nsam = 134
+    Nsam = 130
     for i in range(len(X)):
         X[i] = X[i][:Nsam]   # Truncate the values since some of them hace 1 more sample
+        print (X[i].shape)
     X = np.concatenate(X,axis = 1) * 100
     dates = Cartera.get_timeData(symbolIDs[1],15).get_dates()
     symbolIDs = Cartera.get_symbolIDs()

@@ -182,6 +182,9 @@ def get_timeSeries(self, seriesNames = [], indexes = [], transform = "no"):
     return copy.deepcopy(self.timeSeries)
 
 def get_dates(self, indexes = []):
+    ## TODO: We have to fix the fact of TimeZone, the fact that on
+    ## Sundays we have only one hour 23:00 - 24:00 or something like that
+    ## Maybe displaze date and join stuff.
     # Gets the dates vector, if we dont have it, we create it
 #    if (len(self.dates) == 0):  # Check existence of timeSeries
     if (len(indexes) == 0):
@@ -190,22 +193,34 @@ def get_dates(self, indexes = []):
 #    self.dates = dates
     return copy.deepcopy(dates)
 
-def get_indexDictByDay(self):
-    # This function gets the index of the dates, divided by days.
-    # It returns a dictinary where every key is a day and the value is the list of index
-    # This function works with bult in pandas dataframe functions
-
+def get_indexDictByDay(self, TD = None):
+    """ 
+    This function gets the index of the dates, divided by days.
+    It returns a dictinary where every key is a day and the value is the list of index
+    This function works with bult in pandas dataframe functions.
+    
+    It returns the list of days ordered and the dictionary with the indexes associated
+    to each of the days
+    """
 #    dates = self.get_dates()
-    dates = self.TD.index.date
-    caca = self.TD.groupby(dates)
+
+    if (type(TD) == type(None)):
+        TD = self.TD
+    dates = TD.index.date
+    caca = TD.groupby(dates)
     groups_of_index_dict = caca.groups # This is a dictionary with the dates as keys and the indexes of the TD as values
     
     days_dict = caca.indices # This is a dictionary with the dates as keys and the indexes of the TD as valu
-    keys = days_dict.keys()# list of datetime.date objects
-    keys.sort() 
-    set_indexes = days_dict[keys[0]]
+    days_keys = days_dict.keys()# list of datetime.date objects
+    days_keys.sort() 
     
-    return days_dict
+    if(0):
+        # Not needed if the sequence was already ordered
+        for k in days_keys:
+           days_dict[k].sort()
+#        set_indexes = days_dict[keys[0]].sort()
+    
+    return days_keys, days_dict
     
 def get_timeSeriesReturn(self, seriesNames = [], indexes = [], transform = "no"):
     # Gets the Return of the Time Series, if it has not been created yet, then it creates it
@@ -297,8 +312,7 @@ def guess_openMarketTime(self):
     closeTimes = [] 
     
     dates = self.get_dates()
-    indexDaysDict = self.get_indexDictByDay()
-    days = indexDaysDict.keys()
+    days, indexDaysDict = self.get_indexDictByDay()
 #    print days
     for day in days:
         openTimeindex = indexDaysDict[day][0]

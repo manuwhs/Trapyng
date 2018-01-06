@@ -1,4 +1,7 @@
-""" EXPERIMENTAL INDICATORS """
+""" 
+Ranges
+
+"""
 # Change main directory to the main folder and import folders
 import os
 os.chdir("../../")
@@ -25,12 +28,11 @@ dataSource =  "GCI"  # Hanseatic  FxPro GCI Yahoo
 [storage_folder, info_folder, 
  updates_folder] = ul.get_foldersData(source = dataSource)
 
-symbols = ["XAUUSD","Mad.ITX", "EURUSD"]
-symbols = ["Alcoa_Inc"]
 symbols = ["Amazon"]
 periods = [1440]
 ######## SELECT DATE LIMITS ###########
-sdate_str = "01-10-2015"; edate_str = "20-6-2016"
+sdate_str = "01-10-2015"; 
+edate_str = "20-6-2016"
 sdate = dt.datetime.strptime(sdate_str, "%d-%m-%Y")
 edate = dt.datetime.strptime(edate_str, "%d-%m-%Y")
 ######## CREATE THE OBJECT AND LOAD THE DATA ##########
@@ -42,27 +44,25 @@ timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 ###########################################################################
 ############## Pandas indicator Library ############################################
 
-
 NormalPivot_Points = 0
 FiboPivot_Points = 0
 BB_f = 0
-randomPrice_f = 1
+randomPrice_f = 0
 BBfuture_f = 0
-ATR_AHLR_f =0
+ATR_AHLR_f =1
 SAR_f = 0
 
 folder_images = "../pics/Trapying/Ranges/"
 if (NormalPivot_Points):
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
+
     nBB = 10
     
     PPSR = timeData.PPSR()
 #    SAR = timeData.SAR()
     ## Plotting just the PPSR !!
     # TODO: Divide 3-1
-    gl.set_subplots(2,1)
     gl.plot(dates, price,  nf = 1,
             labels = ["Range Pivot Points", "", "Price"],
             legend = ["Price"])
@@ -79,7 +79,6 @@ if (FiboPivot_Points):
     ## Plotting just the PPSR !!
     FibboSR = timeData.FibboSR()
     # TODO: Divide 3-1
-    gl.set_subplots(2,1)
     gl.plot(dates, price,  nf = 1,
             labels = ["Range Pivot Points Fibbo", "", "Price"],
             legend = ["Price"])
@@ -95,12 +94,9 @@ if (FiboPivot_Points):
 if (SAR_f):
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     SAR = timeData.PSAR()
     ## Plotting just the PPSR !!
-    # TODO: Divide 3-1
-    gl.set_subplots(2,1)
     gl.plot(dates, price,  nf = 1,
             labels = ["Range Pivot Points", "", "Price"],
             legend = ["Price"])
@@ -117,7 +113,6 @@ if (BB_f):
     dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
    # Bollinger Bands and ATR
     nBB = 10; nBB1 = 20; nBB2 = 10
@@ -176,7 +171,6 @@ if (randomPrice_f):
     timeData.TD["Close"] = np.random.randn(timeData.TD["Close"].shape[0]) + mean
     price = timeData.get_timeSeries(["Close"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
    # Bollinger Bands and ATR
     nBB = 10; nBB1 = 20; nBB2 = 10
@@ -242,7 +236,6 @@ if (BBfuture_f):
     dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
    # Bollinger Bands and ATR
     nBB = 10; nBB1 = 20; nBB2 = 10
@@ -299,6 +292,10 @@ if (BBfuture_f):
                dpi = 100, sizeInches = [2*8, 2*4])
 
 if(ATR_AHLR_f):
+
+    price = timeData.get_timeSeries(["Average"]);
+    dates = timeData.get_dates()
+
     ##################### ATR ######################################
     nATR1 = 14
     nATR2 = 20

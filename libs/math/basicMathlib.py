@@ -42,6 +42,7 @@ def convolve(signal, window, mode = "full"):
         sM = sM[:-L+1]    # Remove the last values since they hare convolved with 0's as well
     sM = sM.reshape ((sM.size,1))
     return sM
+
 def get_return(price_sequences, lag = 1, cval = 0):
     # Get the return of the price sequences
     Nsam, Nsec = price_sequences.shape

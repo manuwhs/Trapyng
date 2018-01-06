@@ -6,6 +6,7 @@ import copy
 from matplotlib.patches import Rectangle
 import datetime as dt
 from matplotlib import collections  as mc
+from matplotlib.lines import Line2D
 
 def barchart(self, X = [],Y = [],  # X-Y points in the graph.
         labels = [], legend = [],       # Basic Labelling
@@ -117,6 +118,11 @@ def candlestick(self, X = [],Y = [],  # X-Y points in the graph.
     Npoints = dates.size
     
     OFFSET = barwidth / 2.0
+    
+    line_factor = 0.15
+    barwidth_HL = barwidth * line_factor 
+    OFFSET_HL = barwidth_HL / 2.0
+    
     lines = []
     patches = []
     for i in range(Npoints):
@@ -129,32 +135,45 @@ def candlestick(self, X = [],Y = [],  # X-Y points in the graph.
             
         height = np.abs(openp[i]  - closep[i])
         
-        vline = Line2D(
-            xdata=(dates[i],dates[i]), ydata=(lowp[i], highp[i]),
-            color=color,
-            linewidth=lw,
-            antialiased=True,
-        )
+        ## High-low line
 
+#        line_HL = Line2D(
+#            xdata=(dates[i],dates[i]), ydata=(lowp[i], highp[i]),
+#            color=color,
+#            linewidth=lw,
+#            antialiased=True,
+#        )
+
+        rect_HL = Rectangle(
+            xy=(dates[i] - OFFSET_HL, lowp[i]),
+            width=barwidth_HL,
+            height=highp[i] - lowp[i],
+            facecolor=color,
+            edgecolor=color,
+        )
+        
 #        print type(dates[i]), type(OFFSET)
-        rect = Rectangle(
+        ## Open Close rectangle
+        rect_OP = Rectangle(
             xy=(dates[i] - OFFSET, baseRectable),
             width=barwidth,
             height=height,
             facecolor=color,
             edgecolor=color,
         )
-        rect.set_alpha(alpha)
-
-        lines.append(vline)
-        patches.append(rect)
+        rect_OP.set_alpha(alpha)
+#
+#        lines.append(line_HL)
+#        patches.append(rect_OP)
         
-        ax.add_line(vline)
-        ax.add_patch(rect)
+#        ax.add_line(line_HL)
+        ax.add_patch(rect_OP)
+        ax.add_patch(rect_HL)
         
 #    lines = mc.LineCollection(lines)
 #    ax.add_collection(lines)
 #    ax.add_collection(patches)
+    
     ax.autoscale()  # TODO: The zoom is not changed if we do not say it !
     ############### Last setting functions ###########################
     self.store_WidgetData(plots_typ, plots)     # Store pointers to variables for interaction
@@ -225,11 +244,11 @@ def Velero_graph(self, data,
         
     ## All_bars !!
     self.bar(dates[allBox], High[allBox] - Low[allBox], bottom = Low[allBox],
-             width = 0.1, color = colorFill, ws = ws, nf = 1)  
+             barwidth = 0.1, color = colorFill, ws = ws, nf = 1)  
              
     self.bar(dates[allBox], abs(Open[allBox] - Close[allBox]), 
              bottom = np.min((Close[allBox],Close[allBox]),axis = 0),
-             width = 0.9, color = colorDec, ws = ws, nf = 0)
+             barwidth = 0.9, color = colorDec, ws = ws, nf = 0)
 
 
 #    ## Increasing bars !!
@@ -254,7 +273,7 @@ def Velero_graph(self, data,
    
 #     Plot the volume
     self.bar(dates, Volume, alpha = 0.5,
-             width = 0.9, color = colorBg, ws = ws, nf = 0, na = 1) 
+             barwidth = 0.9, color = colorBg, ws = ws, nf = 0, na = 1) 
     
     plt.ylim(plt.ylim()[0], max(Volume)* 4)
 

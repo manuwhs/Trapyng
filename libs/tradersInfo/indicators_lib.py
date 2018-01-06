@@ -172,7 +172,7 @@ def get_HMA (time_series, L, cval = np.NaN):
     WMA1 = get_WMA(time_series, L/2, cval = cval) * 2
     WMA2 = get_WMA(time_series, L, cval = cval)
     
-    HMA = get_WMA(WMA1 - WMA2, np.sqrt(L), cval =cval)
+    HMA = get_WMA(WMA1 - WMA2, int(np.sqrt(L)), cval =cval)
     
     return HMA
     

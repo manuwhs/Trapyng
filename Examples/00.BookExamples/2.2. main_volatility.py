@@ -43,17 +43,17 @@ timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 ###########################################################################
 ############## Pandas indicator Library ############################################
 
-BB_f = 0
+BB_f = 1
 AHLR_f = 0
-ATR_f = 1
+ATR_f = 0
 chaikin_f = 0
 
 folder_images = "../pics/Trapying/Volatility/"
 if (BB_f):
+
     dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
 
    # Bollinger Bands and ATR
     nBB = 10; nBB1 = 20; nBB2 = 10
@@ -87,23 +87,22 @@ if (BB_f):
             labels = ["","","STD"],  
             legend = ["STD(%i)"%nBB1], fill = 1, alpha = 0.3)
             
-    gl.plot(dates, STD2 , nf = 0, na = 0,
+    gl.plot(dates, STD2, ax = ax2,
              color = colorBB2,  AxesStyle = "Normal - Ny:5",
-             legend = ["STD(%i)"%nBB2], fill = 1, alpha = 0.5,
-             ylim = [-5,60])
-            
-    gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.20, hspace=0)
-
-    gl.savefig(folder_images +'VolatilitySTD.png', 
-               dpi = 100, sizeInches = [2*8, 2*3])
-               
+             legend = ["STD(%i)"%nBB2], fill = 1, alpha = 0.5
+             )
+#            
+#    gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.20, hspace=0)
+#
+#    gl.savefig(folder_images +'VolatilitySTD.png', 
+#               dpi = 100, sizeInches = [2*8, 2*3])
+#               
 ##################### ATR ######################################    
 if (AHLR_f):
     dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
-    
+
     nAHLR1 = 14; nAHLR2 = 20
     AHLR1 = timeData.AHLR(n = nAHLR1)
     AHLR2 = timeData.AHLR(n = nAHLR2)
@@ -146,7 +145,7 @@ if (ATR_f):
     dataHLOC = timeData.get_timeSeries(["High","Low","Open","Close"])
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
+    df = timeData.get_TD()
 
     nAHLR1 = 14; nAHLR2 = 20
     AHLR1 = timeData.AHLR(n = nAHLR1)
@@ -211,7 +210,6 @@ if (ATR_f):
 if (chaikin_f):
     price = timeData.get_timeSeries(["Average"]);
     dates = timeData.get_dates()
-    df = timeData.get_timeData()
     
     nCha1 = 14
     nCha2 = 20

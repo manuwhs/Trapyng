@@ -28,7 +28,7 @@ folder_images = "../pics/Trapying/MultivariateStat/"
 ##############################################
 ########## FLAGS ############################
 
-distribution_graph = 0
+distribution_graph = 1
 distribution_graph_2D = 0
 distribution_graph_3D =0
 distribution_graph_3D_slices = 0

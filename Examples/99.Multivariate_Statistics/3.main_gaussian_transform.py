@@ -30,18 +30,17 @@ folder_images = "../pics/Trapying/MultivariateStat/"
 ##############################################
 ########## FLAGS ############################
 
-distribution_graph_2D = 0
-
+distribution_graph_2D = 1
 distribution_graph_3D_slices = 0;
 distribution_graph_3D_cond = 0
-distribution_graph_2D_rotation = 1
+distribution_graph_2D_rotation = 0
 
 ##########################################################################
 ################# DATA OBTAINING ######################################
 ##########################################################################
 mus = np.array([0,0,0])
 stds = np.array([1,1,1])
-Nsam = 100000
+Nsam = 1000
 Nx = 3
 
 X = []
@@ -71,7 +70,7 @@ if(distribution_graph_2D):
     std_1, std_2 = stds[i_1],stds[i_2]
     
     mu = mus[[i_1,i_2]]
-    cov = np.cov(Xjoint).T
+    cov = np.cov(Xjoint)
     std_K = 3
     
     ## Do stuff now
@@ -201,6 +200,7 @@ if(distribution_graph_2D):
     square_unit = Vherm.dot( square_unit)
     cov = np.cov(Yjoint)
     mu = np.mean(Yjoint,axis = 1)
+    mu = mu.reshape(mu.size,1)
     
     ax1 = gl.subplot2grid((1,4), (0,1), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
     gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
@@ -216,7 +216,8 @@ if(distribution_graph_2D):
     square_unit =  S.dot(square_unit)
     cov = np.cov(Yjoint)
     mu = np.mean(Yjoint,axis = 1)
-
+    mu = mu.reshape(mu.size,1)
+    
     ax1 = gl.subplot2grid((1,4), (0,2), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
     gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
                labels = ["Scaling S","", ""], color = "dark navy blue")
@@ -232,7 +233,8 @@ if(distribution_graph_2D):
     square_unit = U.dot(square_unit)
     cov = np.cov(Yjoint)
     mu = np.mean(Yjoint,axis = 1)
-
+    mu = mu.reshape(mu.size,1)
+    
     ax1 = gl.subplot2grid((1,4), (0,3), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
     gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
                labels = ["Rotation U","", ""], color = "dark navy blue")
@@ -280,6 +282,7 @@ if(distribution_graph_2D):
     square_unit = square_unit
     cov = np.cov(Yjoint)
     mu = np.mean(Yjoint,axis = 1)
+    mu = mu.reshape(mu.size,1)
     
     ax1 = gl.subplot2grid((1,3), (0,0), rowspan=1, colspan=1)
     gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
@@ -313,6 +316,7 @@ if(distribution_graph_2D):
     square_unit = R.dot(square_unit)
     cov = np.cov(Yjoint)
     mu = np.mean(Yjoint,axis = 1)
+    mu = mu.reshape(mu.size,1)
 
     ax1 = gl.subplot2grid((1,3), (0,2), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
     gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
@@ -336,13 +340,14 @@ if(distribution_graph_2D):
     ###############################################################################
     
     
-    Yjoint = Xjoint.dot(A) + mu
-    cov = np.cov(Yjoint.T).T
-    mu = np.mean(Yjoint,axis = 0)
+    Yjoint = A.dot(Xjoint) + mu
+    cov = np.cov(Yjoint)
+    mu = np.mean(Yjoint,axis = 1)
+    mu = mu.reshape(mu.size,1)
     
     gl.init_figure()
     ax1 = gl.subplot2grid((1,3), (0,0), rowspan=1, colspan=1)
-    gl.scatter(Yjoint[:,0],Yjoint[:,1], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
+    gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
                labels = ["","X1", "X2"])
     
     ax1.axis('equal')
@@ -358,11 +363,11 @@ if(distribution_graph_2D):
     for i in range (len(thetas)):
         theta = thetas[i]
         R = np.array([[np.cos(theta),-np.sin(theta)],[np.sin(theta),np.cos(theta),]])
-        Zjoint = (Yjoint - mu).dot(R) + mu
-        cov = np.cov(Zjoint.T).T
+        Zjoint = R.dot(Yjoint - mu)+ mu
+        cov = np.cov(Zjoint)
         
         ax2 = gl.subplot2grid((1,3), (0,1+i), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
-        gl.scatter(Zjoint[:,0],Zjoint[:,1], alpha = 0.5, ax = ax2, lw = 4, AxesStyle = "Normal",
+        gl.scatter(Zjoint[0,:],Zjoint[1,:], alpha = 0.5, ax = ax2, lw = 4, AxesStyle = "Normal",
                    labels = ["theta: %f pi"%(theta/(np.pi)),"Y1", "Y2"])
         
         gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)
@@ -386,14 +391,15 @@ if(distribution_graph_2D):
     ############################ PLOT Scaled #####################################
     ###############################################################################
     
-    Yjoint = Xjoint.dot(A) + mu
-    cov = np.cov(Yjoint.T).T
-    mu = np.mean(Yjoint,axis = 0)
+    Yjoint = A.dot(Xjoint) + mu
+    cov = np.cov(Yjoint)
+    mu = np.mean(Yjoint,axis = 1)
+    mu = mu.reshape(mu.size,1)
     
     gl.init_figure()
 
     ax1 = gl.subplot2grid((1,3), (0,0), rowspan=1, colspan=1)
-    gl.scatter(Yjoint[:,0],Yjoint[:,1], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
+    gl.scatter(Yjoint[0,:],Yjoint[1,:], alpha = 0.5, ax = ax1, lw = 4, AxesStyle = "Normal",
                labels = ["","X1", "X2"])
     
     ax1.axis('equal')
@@ -409,12 +415,12 @@ if(distribution_graph_2D):
     
     for i in range (len(scaling)):
         S = np.diag(scaling[i])
-        Zjoint = (Yjoint - mu).dot(S) + mu
-        cov = np.cov(Zjoint.T).T
+        Zjoint = S.dot(Yjoint - mu) + mu
+        cov = np.cov(Zjoint)
         
         
         ax2 = gl.subplot2grid((1,3), (0,1+i), rowspan=1, colspan=1, sharex = ax1, sharey = ax1)
-        gl.scatter(Zjoint[:,0],Zjoint[:,1], alpha = 0.5, ax = ax2, lw = 4, AxesStyle = "Normal",
+        gl.scatter(Zjoint[0,:],Zjoint[1,:], alpha = 0.5, ax = ax2, lw = 4, AxesStyle = "Normal",
                    labels = ["s1: %f s2 %.1f"%(scaling[i][0],scaling[i][1]),"Y1", "Y2"])
         
         gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)

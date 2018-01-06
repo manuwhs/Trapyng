@@ -1,3 +1,7 @@
+"""
+In this file we fit a Gaussian kernet to intraday market data.
+"""
+
 import os
 os.chdir("../../")
 import import_folders
@@ -41,7 +45,7 @@ folder_images = "../pics/Trapying/MultivariateStat/"
 symbols = ["XAUUSD","Mad.ITX", "EURUSD"]
 symbols = ["Alcoa_Inc"]
 symbols = ["GooG", "Alcoa_Inc"]
-periods = [15]
+periods = [5]
 
 # Create porfolio and load data
 cmplist = DBl.read_NASDAQ_companies(whole_path = "../storage/Google/companylist.csv")
@@ -52,34 +56,49 @@ for period in periods:
     Cartera.set_csv(storage_folder)
     
 sdate = dt.datetime.strptime("6-8-2017", "%d-%m-%Y")
-edate = dt.datetime.strptime("11-8-2017", "%d-%m-%Y")
+edate = dt.datetime.strptime("10-8-2017", "%d-%m-%Y")
 #edate = dt.datetime.now()
 
 Cartera.set_interval(sdate, edate)
 
-opentime, closetime = Cartera.get_timeData(symbolIDs[0],15).guess_openMarketTime()
+opentime, closetime = Cartera.get_timeData(symbolIDs[0],periods[0]).guess_openMarketTime()
 dataTransform = ["intraday", opentime, closetime]
 
-#Cartera.get_timeData(symbolIDs[0],15).fill_data()
-#Cartera.get_timeData(symbolIDs[1],15).fill_data()
-ret1 = Cartera.get_timeData(symbolIDs[0],15).get_timeSeriesReturn()*100
-ret2 = Cartera.get_timeData(symbolIDs[1],15).get_timeSeriesReturn()*100
-dates = Cartera.get_timeData(symbolIDs[1],15).get_dates()
+#Cartera.get_timeData(symbolIDs[0],periods[0]).fill_data()
+#Cartera.get_timeData(symbolIDs[1],periods[0]).fill_data()
+ret1 = Cartera.get_timeData(symbolIDs[0],periods[0]).get_timeSeriesReturn()*100
+ret2 = Cartera.get_timeData(symbolIDs[1],periods[0]).get_timeSeriesReturn()*100
+dates = Cartera.get_timeData(symbolIDs[1],periods[0]).get_dates()
 ##########################################################################
 ################# PREPROCESS DATA ######################################
 ##########################################################################
 
-## Set GAP return as NAN
-gap_ret = np.where(dates.time == dates[0].time())[0]
-ret1[gap_ret,:] = np.NaN
-ret2[gap_ret,:] = np.NaN
-# Remove the NaNs
-NonNan_index =  np.logical_not(np.isnan(ret1))
-ret1 = ret1[NonNan_index[:,0],:]
-ret2 = ret2[NonNan_index[:,0],:]
+remove_gap_return = 1
+if (remove_gap_return):
+    """ We usually would like to remove the return of gaps if we are dealing
+        with intraday data since they are ouliers for this distribution,
+        they belong to a distribution with more time
+    """
+    # If we had all the data properly this would do.
+    if(0):
+        gap_ret = np.where(dates.time == opentime)[0]
+    else:
+    # If we do not, we need to find the first sample of each day.
+        days_keys, day_dict = Cartera.get_timeData(symbolIDs[0],periods[0]).get_indexDictByDay()
+        gap_ret = [day_dict[k][0] for k in days_keys]
+#    print ("Indexes: ",day_dict[days_keys[0]])
+    
+    ret1[gap_ret,:] = np.NaN
+    ret2[gap_ret,:] = np.NaN
 
+
+    ## Remove the NaNs
+    NonNan_index =  np.logical_not(np.isnan(ret1) | np.isnan(ret2))
+    ret1 = ret1[NonNan_index[:,0],:]
+    ret2 = ret2[NonNan_index[:,0],:]
+    dates = dates[NonNan_index[:,0]]
+    
 ## Final data
-dates = dates[NonNan_index[:,0]]
 data = np.concatenate((ret1,ret2),axis = 1)
 mean = np.mean(data, axis = 0)
 corr = bMA.get_corrMatrix(data)
@@ -110,6 +129,10 @@ if(distribution_graph):
     y_val = bMA.kde_sklearn(ret1, x_grid, bandwidth=np.std(ret1)/kde_K)  
     gl.plot(x_grid, y_val, color = "k",
             labels = ["","",""], legend = ["M: %.2e, std: %.2e"%(mean[0], cov[0,0])])
+
+    x_grid, y_val = bMA.gaussian1D_points(X = ret1, std_K = 3)
+    gl.plot(x_grid, y_val, color = "b",
+            labels = ["","",""], legend = ["M: %.2e, std: %.2e"%(mean[0], cov[0,0])])
     
     # Y distribution
     ax3 = gl.subplot2grid((4,4), (1,3), rowspan=3, colspan=1,sharey = ax1,)
@@ -123,9 +146,18 @@ if(distribution_graph):
             labels = ["","",""], legend = ["M: %.2e, std: %.2e"%(mean[0], cov[1,1])])
     gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)
 
+    
+    x_grid, y_val = bMA.gaussian1D_points(X = ret2, std_K = 3)
+    gl.plot(y_val, x_grid, color = "b",
+            labels = ["","",""], legend = ["M: %.2e, std: %.2e"%(mean[0], cov[1,1])])
+    
+    
     xx, yy, zz = bMA.kde2D(ret1,ret2, bandwidth = np.std(ret1)/kde_K,
                            xbins=n_grids*1j, ybins=n_grids*1j)
     ax1.contour(xx, yy, zz)
+    
+    ax1.axis('equal')
+    
     gl.savefig(folder_images +'KDEHistogramCLOSE.png', 
                dpi = 100, sizeInches = [18, 14])
                

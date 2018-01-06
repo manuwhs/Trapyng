@@ -166,6 +166,7 @@ def scatter_3D  (self, X,Y,Z,
         xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
         marker = [" ", None, None],
         project = "cart",
+        join_points = "no"
         ):
     projection = "3d"
     X = ul.fnp(X)
@@ -195,7 +196,7 @@ def scatter_3D  (self, X,Y,Z,
     colorFinal = self.get_color(color)
     surf = ax.scatter(X, Y, Z, color = "b", alpha = alpha)
     
-    join_points = "no"
+    
     if (join_points =="yes"):
         surf = ax.plot(X[:,0], Y[:,0], Z[:,0], lw = 5)
 #    ax.zaxis.set_major_locator(LinearLocator(10))

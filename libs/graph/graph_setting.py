@@ -194,8 +194,9 @@ def get_color(self, color = None):
             colorFinal = color
     return colorFinal
     
-def add_text(self, positionXY = [], text = r'an equation: $E=mc^2$',fontsize = 15):
-    ax = self.axes
+def add_text(self, positionXY = [], text = r'an equation: $E=mc^2$',fontsize = 15, ax = None):
+    if (type(ax) == type(None)):
+        ax = self.axes
     ## PositonXY should be given in termns of the X and Y axis variables
     if (len(positionXY) == 0):
         positionXY = [0,0]

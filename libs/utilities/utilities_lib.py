@@ -288,43 +288,57 @@ def convert2dt(dates):
         caca.append(date_new)
     return caca
     
-def transformDatesOpenHours(dates, opentime, closetime, minuts_sep = None):
-    if (type(minuts_sep) == type(None)):
-        minuts_sep = 60
-    # This funciton transform the dates to a scale where the intraday 
-    # would be together from one day to the other
-    # The minuts_sep  is the separation of minuts between the days.
+def transformDatesOpenHours(dates, opentime, closetime, minuts_sep = 60):
+    """
+    This funciton transform the dates to a scale where the intraday 
+    would be together from one day to the other
+    The minuts_sep  is the separation of minuts between the days.
+    """
     ndates = dates.size
     transformed_seconds = np.zeros((ndates,1))
     
-    origin = dt.datetime(1970,1,1,opentime.hour, opentime.minute,opentime.second)
-#    dates = ul.preprocess_dates(dates)
+    # We set a distant random day as the origin. The only important thing is 
+    # that the starting time should be the same as the market time. If we want to erase mondays,
+    # it should also be monday ? 
+
+    origin = dt.datetime(1970,1,5,opentime.hour, opentime.minute,opentime.second)
+    dt.datetime(1970,1,6).weekday()
+    # Make sure the dates are in format of pandas datetime
     dates = convert2dt(dates)
-#    print type(dates[0])
+
+    ## Compute the number of seconds the market is closed and open in a day
     nseconds_day = 60*60*24
-    
     nseconds_open = (closetime.hour - opentime.hour)*3600 + \
                     (closetime.minute - opentime.minute)*60
-                    
     nseconds_closed = nseconds_day - nseconds_open
     
 #    print nseconds_day, nseconds_open, nseconds_closed
-    
-    # In order for the calculation of days past to be correct, we need to set 
-    # the origin to the correct time.
+#    print "---"
     for i in range(ndates):
         nseconds = (dates[i] - origin).total_seconds()
+        # Compute number of days past since origin
         ndays_past = int(nseconds/nseconds_day)
-        transformed_seconds[i,0] = nseconds - ((nseconds_closed - 60*minuts_sep)* ndays_past) 
+        nweeks_past = int(nseconds/(nseconds_day*7))
+#        print nweeks_past
+        # Move to the left according to the number of days that have passed,
+        # erasing the closed time of the market and adding the gap
+        transformed_seconds[i,0] = nseconds - nseconds_closed * ndays_past
+        transformed_seconds[i,0] -= 2*nseconds_open * nweeks_past
+        transformed_seconds[i,0] += 60*minuts_sep* ndays_past
+        
+      
 #        transformed_seconds[i,0] = ndays_past * (nseconds_open + 60*minuts_sep)
     return transformed_seconds
 
 def detransformDatesOpenHours(transformed_dates,opentime, closetime, minuts_sep = None):
+    """
+    This function detransforms the date so we can know what time they actually are
+     and also being able to automatically format the xlables in python
+    """
     if (type(minuts_sep) == type(None)):
         minuts_sep = 60
-    origin = dt.datetime(1970,1,1,opentime.hour, opentime.minute,opentime.second)
-    # This function detransforms the date so we can know what time they actually are
-    # and also being able to automatically format the xlables in python
+    origin = dt.datetime(1970,1,5,opentime.hour, opentime.minute,opentime.second)
+
     transformed_dates = fnp(transformed_dates).flatten()
     ndates = transformed_dates.size
     dates = []
@@ -337,9 +351,12 @@ def detransformDatesOpenHours(transformed_dates,opentime, closetime, minuts_sep 
     
 #    print nseconds_day, nseconds_open, nseconds_closed
     for i in range(ndates):
-        ndays_past = int(transformed_dates[i]/(nseconds_open + 60*minuts_sep))
+        nweeks_past = int(transformed_dates[i]/((5*nseconds_open + 7*60*minuts_sep)))
+        nseconds_weeks_added = transformed_dates[i] + nweeks_past*2*nseconds_open 
+        ndays_past = int(nseconds_weeks_added/(nseconds_open + 60*minuts_sep))
+        
 #        transformed_seconds[i,0] = nseconds - ((nseconds_closed - 60*minuts_sep)* ndays_past) 
-        nseconds = transformed_dates[i] + ndays_past*(nseconds_closed - 60*minuts_sep)
+        nseconds = nseconds_weeks_added + ndays_past*nseconds_closed - 60*minuts_sep*ndays_past
         nseconds = float(nseconds)
         deltadate = dt.timedelta(seconds=nseconds)
         date = origin + deltadate
@@ -609,6 +626,7 @@ def get_stepValues(x, y1, y2=0, step_where='pre'):
     # .astype('m8[s]').astype(np.int32)
     # .astype('m8[m]').astype(np.int32)
     y1 = fnp(y1)
+    y2 = fnp(y2)
 #    print x.shape, y1.shape, y2.shape
 #    print type(x[0,0])
 #    print x[0,0]
@@ -665,12 +683,13 @@ def get_stepValues(x, y1, y2=0, step_where='pre'):
     # now to the plotting part:
     return xx, yy1, yy2
     
-def get_foldersData(source = "FxPro", symbol_info_list = "Current"):
+def get_foldersData(source = "FxPro", symbol_info_list = "Current", rrf = "../" ):
     # Returns the folders where we can find the previously stored data,
     # new data to download and the info about the symbols we have or 
     # want to download.
 
-    rrf = "../" # relative_root_folder
+#    rrf = "../" # relative_root_folder
+
     if (source == "Hanseatic"):
         storage_folder = rrf + "./storage/Hanseatic/"
         updates_folder = rrf +"../Hanseatic/MQL4/Files/"

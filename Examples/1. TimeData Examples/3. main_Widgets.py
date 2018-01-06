@@ -1,7 +1,7 @@
 """ USE OF WIDGETS """ 
 # Change main directory to the main folder and import folders
 import os
-os.chdir("../")
+os.chdir("../../")
 import import_folders
 # Classical Libraries
 import datetime as dt
@@ -41,6 +41,8 @@ timeData = CTD.CTimeData(symbols[0],periods[0])
 timeData.set_csv(storage_folder)  # Load the data into the model
 timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 
+dates = timeData.get_dates()
+price = timeData.get_timeSeries()
 pandas_lib1 = 1
 if (pandas_lib1 == 1):
 
@@ -66,8 +68,8 @@ if (pandas_lib1 == 1):
             
     gl.plot(dates, ACCDIST , nf = 1, na = 0,
             legend = ["ACCDIST"])
-#    ws = 40
-#    gl.add_slider(args = {"wsize":ws}, plots_affected = [])
+    ws = 40
+    gl.add_slider(args = {"wsize":ws}, plots_affected = [])
 
 
 trading_station = 0
@@ -101,11 +103,13 @@ if (trading_station == 1):
     plt.subplots_adjust(left=.09, bottom=.14, right=.90, top=.95, wspace=.0, hspace=0)
 
 
-widgets_flag = 1
+widgets_flag = 0
 if (widgets_flag == 1):
     timeSeries = timeData.get_timeSeries(["High"]);
-    dates = timeData.dates
-    dates = convert_dates_str(dates)
+#    dates = timeData.dates
+
+#    dates = convert_dates_str(dates)
+    
 #    dates = range(len(dates))
 #    gl.plot_wid(timeData.get_dates(), timeSeries, scrolling = 200)
 
@@ -135,7 +139,7 @@ if (widgets_flag == 1):
             color = "red",
             nf = 0, na = 1)
             
-    gl.add_slider(args = {"wsize":ws}, plots_affected = [])
+#    gl.add_slider(args = {"wsize":ws}, plots_affected = [])
     gl.add_hidebox()
     
     list_values = []
