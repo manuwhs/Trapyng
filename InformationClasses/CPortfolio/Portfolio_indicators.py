@@ -13,6 +13,7 @@ def SMA(self, symbolIDs = [], period = None, *args, **kwargs):
         timeData_obj = self.symbols[symbol_n].timeDatas[period]
         SMA = timeData_obj.SMA(*args, **kwargs)
         list_indicators.append(SMA)
+        
     return list_indicators
 
 #Exponential Moving Average  

@@ -56,7 +56,7 @@ def get_final_SymbolID_periods(self, symbolID = None, periods = []):
 ##############################################################
 
 def get_periods (self):
-    return self.timeDatas.keys()
+    return list(self.timeDatas.keys())
 ######################################################################
 ######################## Interface functions to timeDatas ###############
 ######################################################################

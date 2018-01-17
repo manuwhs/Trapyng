@@ -118,10 +118,11 @@ class BBB_LSTM_Model (object):
         # Setting the chains properties
         self.batch_size = config.batch_size
         self.num_steps = input_.num_steps
+        self._input_data = input_.input_data
         
         input_data_ids = input_.input_data
-        targets = input_.targets
         
+        self._targets = input_.targets
         # Setting the architectute properties
         # Dimensionality of the input !! 
         # TODO: For now we set it the same as the hidden_size. Probably for matrix concatenation purposes ?
@@ -367,6 +368,7 @@ class BBB_LSTM_Model (object):
     def assign_lr(self, session, lr_value):
         session.run(self._lr_update, feed_dict={self._new_lr: lr_value})
  
+
     """
     TODO: 
     Functions to load the operations ? 
@@ -383,7 +385,9 @@ class BBB_LSTM_Model (object):
         self._name = name
         ops = {util.with_prefix(self._name, "cost"): self._cost,
                util.with_prefix(self._name, "kl_div"): self._kl_loss,
-               util.with_prefix(self._name, "output"): self._output
+               util.with_prefix(self._name, "input_data"): self._input_data,
+               util.with_prefix(self._name, "output"): self._output,
+               util.with_prefix(self._name, "targets"): self._targets,
                }
         
         if self._is_training:
@@ -396,7 +400,7 @@ class BBB_LSTM_Model (object):
         self._final_state_name = util.with_prefix(self._name, "final")
         util.export_state_tuples(self._initial_state, self._initial_state_name)
         util.export_state_tuples(self._final_state, self._final_state_name)
-
+        
     def import_ops(self, num_gpus = 1):
         """Imports ops from collections."""
         
@@ -408,7 +412,9 @@ class BBB_LSTM_Model (object):
             
         self._cost = tf.get_collection_ref(util.with_prefix(self._name, "cost"))[0]
         self._kl_loss = tf.get_collection_ref(util.with_prefix(self._name, "kl_div"))[0]
+        self._input_data = tf.get_collection_ref(util.with_prefix(self._name, "input_data"))[0]
         self._output = tf.get_collection_ref(util.with_prefix(self._name, "output"))[0]
+        self._targets = tf.get_collection_ref(util.with_prefix(self._name, "targets"))[0]
         
         num_replicas = num_gpus if self._name == "Train" else 1
         self._initial_state = util.import_state_tuples(
@@ -461,13 +467,19 @@ class BBB_LSTM_Model (object):
     
     #################### Data ##############################
     @property
+    def input_data(self):
+        return self._input_data
+    
+    @property
     def input(self):
         return self._input
-
     @property
     def output(self):
         return self._output
     
+    @property
+    def targets(self):
+        return self._targets
     #################### Operations ##############################
 
     @property

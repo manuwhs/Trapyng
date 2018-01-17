@@ -385,4 +385,3 @@ def get_gaussian2D_pdf(data = None, xbins=10j, ybins=10j, mu = None, cov = None,
     # score_samples() returns the log-likelihood of the samples
     z = multivariate_normal.pdf(xy_sample,mu,cov)
     return xx, yy, np.reshape(z, xx.shape)
-

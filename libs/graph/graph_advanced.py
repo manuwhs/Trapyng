@@ -325,6 +325,15 @@ def plot_timeRegression(self,Xval, Yval, sigma,
     sigma is the std of each of the validation samples 
     sigma_eps is the considered observation noise
     """
+    
+    Xval = ul.fnp(Xval)
+    Yval = ul.fnp(Yval)
+    Xtr = ul.fnp(Xtr)
+    Ytr = ul.fnp(Ytr)
+
+    sigma = ul.fnp(sigma)
+    sigma_eps = ul.fnp(sigma_eps)
+    
     gl = self
     gl.plot(Xval,Yval, labels = labels, legend = ["Estimated Mean"], nf = nf)
     
@@ -347,6 +356,8 @@ def plot_timeRegression(self,Xval, Yval, sigma,
     # TODO: what is this     ec='None'
 
     if type(sigma_eps) != type(None):
+        if (ul.fnp(sigma_eps).size == 1):
+            sigma_eps = np.ones((Xtr.size,1)) * sigma_eps
         plt.errorbar(Xtr.ravel(), Ytr, sigma_eps, fmt='k.', markersize=10, label=u'Observations')
     else:
         gl.scatter(Xtr, Ytr, legend = ["Training Points"], color = "k")

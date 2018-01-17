@@ -100,7 +100,8 @@ def stem(self, X = [],Y = [],  # X-Y points in the graph.
         loc = "best",    
         dataTransform = None,
         xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
-        marker = [" ", None, None]
+        marker = [" ", None, None],
+        bottom = None
        ):         
 
     # Management of the figure and properties
@@ -119,7 +120,7 @@ def stem(self, X = [],Y = [],  # X-Y points in the graph.
         markerline, stemlines, baseline = ax.stem(X,Y[:,i], lw = lw, alpha = alpha, 
                  color = colorFinal, label = legend_i, zorder = self.zorder, 
                  markerfmt = marker[0], markersize = marker[1], markerfacecolor = marker[2],
-                 antialiased = True)
+                 antialiased = True, bottom = bottom)
         plt.setp(markerline, 'markerfacecolor', marker[2])
         plt.setp(baseline, 'color', 'r', 'linewidth', 2)
         plt.setp(stemlines, 'linewidth', lw)

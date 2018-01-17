@@ -50,6 +50,9 @@ def fnp(ds):
     # Working with lists
     
     # Convert tuple into list
+    
+    if (type(ds) == type(None)):
+        return None
     if (type(ds).__name__ == "tuple"):
         ds2 = []
         for i in range(len(ds)):

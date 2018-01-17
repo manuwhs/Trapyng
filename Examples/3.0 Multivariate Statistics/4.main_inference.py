@@ -30,10 +30,10 @@ plt.close("all")
 ##############################################
 ########## FLAGS ############################
 
-distribution_graph = 0
+distribution_graph = 1
 estimation_days_graph = 0
 t_distribution_graph = 0
-chi2_distribution_graph = 1
+chi2_distribution_graph = 0
 t_StatSig_graph = 0
 chi2_StatSig_graph = 0
 t_CI_graph = 0
@@ -107,7 +107,7 @@ if(distribution_graph):
                labels = ["",symbolIDs[0], ""],
                legend = ["%i points"%ret1.size])
     
-    for i in range(ret1.size/26):
+    for i in range(int(ret1.size/26)):
         gl.scatter(ret1[i*26:(i+1)*26], np.ones(ret1[i*26:(i+1)*26].shape)*(i+1), alpha = 0.5, lw = 4, AxesStyle = "Normal",
                    legend = ["Day %i"%(i+1)])
     gl.set_zoom(ax = ax1, X = ret1,xlimPad = [0.1,0.8])
@@ -124,7 +124,7 @@ if (estimation_days_graph):
                labels = ["",symbolIDs[0], "Distribution"],
                legend = ["%i points"%ret1.size] , color = "k")
               
-    for i in range(ret1.size/26):
+    for i in range(int(ret1.size/26)):
         D = ret1[i*26:(i+1)*26]
         x_grid, y_values = bMA.gaussian1D_points(X = D, num = 100, std_K = 2, x_grid = None)
         

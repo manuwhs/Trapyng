@@ -40,7 +40,7 @@ def load_csv(self, file_dir = "/"):
                           sep = ',')
     except IOError:
         error_msg = "File does not exist: " + whole_path 
-        print error_msg
+        print (error_msg)
         dataCSV = ul.empty_coliseum
     
     return dataCSV

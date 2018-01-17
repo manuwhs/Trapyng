@@ -41,7 +41,7 @@ plot_Component_Pattern_Profile = 0
 ################# DATA OBTAINING ######################################
 ##########################################################################
 
-if (use_real_data_flag == 0):
+if (use_real_data_flag == 1):
     mus = np.array([-0.5,-1,1.5])
     stds = np.array([1,1.5,2])
     Nsam = 1000
@@ -59,13 +59,13 @@ if (use_real_data_flag == 0):
     X = np.concatenate((X),axis = 1)
     
 else:
-    Nx = 7
+    Nx = 25
     dataSource =  "Google"  # Hanseatic  FxPro GCI Yahoo
     [storage_folder, info_folder, 
      updates_folder] = ul.get_foldersData(source = dataSource)
     folder_images = "../pics/Trapying/MultivariateStat/"
     ######## SELECT SYMBOLS AND PERIODS ########
-    periods = [15]
+    periods = [5]
     
     # Create porfolio and load data
     cmplist = DBl.read_NASDAQ_companies(whole_path = "../storage/Google/companylist.csv")
@@ -74,22 +74,22 @@ else:
     for period in periods:
         Cartera = CPfl.Portfolio("BEST_PF", symbolIDs, [period]) 
         Cartera.set_csv(storage_folder)
-    sdate = dt.datetime.strptime("11-8-2017", "%d-%m-%Y")
-    edate = dt.datetime.strptime("15-8-2017", "%d-%m-%Y")
+    sdate = dt.datetime.strptime("6-8-2017", "%d-%m-%Y")
+    edate = dt.datetime.strptime("9-8-2017", "%d-%m-%Y")
     Cartera.set_interval(sdate, edate)
-    opentime, closetime = Cartera.get_timeData(symbolIDs[0],15).guess_openMarketTime()
+    opentime, closetime = Cartera.get_timeData(symbolIDs[0],periods[0]).guess_openMarketTime()
     dataTransform = ["intraday", opentime, closetime]
     
-    #Cartera.get_timeData(symbolIDs[0],15).fill_data()
-    #Cartera.get_timeData(symbolIDs[1],15).fill_data()
+    #Cartera.get_timeData(symbolIDs[0],periods[0]).fill_data()
+    #Cartera.get_timeData(symbolIDs[1],periods[0]).fill_data()
     symbolIDs = Cartera.get_symbolIDs()
-    X = Cartera.get_timeSeriesReturn(symbolIDs,15)
+    X = Cartera.get_timeSeriesReturn(symbolIDs,periods[0])
     Nsam = 130
     for i in range(len(X)):
         X[i] = X[i][:Nsam]   # Truncate the values since some of them hace 1 more sample
         print (X[i].shape)
     X = np.concatenate(X,axis = 1) * 100
-    dates = Cartera.get_timeData(symbolIDs[1],15).get_dates()
+    dates = Cartera.get_timeData(symbolIDs[1],periods[0]).get_dates()
     symbolIDs = Cartera.get_symbolIDs()
     
     AAPL_id = np.where(np.array(symbolIDs) == 'AAPL')[0][0]
@@ -97,7 +97,7 @@ else:
 ############################################################
 ################# PLOT DATA ###############################
 ############################################################
-
+    
 
 if (plot_explained_var):
     ## Get the 2D projections. Only using 2 assets so that we see the rotation

@@ -6,7 +6,7 @@ class ArtificialDataConfig(object):
     
     ############ Architecture size hyperparameters  ############
     num_layers = 2    # Number of layers of LSTMs of the network
-    hidden_size = 23  # Dimensionality of the hidden space of the LTSM
+    hidden_size = 22  # Dimensionality of the hidden space of the LTSM
                       # This is also the num of hidden neurons in each of the
                       # 4 gates of the LSTM layers.
                       
@@ -22,20 +22,20 @@ class ArtificialDataConfig(object):
                       # They should be chopped otherwise to have this number of elements.
                       
     ########### Training Hyperparameters ##################
-    max_max_epoch = 1    # Number of maximum epochs for training 
-    max_epoch = 4        # No idea.
+    max_max_epoch = 50   # Number of maximum epochs for training 
+    max_epoch = 1        # No idea.
 
-    batch_size = 3    # Number of chains in a batch. We can compute the number of
+    batch_size = 10    # Number of chains in a batch. We can compute the number of
                        # batches in which a big sequence of data can be divided into by
                        # dividing it by [num_steps x batch_size]
 
 
     init_scale = 0.1      # TODO No idea
-    learning_rate = 1.0   # Initial learning rate
-    lr_decay = 0.8        # Exponential decay of the learning rate
+    learning_rate = 0.9   # Initial learning rate
+    lr_decay = 0.9        # Exponential decay of the learning rate
     
     # Probably to do with the regularization of Maremba
-    max_grad_norm = 5
+    max_grad_norm = 1
     keep_prob = 1.0
  
     ########### Parameters of the input ##################
@@ -113,6 +113,8 @@ class LargeConfig(object):
     vocab_size = 10000
 
     embedding = True
+    
+    
 class TestConfig(object):
     """Tiny config, for testing."""
     init_scale = 0.1

@@ -47,7 +47,7 @@ def init_symbols(self, symbolIDs = [], periods = [], symbols = []):
                 self.add_symbols(symbols)
                 
 def get_symbolIDs(self):
-    return self.symbols.keys()
+    return list(self.symbols.keys())
     
 #################### Getting and deleting symbols ###################
 # Symbols will be a dictionary of [symbol]

@@ -35,7 +35,7 @@ class CTrailingStop:
         self.trailingParam = dict([["SymbolName", SymbolName], ["date",datetime],
                                 ["period", period], ["maxPullback",maxPullback]])
         self.maxPullback = maxPullback
-        self.timeDataObj = self.pf.symbols[SymbolName].TDs[period]
+        self.timeDataObj = self.pf.symbols[SymbolName].get_timeData(period)
         self.dates = self.timeDataObj.get_dates()
         self.BUYSELL = BUYSELL
         # TODO: Preprocess datetome so that it fits in a given interval
@@ -71,7 +71,7 @@ class CTrailingStop:
             self.init_index = 0
             self.init_date = self.dates[self.init_index]
         
-        self.init_index = np.where(self.dates == self.init_datetime)[0]
+        self.init_index = int(np.where(self.dates == self.init_datetime)[0])
         
         # Now we get the REAL price for what we bought it. It could be within
         # the candle so we do not really know from the historic, what it is exactly
@@ -86,7 +86,8 @@ class CTrailingStop:
         all_stops = np.zeros(pCheckCross.shape) * np.NaN
         
         all_stops[self.init_index] = init_stop
-            
+        
+        print (self.init_index +1, Nsamples)
         for i in range (self.init_index +1,Nsamples):
             init_stop_i = pUpdate[i-1] *(1 + self.maxPullback/100.0)
 #                print init_stop_i[0], all_stops[i-1]

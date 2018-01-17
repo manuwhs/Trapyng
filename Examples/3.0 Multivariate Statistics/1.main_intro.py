@@ -71,7 +71,7 @@ ret1 = Cartera.get_timeData(symbolIDs[0],15).get_timeSeriesReturn()*100
 ret2 = Cartera.get_timeData(symbolIDs[1],15).get_timeSeriesReturn()*100
 dates = Cartera.get_timeData(symbolIDs[1],15).get_dates()
 
-print dates[0], dates[26], dates[27]
+print (dates[0], dates[26], dates[27])
 ################# Plotting the data #################
 if(trading_graph):
     # Trading plot of the points !

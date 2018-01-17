@@ -37,7 +37,7 @@ periods = [43200]  # 1440  43200
 period1 = periods[0]
 
 ####### LOAD SYMBOLS AND SET Properties   ###################
-Cartera = CPfl.Portfolio(symbols, periods)   # Set the symbols and periods to load
+Cartera = CPfl.Portfolio("BEST_PF", symbols, periods)   # Set the symbols and periods to load
 # Download if needed.
 #Cartera.update_symbols_csv_yahoo(sdate_str,edate_str,storage_folder)    # Load the symbols and periods
 Cartera.set_csv(storage_folder)    # Load the symbols and periods
@@ -55,11 +55,11 @@ crosses, dates = myEstrategia.get_TradeSignals()
 EntrySignals = myEstrategia.get_TradeEvents()
 
 ########## Signals simulation ####################
-EMAslow = Cartera.symbols[symbol].TDs[period1].EMA(n = Lslow)
-EMAfast = Cartera.symbols[symbol].TDs[period1].EMA(n = Lfast)
-price = Cartera.symbols[symbol].TDs[period1].get_timeSeries()
-dataHLOC = Cartera.symbols[symbol].TDs[period1].get_timeSeries(["High","Low","Open","Close"])
-dates = Cartera.symbols[symbol].TDs[period1].get_dates()
+EMAslow = Cartera.EMA(symbolIDs = [symbol], period = period1, n = Lslow)[0]
+EMAfast = Cartera.EMA(symbolIDs = [symbol], period = period1, n = Lfast)[0]
+price = Cartera.get_timeData(symbol, period1).get_timeSeries()
+dataHLOC = Cartera.get_timeData(symbol, period1).get_timeSeries(["High","Low","Open","Close"])
+dates = Cartera.get_timeData(symbol, period1).get_dates()
 
 ####### Exit Policy setting ##########
 symbol = "DANSKE.CO"
