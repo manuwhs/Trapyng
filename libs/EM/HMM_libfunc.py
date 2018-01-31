@@ -416,7 +416,7 @@ def remove_cluster( theta, model_theta, k):
     pi = np.delete(pi, k, axis = 1)
     pi = pi / np.sum(pi)
     A = remove_A(A, k)
-    print "$ Cluster %i removed" % (k)
+    print ("$ Cluster %i removed" % (k))
 #    print A.shape
 #    print pi.shape
     return theta, [pi, A]

@@ -1,6 +1,7 @@
 """
 In this document we will perform a basic Linear Regression including TensorBoard.
-It is a very simple manual program with no proper naming of the variables.
+In this case we will defina proper naming of the elements of the graph, both operations
+and variables. And we will record in tensorBoard the evolution of the training loss.
 We will:
     - Define placeholders for the input variables
     - Define the operations to compute the output.
@@ -40,7 +41,7 @@ import matplotlib.pyplot as plt
 
 import utilities_lib as ul
 
-tb_folder = "../TensorBoard/Examples/1_basicLR/"
+tb_folder = "../TensorBoard/Examples/2_basicLR_TensBoard/"
 ul.create_folder_if_needed(tb_folder)
 
 ## Destroy the graph
@@ -82,21 +83,23 @@ Variables to feed:
     the values, just the dimensions
 """
 
-x = tf.placeholder(tf.float32) # shape = [0]
-y = tf.placeholder(tf.float32)
+x = tf.placeholder(tf.float32, name = "X_input") # shape = [0]
+y = tf.placeholder(tf.float32, name = "Y_output")
 
 """
 Define the operations to get the output
 
 """
 # We can use normal operators over tensors
-o = tf.multiply(W,x) + b
+
+with tf.name_scope("Network_Operations"):
+    o = tf.multiply(W,x) + b
 
 """
 Define the loss function
 """
-
-loss = tf.reduce_sum(tf.square(y-o))
+with tf.name_scope("Loss_function"):
+    loss = tf.reduce_sum(tf.square(y-o))
 
 """
 Define the optimizer.
@@ -104,13 +107,16 @@ Everything is trained by Backprogation
 """
 
 optimizer = tf.train.GradientDescentOptimizer(0.01)
-train = optimizer.minimize(loss)
+
+with tf.name_scope("Optimizer"):
+    train = optimizer.minimize(loss)
 
 """
 Finally we need to initialize the variables ??
 TODO: why we need to initialize it ?
 """
-init = tf.global_variables_initializer()
+with tf.name_scope("Initializer"):
+    init = tf.global_variables_initializer()
 
 """
 Run the session

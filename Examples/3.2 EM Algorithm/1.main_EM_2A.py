@@ -36,7 +36,7 @@ gl.close("all")
 
 ##############################################
 ########## FLAGS ############################
-trading_graph = 1
+trading_graph = 0
 
 perform_EM = 1
 perform_HMM_after_EM = 1
@@ -70,8 +70,8 @@ for period in periods:
     Cartera = CPfl.Portfolio("BEST_PF", symbolIDs, [period]) 
     Cartera.set_csv(storage_folder)
     
-sdate = dt.datetime.strptime("15-8-2017", "%d-%m-%Y")
-edate = dt.datetime.strptime("1-9-2017", "%d-%m-%Y")
+sdate = dt.datetime.strptime("1-8-2017", "%d-%m-%Y")
+edate = dt.datetime.strptime("15-9-2017", "%d-%m-%Y")
 #edate = dt.datetime.now()
 
 Cartera.set_interval(sdate, edate)
@@ -98,31 +98,38 @@ dates2 = Cartera.get_timeData(symbolIDs[symbol_ID_indx2],periods[0]).get_dates()
 #print dates[0], dates[26], dates[27]
 ################# Plotting the data #################
 if(trading_graph):
+    
     # Trading plot of the points !
-    gl.set_subplots(2,1)
-    title = "Price evolution for 2 securities"
-    ax1 = gl.tradingBarChart(Cartera.get_timeData(symbolIDs[symbol_ID_indx1],periods[0]), nf = 1,
-                             dataTransform = dataTransform, AxesStyle = "Normal - No xaxis",
-                             labels = [title,"",symbolIDs[symbol_ID_indx1] +"(15M)"])
-    gl.tradingBarChart(Cartera.get_timeData(symbolIDs[1],periods[0]), nf = 1, sharex = ax1,
-                       dataTransform = dataTransform, AxesStyle = "Normal",
-                        labels = ["","",symbolIDs[symbol_ID_indx2] +"(15M)"])
 
-    gl.savefig(folder_images +'PriceEvolution2Symb15.png', 
-               dpi = 100, sizeInches = [14, 7])
-               
-    # Returns stem plot of the points
-    gl.set_subplots(2,1)
-    title = "Return for 2 securities"
-    ax1 = gl.stem(dates, ret1, nf = 1, dataTransform = dataTransform,
-                   AxesStyle = "Normal - No xaxis",
-                   labels = [title,"",symbolIDs[0] +"("+ str(periods[0])+ "M)"])
-    gl.stem(dates, ret2, nf = 1, dataTransform = dataTransform, sharex = ax1,
-            AxesStyle = "Normal",
-            labels = ["","",symbolIDs[symbol_ID_indx2] +"("+ str(periods[0])+ "M)"])
-            
-    gl.savefig(folder_images +'Returns2Symb15.png', 
-               dpi = 100, sizeInches = [14, 7])
+    title = "CLOSE Price, Volume and Return evolution"
+    
+    ax1 = gl.subplot2grid((4,1), (0,0), rowspan=1, colspan=1) 
+    gl.tradingBarChart(Cartera.get_timeData(symbolIDs[symbol_ID_indx1],periods[0]), ax = ax1,
+                             dataTransform = dataTransform, AxesStyle = "Normal - No xaxis", color = "k",
+                             labels = [title,"",symbolIDs[symbol_ID_indx1] +"(" +str(periods[0])+"M)"])
+    
+    ax2 = gl.subplot2grid((4,1), (1,0), rowspan=1, colspan=1, sharex = ax1) 
+    gl.tradingBarChart(Cartera.get_timeData(symbolIDs[symbol_ID_indx2],periods[0]), ax = ax2,
+                             dataTransform = dataTransform, AxesStyle = "Normal - No xaxis", color = "k",
+                             labels = ["","",symbolIDs[symbol_ID_indx2] +"(" +str(periods[0])+"M)"])
+
+    ax3 = gl.subplot2grid((4,1), (2,0), rowspan=1, colspan=1) 
+    gl.stem(dates, ret1, ax = ax3, dataTransform = dataTransform,
+                   AxesStyle = "Normal",
+                   labels = ["","",symbolIDs[symbol_ID_indx1] +"("+ str(periods[0])+ "M)"], legend = ["Return"])
+    
+    ax4 = gl.subplot2grid((4,1), (3,0), rowspan=1, colspan=1, sharex = ax1, sharey = ax3) 
+    gl.stem(dates, ret2, ax = ax4, dataTransform = dataTransform,
+                   AxesStyle = "Normal",
+                   labels = ["","",symbolIDs[symbol_ID_indx2] +"("+ str(periods[0])+ "M)"], legend = ["Return"])
+#    
+    gl.set_fontSizes(ax = [ax1,ax2,ax3,ax4], title = 20, xlabel = 20, ylabel = 20, 
+                      legend = 20, xticks = 10, yticks = 10)
+    
+    gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)
+
+    gl.savefig(folder_images +'PriceAndReturns2Symbol_EM.png', 
+               dpi = 100, sizeInches = [22, 12])
     
 ##########################################################################
 ################# PREPROCESS DATA ######################################
@@ -217,7 +224,7 @@ if (perform_EM):
     vonMisesFisher_d.parameters["Kappa_max_pdf"] = 1000
     ### Add them together in the Manager
     myDManager = Cdist.CDistributionManager()
-    K_G = 2   # Number of clusters for the Gaussian Distribution
+    K_G = 3   # Number of clusters for the Gaussian Distribution
     K_G2 = 0  # Number of clusters for the Gaussian Distribution
     K_W = 0
     K_vMF = 0
@@ -312,7 +319,7 @@ if (perform_EM):
 if(final_clusters_graph):
     # Get the histogram and gaussian estimations !
     ## Scatter plot of the points 
-    ax1 = gl.scatter(ret1,ret2, alpha = 0.5,nf= 1, lw = 4, AxesStyle = "Normal2",
+    ax1 = gl.scatter(ret1,ret2, alpha = 0.5,nf= 1, lw = 4, AxesStyle = "Normal2", color = "k",
                labels = ["",symbolIDs[symbol_ID_indx1], symbolIDs[symbol_ID_indx2]],
                legend = ["%i points"%ret1.size])
     
@@ -335,7 +342,7 @@ if (responsibility_graph):
     Xdata = [data[day_dict[k],:] for k in days_keys]
     Xdata_dates = [dates[day_dict[k]] for k in days_keys]
     
-    days_plot = len(Xdata_dates) # 18
+    days_plot =  13 # len(Xdata_dates) # 18
     
     new_ll = myEM.get_loglikelihood(Xdata,myDManager, theta_list[-1],model_theta_list[-1])
     r = myEM.get_responsibilities(Xdata,myDManager, theta_list[-1],model_theta_list[-1])

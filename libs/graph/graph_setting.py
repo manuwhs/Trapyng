@@ -24,28 +24,33 @@ def set_fontSizes(self, ax = None, title = None, xlabel = None, ylabel = None,
                       
     if (type(ax) == type(None)):    # Select the axes to plot on
         ax = self.axes
-
-    # Set fontsize of the tittle
-    if (type(title) != type(None)):
-        ax.title.set_fontsize(fontsize=title)
-        
-    # Set fontsize of the axis labels
-    if (type(xlabel) != type(None)):
-        ax.xaxis.label.set_size( fontsize = xlabel)
-    if (type(ylabel) != type(None)):
-        ax.yaxis.label.set_size( fontsize = ylabel)
-        
-    # Set the fontsize of the ticks
-    if (type(xticks) != type(None)):
-        for tick in ax.xaxis.get_major_ticks():
-            tick.label.set_fontsize(xticks) 
-    if (type(yticks) != type(None)):
-        for tick in ax.yaxis.get_major_ticks():
-            tick.label.set_fontsize(yticks) 
     
-    # Set the fontsize of the legend
-    if (type(legend) != type(None)):
-        ax.legend(fontsize=legend)    
+    elif (type(ax) == type(list())):
+        for ax_i in ax:
+            self.set_fontSizes(ax = ax_i, title = title, xlabel = xlabel, ylabel = ylabel, 
+                  legend = legend, xticks = xticks, yticks = yticks)
+    else:
+        # Set fontsize of the tittle
+        if (type(title) != type(None)):
+            ax.title.set_fontsize(fontsize=title)
+            
+        # Set fontsize of the axis labels
+        if (type(xlabel) != type(None)):
+            ax.xaxis.label.set_size( fontsize = xlabel)
+        if (type(ylabel) != type(None)):
+            ax.yaxis.label.set_size( fontsize = ylabel)
+            
+        # Set the fontsize of the ticks
+        if (type(xticks) != type(None)):
+            for tick in ax.xaxis.get_major_ticks():
+                tick.label.set_fontsize(xticks) 
+        if (type(yticks) != type(None)):
+            for tick in ax.yaxis.get_major_ticks():
+                tick.label.set_fontsize(yticks) 
+        
+        # Set the fontsize of the legend
+        if (type(legend) != type(None)):
+            ax.legend(fontsize=legend)    
 
 def set_textRotations(self, ax = None, title = None, xlabel = None, ylabel = None, 
                   legend = None, xticks = None, yticks = None):

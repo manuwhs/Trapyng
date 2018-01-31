@@ -239,8 +239,8 @@ def gaussian1D_points(X = None, mean = None, std = None,
         std = np.std(X)
     
     if (type(x_grid) == type(None)):
-        x_grid = np.linspace(mean - std_K*std, mean + std_K*std, num = num)
-        
+        x_grid = np.linspace(mean - std_K*std, mean + std_K*std, num = num).T
+        print (mean - std_K*std, mean + std_K*std)
     y_values = multivariate_normal.pdf(x_grid,mean,std*std)
 #    Z = (x_grid - mean)/std
 #    y_values = stats.norm.pdf(Z) / std# * stats.norm.pdf(-mean/std)

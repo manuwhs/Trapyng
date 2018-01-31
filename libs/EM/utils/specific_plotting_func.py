@@ -64,15 +64,15 @@ def print_final_clusters(myDManager, clusters_relation, theta_list,model_theta):
     
     print ("$$$$$$$$$$$$$$$$$$$ Model Parameters $$$$$$$$$$$$$$$$$$$$$$")
     if(clusters_relation == "independent"):
-        print "------------- pi -----------------"
+        print ("------------- pi -----------------")
         print (model_theta[0])
     elif(clusters_relation ==  "MarkovChain1"):
-        print "------------- Initial pi -----------------"
+        print ("------------- Initial pi -----------------")
         print (model_theta[0])
-        print "------------- Transition matrix A -----------------"
+        print ("------------- Transition matrix A -----------------")
         print (model_theta[1])
-        print "------------- Stationary pi -----------------"
-        print HMMlf.get_stationary_pi(model_theta[0], model_theta[1])
+        print ("------------- Stationary pi -----------------")
+        print (HMMlf.get_stationary_pi(model_theta[0], model_theta[1]))
 
 def plot_2D_clusters(myDManager, clusters_relation, theta, model_theta, ax):
     """
