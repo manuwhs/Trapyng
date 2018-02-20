@@ -13,6 +13,13 @@ def get_alfa_matrix_log(data, pi, A,theta,distribution, loglike = None):
     alfa = []
 #    print(I,N,D,T)
     # Calculate first sample
+    
+    if type(loglike) != type(None):
+        loglike = loglike
+    else:
+        cp_logs = distribution.get_Cs_log(theta)
+        loglike = get_samples_loglikelihood(data, theta,distribution , Cs_logs = cp_logs)
+        
     for n in range(N): # For every chain
         alfa.append(np.zeros((I,T[n])));
         for i in range(I):  # For every state
@@ -35,7 +42,35 @@ def get_alfa_matrix_log(data, pi, A,theta,distribution, loglike = None):
 #                alfa[n][i,t] =  Wad.Watson_pdf_log(data[n][[t],:].T, B[0][:,i], B[1][:,i], cp_log = cp_logs[i]) + alfa[n][i,t] ;
                 
     return alfa
+
+def get_alpha_responsibilities(data, distribution, theta, model_theta,loglike = None):
+    N = len(data)
+    pi = model_theta[0]
+    A = model_theta[1]
     
+    if type(loglike) != type(None):
+        loglike = loglike
+    else:
+        cp_logs = distribution.get_Cs_log(theta)
+        loglike = get_samples_loglikelihood(data, theta,distribution , Cs_logs = cp_logs)
+        
+    alpha = get_alfa_matrix_log(data, pi, A,theta,distribution, loglike = loglike)
+    gamma = alpha
+
+    T = [len(x) for x in data]
+    for n in range(N):
+        for t in range(T[n]):
+            #Normalize to get the actual gamma
+            gamma[n][:,t] = gamma[n][:,t] - gf.sum_logs(gamma[n][:,t]);  
+    
+    ## Reconvert to natural units
+    for n in range(N):
+        gamma[n] = np.exp(gamma[n])
+        gamma[n]  =  gamma[n].T
+    
+    return gamma
+
+
 def  get_beta_matrix_log( data, pi, A,theta, distribution, loglike = None):
     I = A.shape[0]
     N = len(data)

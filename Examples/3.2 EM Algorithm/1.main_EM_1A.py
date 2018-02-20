@@ -312,7 +312,7 @@ if (perform_EM):
 if (final_clusters_graph):
     gl.init_figure()
     ax1 = gl.scatter(ret1, np.zeros(ret1.size), alpha = 0.2, color = "k",
-               legend = ["Data points %i"%(ret1.size)], labels = ["EM algorithm 2 Gaussian fits","Return",""])
+               legend = ["Data points %i"%(ret1.size)], labels = ["EM algorithm %i Gaussian fits"%(K),"Return",""])
     
     for k in range(len(theta_list[-1])):
         mu_k = theta_list[-1][k][0]

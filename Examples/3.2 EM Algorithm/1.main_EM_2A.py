@@ -37,9 +37,9 @@ gl.close("all")
 ##############################################
 ########## FLAGS ############################
 trading_graph = 0
-
 perform_EM = 1
 perform_HMM_after_EM = 1
+
 final_clusters_graph = 1
 responsibility_graph = 1
 ##########################################################################
@@ -94,6 +94,11 @@ ret2 = Cartera.get_timeData(symbolIDs[symbol_ID_indx2],periods[0]).get_timeSerie
 
 dates = Cartera.get_timeData(symbolIDs[symbol_ID_indx1],periods[0]).get_dates()
 dates2 = Cartera.get_timeData(symbolIDs[symbol_ID_indx2],periods[0]).get_dates()
+
+symbolIDs = cmplist.iloc[0:30]["Symbol"].tolist()
+
+symbol_ID1 = symbolIDs[symbol_ID_indx1]
+symbol_ID2 = symbolIDs[symbol_ID_indx2]
 
 #print dates[0], dates[26], dates[27]
 ################# Plotting the data #################
@@ -165,8 +170,8 @@ if (remove_gap_return):
 #### Apply some shifting if we want crosscorrelations though time
 lag_sigmals = 0
 if(lag_sigmals != 0 ):
-    ret2 = ret2[lag_sigmals:,:]
-    lag_sigmals = ret1[:-lag_sigmals,:]
+    ret2 = np.concatenate([ret2[lag_sigmals:,:], np.zeros((lag_sigmals,1))], axis = 0)
+#    lag_sigmals = ret1[:-lag_sigmals,:]
     
 ## Final data
 
@@ -224,7 +229,7 @@ if (perform_EM):
     vonMisesFisher_d.parameters["Kappa_max_pdf"] = 1000
     ### Add them together in the Manager
     myDManager = Cdist.CDistributionManager()
-    K_G = 3   # Number of clusters for the Gaussian Distribution
+    K_G =  2  # Number of clusters for the Gaussian Distribution
     K_G2 = 0  # Number of clusters for the Gaussian Distribution
     K_W = 0
     K_vMF = 0
@@ -271,9 +276,10 @@ if (perform_EM):
             legend = ["EM LogLikelihood"], 
     labels = ["Convergence of LL with generated data","Iterations","LL"], 
     lw = 2)
-    gl.savefig(folder_images +'Likelihood_Evolution. K_G:'+str(K_G)+ ', K_W:' + str(K_W) + ', K_vMF:' + str(K_vMF)+ '.png', 
+    gl.savefig(folder_images +'%iSymbols_%iK_Likelihood_Evolution_'%(2,K) + clusters_relation+ "_"+str(periods[0])+ '.png', 
            dpi = 100, sizeInches = [12, 6])
-
+    
+    K = len(theta_list[-1])
     if(perform_HMM_after_EM):
         Ninit = 1
         ############# Create the EM object and fit the data to it. #############
@@ -312,28 +318,48 @@ if (perform_EM):
                 legend = ["HMM LogLikelihood"], 
         labels = ["Convergence of LL with generated data","Iterations","LL"], 
         lw = 2)
-        gl.savefig(folder_images +'Likelihood_Evolution. K_G:'+str(K_G)+ ', K_W:' + str(K_W) + ', K_vMF:' + str(K_vMF) + '.png', 
+        gl.savefig(folder_images +'%iSymbols_%iK_Likelihood_Evolution_'%(2,K) + clusters_relation+ "_"+str(periods[0])+ '.png', 
                dpi = 100, sizeInches = [12, 6])
 
 
 if(final_clusters_graph):
-    # Get the histogram and gaussian estimations !
-    ## Scatter plot of the points 
-    ax1 = gl.scatter(ret1,ret2, alpha = 0.5,nf= 1, lw = 4, AxesStyle = "Normal2", color = "k",
-               labels = ["",symbolIDs[symbol_ID_indx1], symbolIDs[symbol_ID_indx2]],
-               legend = ["%i points"%ret1.size])
+
+    K = len(theta_list[-1])
+    gl.init_figure()
+    ax1 = gl.scatter(ret1, ret2, alpha = 0.2, color = "k",
+               legend = ["Data points %i"%(ret1.size)], labels = ["EM algorithm %i Gaussian fits"%(K),symbol_ID1,symbol_ID2])
     
-    ## Print the 2D clusters
-    indx = -1
-    theta = theta_list[indx]
-    model_theta = model_theta_list[indx]
-    spf.plot_2D_clusters(myDManager,clusters_relation, theta, model_theta, ax1)
+    for k in range(K):
+        mu_k = theta_list[-1][k][0]
+        std_k = theta_list[-1][k][1]
+        model_theta_last = model_theta_list[-1]
+        
 
-    # Final touches to the graph
-    ax1.axis('equal')
-    gl.savefig(folder_images +'ScatterHistogramCLOSE.png', 
-               dpi = 100, sizeInches = [18, 14])
+        mean,w,h,theta = bMA.get_gaussian_ellipse_params( mu = mu_k, Sigma = std_k, Chi2val = 2.4477)
+        r_ellipse = bMA.get_ellipse_points(mean,w,h,theta)
 
+        
+        if (len(model_theta_last) == 1):
+            pi = model_theta_last[0]
+            gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "-.", lw = 3,
+                AxesStyle = "Normal2", 
+                legend  = ["Kg(%i), pi:%.2f"%(k+1,pi[0,k])])  
+        else:
+            pi = model_theta_last[0]
+            A = model_theta_last[1]
+            gl.plot(r_ellipse[:,0], r_ellipse[:,1], ax = ax1, ls = "-.", lw = 3,
+                AxesStyle = "Normal2", 
+                    legend = ["Kg(%i), pi:%.2f, A: %s"%(k+1,pi[0,k], str(A[k,:]))])  
+        
+        ax1.axis('equal')
+    gl.set_fontSizes(ax = [ax1], title = 20, xlabel = 20, ylabel = 20, 
+                      legend = 12, xticks = 10, yticks = 10)
+    
+    gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.01, hspace=0.01)
+
+    gl.savefig(folder_images +'%iGaussK_2Symbol_EM_'%K+ clusters_relation+ "_"+str(periods[0])+ '.png', 
+               dpi = 100, sizeInches = [18, 6])
+    
 if (responsibility_graph):
 
     TD_new_filtered_dates = pd.DataFrame(dates)
@@ -351,7 +377,10 @@ if (responsibility_graph):
         Nsam, K = r.shape
     elif(myEM.clusters_relation == "MarkovChain1"):
         Nsam, K = r[0].shape
-        
+    
+    
+    # Plotting 
+    
     legend = [" K = %i"%i for i in range(K)]
     ax1 = None
     legend = []
@@ -362,7 +391,6 @@ if (responsibility_graph):
         """
         We plot them on top of each other
         """
-        gl.set_subplots(days_plot,1);
         dataTransform = None
         nf = 1
         for i in range(len(Xdata_dates)):
@@ -371,34 +399,59 @@ if (responsibility_graph):
         """
         We plot them on as a sequence
         """
-        gl.init_figure()
         nf = 0
-
-
+        
+    gl.init_figure()
+    Ndiv = 4
+    
+    axes_l = []
     for i in range(days_plot):
         chain = Xdata[i]
         r = myEM.get_responsibilities([chain],myDManager, theta_list[-1],model_theta_list[-1])
+#        r = myEM.get_alpha_responsibilities([chain],myDManager, theta_list[-1],model_theta_list[-1])
         if (myEM.clusters_relation == "independent"):
            resp = r
         elif(myEM.clusters_relation == "MarkovChain1"):
             resp = r[0]
-        
-        ax1 = gl.plot_filled(Xdata_dates[i],resp , nf = nf, fill_mode = "stacked", legend = legend, 
-                             sharex = ax1, sharey = ax1, AxesStyle = "Normal", labels = [labels_title,"","%i"%i],
+    
+        Nclusters = resp.shape[1]
+        ax_ii = gl.subplot2grid((days_plot,Ndiv), (i,0), rowspan=1, colspan=Ndiv-1) 
+        ax1 = gl.plot_filled(Xdata_dates[i],resp , nf = 0, fill_mode = "stacked", legend = legend, 
+                             sharex = ax1, sharey = ax1, AxesStyle = "Normal - No xaxis - No yaxis", labels = [labels_title,"","%i"%i],
                              dataTransform  = dataTransform, step_mode = "yes")
-        
-#        ax1 = gl.step(Xdata_dates[i],resp , nf = nf, fill= 1, legend = legend, 
-#                             sharex = ax1, sharey = ax1, AxesStyle = "Normal", labels = [labels_title,"","%i"%i],
-#                             dataTransform  = dataTransform, alpha = 0.5)
-        
         
         gl.colorIndex = 0
         labels_title = ""
-        
+        axes_l.append(ax_ii)
+    
     gl.subplots_adjust(left=.09, bottom=.20, right=.90, top=.95, wspace=.2, hspace=0.001)
-    image_name = "EM_all_subjects_trained_togehter"
+    ax_i = gl.subplot2grid((days_plot,Ndiv), (0,Ndiv-1), rowspan=int(days_plot/2), colspan=1) 
+    for i in range(1,K+1):
+        gl.scatter(0, i, legend = [" K = %i"%(i)], lw = 28, AxesStyle = "Normal - No xaxis - No yaxis" , loc = "center left")
+        
+    gl.subplots_adjust(left=.09, bottom=.10, right=.90, top=.95, wspace=.2, hspace=0.01)
+    image_name = "EM_%iSymbol_timeAnalysis_%iclusters"%(2,K)+ clusters_relation+ "_"+str(periods[0])+ '.png'
+#    
+    gl.set_fontSizes(ax = axes_l, title = 20, xlabel = 20, ylabel = 20, 
+                      legend = 35, xticks = 25, yticks = 10)
+    
+    gl.set_fontSizes(ax = ax_i, title = 20, xlabel = 20, ylabel = 20, 
+                      legend = 30, xticks = 20, yticks = 10)
+    gl.set_zoom(xlim = [10,10.50])
     
     gl.savefig(folder_images + image_name, 
                dpi = 100, sizeInches = [30, 12])
 
-    
+ 
+## Save to disk the clusters
+#    mus_kk = []
+#    for i in range(K):
+#        mus_kk.append(theta_list[-1][i][0])
+#    
+#    mus_kk = np.concatenate(mus_kk,axis = 1)
+#    
+#    
+##    df = pd.DataFrame(mus_kk)
+##    df.to_csv(folder_images + "file_path.csv")
+#
+#    np.savetxt(folder_images + "clusters.csv", mus_kk, delimiter=",")

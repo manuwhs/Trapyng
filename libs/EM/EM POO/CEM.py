@@ -86,6 +86,16 @@ class CEM ():
             incomloglike = HMMlf.get_responsibilities(X,distribution,theta, model_theta_init)
         return incomloglike
     
+    def get_alpha_responsibilities(self, X, distribution,theta, model_theta_init):
+    # Combined funciton to obtain the loglikelihood and r in one step
+    # The shape of X is (N,D)
+        
+        if self.clusters_relation == "independent":
+            incomloglike = EMlf.get_responsibilities(X,distribution,theta, model_theta_init)
+        else:  
+            incomloglike = HMMlf.get_alpha_responsibilities(X,distribution,theta, model_theta_init)
+        return incomloglike
+    
     
 #    def get_samples_loglikelihood(self, X, distribution,theta, model_theta_init):
 #        # Get the loglikelihood of each of the samples

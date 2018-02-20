@@ -186,10 +186,10 @@ def scatter_3D  (self, X,Y,Z,
                       projection = projection, position = position)
 #    self.ax = self.fig.gca(projection='3d')
 
-    if (nf == 1):
-        color = 'copper'
-    else:
-        color = cm.coolwarm
+#    if (nf == 1):
+#        color = 'copper'
+#    else:
+#        color = cm.coolwarm
 
        # TODO: make this a parameters
 #    ax._axis3don = False
@@ -198,7 +198,7 @@ def scatter_3D  (self, X,Y,Z,
     
     
     if (join_points =="yes"):
-        surf = ax.plot(X[:,0], Y[:,0], Z[:,0], lw = 5)
+        surf = ax.plot(X[:,0], Y[:,0], Z[:,0], lw = lw, color = colorFinal)
 #    ax.zaxis.set_major_locator(LinearLocator(10))
 #    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 #    

@@ -34,7 +34,7 @@ def plot(self, X = [],Y = [],           # X-Y points in the graph.
         fill = 0,  #  0 = No fill, 1 = Fill and line, 2 = Only fill
         fill_offset = 0,  # The 0 of the fill
         ls = "-",
-        marker = [None, None, None],
+        marker = [".", 2, "k"],
         
         # Formatting options
         xaxis_mode = None,# Perfect for a few good ones :)
