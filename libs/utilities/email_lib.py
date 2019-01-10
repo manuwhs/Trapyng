@@ -1,8 +1,10 @@
 import smtplib
 import os
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEImage import MIMEImage
+#from email.MIMEMultipart import MIMEMultipart
+from email.mime.multipart import MIMEMultipart
+
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 
 
 # For guessing MIME type based on file name extension
@@ -78,6 +80,7 @@ def add_file(msgRoot,filedir, filename = ""):
         encoders.encode_base64(msg)
     # Set the filename parameter
     msg.add_header('Content-Disposition', 'attachment', filename=filename)
+    msg.add_header('Content-ID', '<'+filename+'>')
     msgRoot.attach(msg)
     
     
@@ -91,12 +94,21 @@ def add_image(msgRoot, filedir, inline = 1):
 
     #### FOR SOME REASON THIS HAS TO GO BEFORE LOADING THE IMAGE ####
     ## Put HTML in the mail to see the image inline
+
+    filename = filedir.split("/")[-1]
+    if( len(filename) == 0):
+        filename = filedir
+        
     if (inline == 1):
-        text = '<img src="cid:' + filedir +'">'
+        text = '<br>  <img src="cid:' + filename +'" style="width:700px">'
         add_HMTL(msgRoot, text)
+        print (text)
     ########################################################
     
     add_file(msgRoot, filedir)
+    
+
+    
 #    ## Read the image and include it !!
 #    fp = open(filedir, 'rb')
 #    msgImage = MIMEImage(fp.read())
@@ -128,10 +140,10 @@ def send_email(user, pwd, recipient, msgRoot, secure = 0):
         
         server.sendmail(FROM, TO, msgRoot.as_string())
         server.close()
-        print 'successfully sent the mail'
+        print ('successfully sent the mail')
     except smtplib.SMTPAuthenticationError:
-        print "failed to send mail"
-        print smtplib.SMTPAuthenticationError
+        print ("failed to send mail")
+        print (smtplib.SMTPAuthenticationError)
         return smtplib.SMTPAuthenticationError
 #def get_image_as_str(img_dir):
 #    img_data = open(img_dir, 'rb').read()

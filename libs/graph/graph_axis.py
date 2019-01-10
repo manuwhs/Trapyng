@@ -12,12 +12,14 @@ def format_xaxis (self, ax = None,
                   formatting = None,  # Specified formatting 
                   xaxis_mode = None): # Several automatic modes 
 
+#    print (self.formatXaxis, xaxis_mode, formatting )
     if (type(ax) == type(None)):    # Select the axes to plot on
         ax = self.axes
 
     ### Already configurated modes #####
     if (type(xaxis_mode) != type(None)):
         # If we have some profile of axis that we want
+        # We can automatically format them according to them.
         if (xaxis_mode == "hidden"):
             return self.hide_xaxis(ax)
                  # TODO: also maybe delete the last ytick so that they do not overlap
@@ -26,37 +28,53 @@ def format_xaxis (self, ax = None,
             return self.format_xaxis(formatting = '%Y-%m-%d:%h')
         if (xaxis_mode == "intraday"):
             self.set_textRotations(xticks = 45)
-            return self.format_xaxis(formatting = '%Y-%m-%d:%h')
+            ## Makes a call to itself !! 
+            return self.format_xaxis(formatting = '%H:%M:%S')
     else:
         # If we had set ticklabels already when preprocessing the X values
+        # We already automatically detected the type of data that we had and here
+        # we set the options to format it properly.
         if (self.formatXaxis == "categorical"):
+            ## If categorital data, we already set X to be Natural numbers 0 1 2 3...
+            ## so we set those as the tick values and put the categories as the labels
     #        ax.set_xticklabels(self.ticklabels[val:val + wsize])  # [1::period]
             ax.set_xticks(self.X[self.start_indx:self.end_indx], minor=False)
             ax.set_xticklabels( self.Xcategories[self.start_indx:self.end_indx][:,0], minor=False)
             # plt.xticks(self.X[val:val + wsize], self.ticklabels[val:val + wsize])
         
         elif(self.formatXaxis == "numerical"):
-            # Set the number of levels in X 
+            # If regular numerical we just plot the values
             ax.xaxis.set_major_locator(mticker.MaxNLocator(nbins = Nticks,  prune='upper'))
     #        ax.get_xaxis().get_major_formatter().set_useOffset(False)
             
         elif(self.formatXaxis == "dates"):
             # Set the formatting of the numbers, dates or strings.
-            if type(formatting) == type(None):
-                formatting = '%Y-%m-%d'
+            # We could specify the formatting of the dates,if not we use a general one
+            if (type(formatting) == type(None)):
+                formatting = '%Y-%m-%d' # 
+#                formatting = '%Y-%m-%d:%H:%M'
+#                print xaxis_mode
             ax.xaxis.set_major_formatter(mdates.DateFormatter(formatting))
             ax.xaxis.set_major_locator(mticker.MaxNLocator(nbins = Nticks,  prune='upper'))
             ax.xaxis_date()
           #  ax.xaxis.set_major_formatter(FuncFormatter(self.ticklabels[val:val + wsize]))
+          
         elif(self.formatXaxis == "intraday"):
-            # set the ticks of the x axis only when starting a new day
-#            ndays = np.unique(np.trunc(data[:,0]), return_index=True)
-#            xdays =  []
-            formatter = FuncFormatter(ul.detransformer_Formatter)
-            ax.xaxis.set_major_formatter(formatter)
+            # If the data is intraday and we want to apply the Gap Remover !!! 
+            gap_remover_flag = 1;
+            if (gap_remover_flag):
+                formatter = FuncFormatter(ul.detransformer_Formatter)
+                ax.xaxis.set_major_formatter(formatter)  
+                # mdates.DateFormatter(formatting)
+                
+            else:
+                ax.xaxis.set_major_formatter(mdates.DateFormatter(formatting))
+            
             ax.xaxis.set_major_locator(mticker.MaxNLocator(nbins = Nticks,  prune='upper'))
+            
+            
 def format_yaxis (self, ax = None, 
-                  Nticks = 10,    # Number of ticks we would like
+                  Nticks = 6,    # Number of ticks we would like
                   formatting = None,  # Specified formatting 
                   yaxis_mode = None): # Several automatic modes 
 

@@ -41,8 +41,8 @@
 # THIS VERSION IS FOR PYTHON 2 #
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.finance import candlestick_ohlc
-candlestick = candlestick_ohlc
+#from matplotlib.finance import candlestick_ohlc
+#candlestick = candlestick_ohlc
 import matplotlib
 import pylab
 import datetime as dt

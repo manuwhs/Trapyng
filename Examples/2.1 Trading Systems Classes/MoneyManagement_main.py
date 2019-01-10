@@ -40,19 +40,19 @@ Ndates = crosses.size
 
 
 
-print "--------------------------------------------------"
+print ("--------------------------------------------------")
 for i in range(Ndates):
     putoAmo.set_date(dates[i])
     if (crosses[i] == 1):
-        print "COMPRRRRA" 
+        print ("COMPRRRRA" )
         putoAmo.process_new_actions(["CBOT.YM"],[])
-        print putoAmo.Coliseum.Warriors
+        print (putoAmo.Coliseum.Warriors)
         
     elif (crosses[i] == -1):
-        print "Vende" 
+        print ("Vende" )
         putoAmo.process_new_actions([],["CBOT.YM"])
-        print putoAmo.Coliseum.Warriors
+        print (putoAmo.Coliseum.Warriors)
 
-print "--------------------------------------------------"
-print "PROFIT: "
-print putoAmo.Coliseum.Profit
+print ("--------------------------------------------------")
+print ("PROFIT: ")
+print( putoAmo.Coliseum.Profit)

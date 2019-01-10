@@ -21,8 +21,8 @@ import copy as copy
 import time as time
 import utilities_lib as ul
 
-from pandas_datareader import wb
-import pandas_datareader as pdr
+# from pandas_datareader import wb
+# import pandas_datareader as pdr
 
 
 

@@ -63,7 +63,6 @@ timeData.set_csv(storage_folder)  # Load the data into the model
 timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 
 
-
 # Open and close hours !
 opentime = dt.datetime.strptime('2016-09-06 09:30:00', "%Y-%m-%d %H:%M:%S")
 closetime = dt.datetime.strptime('2016-09-06 16:00:00',  "%Y-%m-%d %H:%M:%S")

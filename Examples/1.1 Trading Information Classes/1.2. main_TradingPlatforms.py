@@ -1,7 +1,6 @@
 """ MORE PROFESSIONAL PLOTTINGS OF THE TRADING INDICATORS"""
 # Change main directory to the main folder and import folders
 
-
 import os
 os.chdir("../../")
 import import_folders

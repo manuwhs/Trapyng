@@ -8,10 +8,10 @@ import email_lib as emlib
 class Cemail():
     ## This is a class to fucking create a decent email
     ## It uses the functions of the lib
-    def __init__(self, user = "", pwd = "", recipient = "", ):
+    def __init__(self, user = "", pwd = "", recipients = "", ):
         self.user = user
         self.pwd = pwd
-        self.recipient = recipient
+        self.recipients = recipients
         self.subject = ""
 
     ###### CORE FUNCTIONS #####
@@ -25,10 +25,13 @@ class Cemail():
         if (len(pwd) != 0):
             self.pwd = pwd
             
-    def set_recipient(self, recipient = ""):
-        if (len(recipient) != 0):
-            self.recipient = recipient
-            self.msgRoot['To'] = recipient
+    def set_recipients(self, recipients = ""):
+        if (len(recipients) != 0):
+            self.recipients = recipients
+            if(type(recipients) == type("hola")):
+                self.msgRoot['To'] = recipients
+            else:
+                self.msgRoot['To'] = ", ".join(recipients)
             
     def set_subject(self, subject = ""):
         if (len(subject) != 0):
@@ -36,10 +39,10 @@ class Cemail():
             self.msgRoot["Subject"] = subject
             
     ### MORE complex function !!!
-    def create_msgRoot(self, user = "",recipient = "", subject = ""):
-        self.msgRoot = emlib.create_msgRoot(user, recipient, subject)
+    def create_msgRoot(self, user = "",recipients = "", subject = ""):
+        self.msgRoot = emlib.create_msgRoot(user, recipients, subject)
         self.set_user(user)
-        self.set_recipient(recipient)
+        self.set_recipients(recipients)
         self.set_subject(subject)
         
     def add_HTML(self,html_text):
@@ -51,9 +54,9 @@ class Cemail():
     def add_file(self, filedir, filename = ""):
         emlib.add_file(self.msgRoot, filedir, filename)
         
-    def send_email(self, recipient = ""):
-        self.set_recipient(recipient)
+    def send_email(self, recipients = ""):
+        self.set_recipients(recipients)
         emlib.send_email(self.user, 
                         self.pwd, 
-                        self.recipient, 
+                        self.recipients, 
                         self.msgRoot, secure = 0)

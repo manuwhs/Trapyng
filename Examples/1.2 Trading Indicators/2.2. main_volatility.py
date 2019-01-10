@@ -109,6 +109,7 @@ if (AHLR_f):
     SMA1_AHLR = timeData.SMA(n = nAHLR1)
     SMA2_AHLR = timeData.SMA(n = nAHLR2)
     
+    
     ## Plotting just the ATR !!
     color1 = "k"
     colorBB1 = "cobalt blue"

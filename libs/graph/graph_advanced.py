@@ -54,12 +54,14 @@ def barchart(self, X = [],Y = [],  # X-Y points in the graph.
     self.zorder = self.zorder + 1  # Setting the properties
     colorFinal = self.get_color(color)
     
-    lcHL = mc.LineCollection(linesHL, colors= colorFinal, linewidths=lw, antialiased=True)
+    # TODO: Handle the legend better
+    lcHL = mc.LineCollection(linesHL, colors= colorFinal, linewidths=lw, antialiased=True, label = legend[0])
     lcO = mc.LineCollection(linesO, colors= colorFinal, linewidths=lw2, antialiased=True)
     lcC = mc.LineCollection(linesC, colors= colorFinal, linewidths=lw2, antialiased=True)
     ax.add_collection(lcHL)
     ax.add_collection(lcO)
     ax.add_collection(lcC)
+    
     
     ax.autoscale()  # TODO: The zoom is not changed if we do not say it !
 #    ax.margins(0.1)
@@ -68,7 +70,7 @@ def barchart(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -180,7 +182,7 @@ def candlestick(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)

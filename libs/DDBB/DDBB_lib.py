@@ -58,10 +58,14 @@ def download_and_add(list_symbols, sdate = "01-01-1996",
         save_to_csv(symbol = symbol, 
                     dataCSV = data_Symbol)
 
-def load_TD_from_csv(file_dir = "./storage/",symbolID = None, period = None):
-    # The file must have the path:  ./TimeScale/symbolName_TimeScale.csv
-    whole_path = file_dir + ul.period_dic[period] + "/" + \
-                symbolID + "_" + ul.period_dic[period] + ".csv"
+def load_TD_from_csv(file_dir = "./storage/", file_name = None, symbolID = None, period = None):
+
+    if (type(file_name) == type(None)):
+        # The file must have the path:  ./TimeScale/symbolName_TimeScale.csv
+        whole_path = file_dir + ul.period_dic[period] + "/" + \
+                    symbolID + "_" + ul.period_dic[period] + ".csv"
+    else:
+        whole_path = file_dir + file_name
     try:
         dataCSV = pd.read_csv(whole_path, sep = ',', index_col = 0, header = 0)
         processed_dates = pd.to_datetime(dataCSV.index)

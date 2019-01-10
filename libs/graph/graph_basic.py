@@ -69,6 +69,7 @@ def init_figure(self, projection = "2d", position = [], subplotting = 0):
     fig = plt.figure()  
     self.fig = fig
     
+    return fig
 #    fig.set_facecolor("w")
 
 def figure_management(self, nf, na, ax = None, sharex = None, sharey = None, 
@@ -83,8 +84,9 @@ def figure_management(self, nf, na, ax = None, sharex = None, sharey = None,
         self.colorIndex = 0 # Restart colors again
         # If we want to create a new figure
         if (self.subplotting == 1):
+           # print ("XXXXXXXXXXXXXXXXX")
             # If we are subploting so it will be plotted into another axes
-            self.next_subplot(projection = projection, sharex = sharex, sharey = sharey) # We plot in a new subplot !
+            ax = self.next_subplot(projection = projection, sharex = sharex, sharey = sharey) # We plot in a new subplot !
         else:
             self.init_figure(projection = projection)  # We create a new figure !!
         
@@ -101,7 +103,14 @@ def savefig(self,file_dir = "./image.png",
             sizeInches = [],  # The size in inches as a list
             close = False,   # If we close the figure once saved
             dpi = 100):      # Density of pixels !! Same image but more cuality ! Pixels
-
+    
+    try:
+        folders = file_dir.split("/")
+        folders.pop(-1)
+        path = "/".join(folders)
+        ul.create_folder_if_needed(path);
+    except:
+        pass
     ## Function to save the current figure in the desired format
     ## Important !! Both dpi and sizeInches affect the number of pixels of the image
     # dpi: It is just for quality, same graph but more quality.

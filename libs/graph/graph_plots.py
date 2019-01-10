@@ -32,28 +32,33 @@ def plot(self, X = [],Y = [],           # X-Y points in the graph.
         
         ### Special options 
         fill = 0,  #  0 = No fill, 1 = Fill and line, 2 = Only fill
+        alpha_line = 1, # Alpha of the line when we do fillbetween
         fill_offset = 0,  # The 0 of the fill
         ls = "-",
-        marker = [".", 2, "k"],
+        marker = [None, None, None], # [".", 2, "k"],
         
         # Formatting options
         xaxis_mode = None,# Perfect for a few good ones :)
         yaxis_mode = None, # Perfect for a few good ones :)
         AxesStyle = None,   # Automatically do some formatting :)
-        dataTransform = None   # Specify if we are gonna format somehow the data. 
+        dataTransform = None,   # Specify if we are gonna format somehow the data. 
                             # for intraday for example.
+        ## Return more output !!!
+        return_drawing_elements = False
         ):         
     # Management of the figure and properties
     ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
                       projection = projection, position = position)
     
     ## Sometimes we just want an empty plot with the graph, so we just return the axes.
-    if (type(Y == type([]))):
+    if (type(Y) == type([])):
         if (len(Y) == 0):
             return ax;
         
     ## Preprocess the data given so that it meets the right format
     X, Y = self.preprocess_data(X,Y, dataTransform = dataTransform)
+#    print (X,Y)
+    
     NpY, NcY = Y.shape
     plots,plots_typ =  self.init_WidgetData(ws)
     
@@ -63,7 +68,7 @@ def plot(self, X = [],Y = [],           # X-Y points in the graph.
             self.zorder = self.zorder + 1  # Setting the properties
             colorFinal = self.get_color(color)
             legend_i = None if i >= len(legend) else legend[i]
-            alpha_line = alpha if fill == 0 else 1
+            alpha_line = alpha if fill == 0 else alpha_line
             plot_i, = ax.plot(X[self.start_indx:self.end_indx],Y[self.start_indx:self.end_indx:,i], 
                      lw = lw, alpha = alpha_line, color = colorFinal,
                      label = legend_i, zorder = self.zorder,
@@ -81,10 +86,13 @@ def plot(self, X = [],Y = [],           # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
+    
+    if (return_drawing_elements):
+        return ax, plots
     
     return ax
 
@@ -117,18 +125,25 @@ def stem(self, X = [],Y = [],  # X-Y points in the graph.
         self.zorder = self.zorder + 1  # Setting the properties
         colorFinal = self.get_color(color)
         legend_i = None if i >= len(legend) else legend[i]
-        markerline, stemlines, baseline = ax.stem(X,Y[:,i], lw = lw, alpha = alpha, 
+        markerline, stemlines, baseline = ax.stem(X,Y[:,i], 
                  color = colorFinal, label = legend_i, zorder = self.zorder, 
-                 markerfmt = marker[0], markersize = marker[1], markerfacecolor = marker[2],
+                 markerfmt = marker[0], markersize = marker[1], markerfacecolor =  colorFinal, #marker[2],
                  antialiased = True, bottom = bottom)
-        plt.setp(markerline, 'markerfacecolor', marker[2])
+        plt.setp(markerline, 'markerfacecolor',colorFinal)
+        plt.setp(markerline, 'color',colorFinal)
+        
         plt.setp(baseline, 'color', 'r', 'linewidth', 2)
+        
+        # Properties of the stemlines
         plt.setp(stemlines, 'linewidth', lw)
-    
+        plt.setp(stemlines, 'color', colorFinal)
+        plt.setp(stemlines, 'alpha', alpha)
+#        plt.setp(stemlines, 'opacity', alpha)
+     
     ############### Last setting functions ###########################
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -186,7 +201,7 @@ def add_vlines(self, X = [],Y = [],  # X-Y points in the graph.
     ############### Last setting functions ###########################
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -237,7 +252,7 @@ def add_hlines(self, X = [],Y = [],  # X-Y points in the graph.
     ############### Last setting functions ###########################
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -256,7 +271,7 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
         loc = "best",    
         dataTransform = None,
         xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
-        marker = [" ", None, None]
+        marker = "o"
        ):         
 
     ax = self.figure_management(nf, na, ax = ax, sharex = sharex, sharey = sharey,
@@ -287,7 +302,7 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
         legend_i = None if i >= len(legend) else legend[i]
         
         scatter_i =  ax.scatter(X,Y, lw = lw, alpha = alpha, color = colorFinal,
-                    label = legend_i, zorder = self.zorder)
+                    label = legend_i, zorder = self.zorder, marker = marker)
         # TODO: marker = marker[0], markersize = marker[1], markerfacecolor = marker[2]
         plots.append(scatter_i)
         plots_typ.append("scatter")
@@ -297,7 +312,7 @@ def scatter(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -363,7 +378,7 @@ def step(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -442,7 +457,7 @@ def plot_filled(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)
@@ -537,14 +552,16 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
     NpY, NcY = Y.shape
     plots,plots_typ =  self.init_WidgetData(ws)
     
+#    print (X)
     ## We asume that X and Y have the same dimensions
-    print (self.formatXaxis)
+#    print (self.formatXaxis)
     if (self.formatXaxis == "dates" or self.formatXaxis == "intraday"):
         X = ul.preprocess_dates(X)
         print ("Formating bar X to dates")
     if (type(barwidth) == type(None)):
         barwidth = self.get_barwidth(X, barwidth) * 0.8
-        
+
+#    print ("Barwidth: ", barwidth)
     if (Y.size != 0):  # This would be just to create the axes
     ############### CALL PLOTTING FUNCTION ###########################
         for i in range(NcY):  # We plot once for every line to plot
@@ -552,20 +569,20 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
             colorFinal = self.get_color(color)
             legend_i = None if i >= len(legend) else legend[i]
             if(type(bottom) != type(None)):
-                bottom = bottom[self.start_indx:self.end_indx]
+                bottom = bottom[self.start_indx:self.end_indx].flatten()
             if (orientation == "vertical"):
-                plot_i  = self.axes.bar(X[self.start_indx:self.end_indx], Y[self.start_indx:self.end_indx:,i], 
+                plot_i  = self.axes.bar(X[self.start_indx:self.end_indx].flatten(), Y[self.start_indx:self.end_indx:,i].flatten(), 
                             width = barwidth, align=align,
                               facecolor= colorFinal,alpha=alpha,
                               label = legend_i, zorder = self.zorder,
                               bottom = bottom)
             else:  # horixontal
-                plot_i  = self.axes.bar(width = Y[self.start_indx:self.end_indx:,i], 
+                plot_i  = self.axes.bar(width = Y[self.start_indx:self.end_indx:,i].flatten(), 
                               height = barwidth, align=align,
                               facecolor= colorFinal,alpha=alpha,
                               label = legend_i, zorder = self.zorder,
                               left = bottom,
-                              bottom = X[self.start_indx:self.end_indx],
+                              bottom = X[self.start_indx:self.end_indx].flatten(),
                              orientation = "horizontal")
             plots.append(plot_i)
             plots_typ.append("plot")
@@ -575,7 +592,7 @@ def bar(self, X = [],Y = [],  # X-Y points in the graph.
     
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 
     self.set_labels(labels)
-    self.set_zoom(xlim,ylim, xlimPad,ylimPad)
+    self.set_zoom(ax = ax, xlim = xlim,ylim = ylim, xlimPad = xlimPad,ylimPad = ylimPad)
     self.format_xaxis(ax = ax, xaxis_mode = xaxis_mode)
     self.format_yaxis(ax = ax, yaxis_mode = yaxis_mode)
     self.apply_style(nf,na,AxesStyle)

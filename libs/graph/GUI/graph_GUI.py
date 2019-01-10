@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import CheckButtons,Slider, Button, SpanSelector
 from matplotlib.widgets import AxesWidget
 import sys
-from matplotlib.finance import candlestick_ohlc
+
+#from matplotlib.finance import candlestick_ohlc
 
 def add_hidebox(self, plots_affected = [], 
                names = [],

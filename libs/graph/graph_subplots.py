@@ -98,6 +98,8 @@ def next_subplot(self, projection = "2d", sharex = None, sharey = None):
     self.axes = ax
     self.axes_list.append(ax)
     
+    return ax
+    
 def subplots_adjust(self, hide_xaxis = False, left=.09, bottom=.10, right=.90, top=.95, wspace=.20, hspace=0):
     # Adjusting the properties of the subplots
     plt.subplots_adjust(left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
@@ -112,7 +114,7 @@ def subplots_adjust(self, hide_xaxis = False, left=.09, bottom=.10, right=.90, t
 def apply_style(self, nf,na, AxesStyle = None):
     # This function applies standard specfied formattings :)
 
-    self.axes.grid()
+    self.axes.grid(True)
     
     ax = self.axes
     # TODO, should it be if nf == 1
@@ -164,4 +166,7 @@ def apply_style(self, nf,na, AxesStyle = None):
                 suboptions = options[i].split(":")
                 if (suboptions[0] == "Ny"):
                     self.format_yaxis (Nticks = int(suboptions[1]),formatting = None)
-    plt.show()
+    try:
+        plt.show(block = False)
+    except:
+        print ("Error plt.show()")

@@ -2,8 +2,6 @@
 ############### BASIC MATH ##############################
 ##########################################################
 ## Library with basic mathematical functions 
-# These funcitons expect a price sequences:
-#     has to be a np.array [Nsamples][Nsec]
 
 from threading import Timer
 
@@ -34,15 +32,8 @@ class RepeatedTimer(object):
         self._timer.cancel()
         self.is_running = False
 
-from time import sleep
 
-def hello(name_list):
-    for name in name_list:
-        print "Hello %s!" % name
 
-#print "starting..."
-#rt = RepeatedTimer(1, hello, ["Fruzsi", "Manu"]) # it auto-starts, no need of rt.start()
-#try:
-#    sleep(10) # your long-running job goes here...
-#finally:
-#    rt.stop() # better in a try/finally block to make sure the program ends!
+
+
+

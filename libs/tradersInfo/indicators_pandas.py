@@ -20,13 +20,14 @@ def MA(df, seriesNames = ["Close"], n = 20):
 # The values is already a correct [Nsam, Nsig] numpy matrix
 #Moving Average  
 def SMA(df, seriesNames = ["Close"], n = 20):  
-    SMA = pd.rolling_mean(df[seriesNames], n)
+    SMA = df[seriesNames].rolling( n).mean()
     return SMA.values
 
 #Exponential Moving Average  
 def EMA(df, seriesNames = ["Close"], n = 20):  
-    EMA = pd.ewma(df[seriesNames], span = n,min_periods = n)
-    return EMA.values
+    EMA = pd.Series.ewm(df[seriesNames], span = n,min_periods = n).mean()
+    
+    return np.array(EMA)
     
 #Standard Deviation  
 def STD(df, n, seriesNames = ["Close"]):  
@@ -129,8 +130,8 @@ def PSAR(df, iaf = 0.02, maxaf = 0.2):
 #Bollinger Bands  
 def BBANDS(df, n = 20, MA = None, seriesNames = ["Close"]):  
     if (type(MA) == type(None)):
-        MA = pd.rolling_mean(df[seriesNames],n, min_periods = n )
-        MSD = pd.rolling_std(df[seriesNames],n, min_periods = n) 
+        MA = df[seriesNames].rolling(n, min_periods = n ).mean()
+        MSD =df[seriesNames].rolling(n, min_periods = n).std()
     else:
         varis = (df[seriesNames] - MA)**2 
         
@@ -152,7 +153,7 @@ def BBANDS(df, n = 20, MA = None, seriesNames = ["Close"]):
 def AHLR(df, n = 14):  
     HLRange = df['High'] - df['Low']
 #    AHLR_s = pd.ewma(HLRange, span = n, min_periods = n)
-    AHLR_s = pd.rolling_mean(HLRange, n)
+    AHLR_s = HLRange.rolling(n).mean()
     AHLR_s = ul.fnp(AHLR_s.values)
     return AHLR_s
     
@@ -172,14 +173,14 @@ def ATR(df, n = 14):
     TR_s = pd.Series(TR_l)  
     
 #    ATR = pd.ewma(TR_s, span = n, min_periods = n)
-    ATR = pd.rolling_mean(TR_s, n)
+    ATR = TR_s.rolling( n).mean()
     ATR = ul.fnp(ATR.values)
     return ATR
     
 # Volatility Chaikin
 def Chaikin_vol(df, n = 14):  
     HLRange = df['High'] - df['Low']
-    EMA = pd.ewma(HLRange, span = n, min_periods = n)
+    EMA = HLRange.ewm( span = n, min_periods = n).mean()
     Chikinin_volat = bMA.get_return(ul.fnp(EMA), lag = n, cval = np.NaN)
     Chikinin_volat = ul.fnp(Chikinin_volat)
     
@@ -211,8 +212,8 @@ def STOK(df, n = 14, SK = 1):
     # TODO: This could be inf
     SOk = np.zeros((df.shape[0],1))
     
-    maxH = pd.rolling_max(df['High'] , window = n, min_periods = n-1)
-    minL = pd.rolling_min(df['Low'] , window = n, min_periods = n-1)
+    maxH = df['High'].rolling(window = n, min_periods = n-1).max()
+    minL = df['Low'].rolling( window = n, min_periods = n-1).min()
     
     SOk = (df['Close'] - minL) / (maxH - minL)
 #    SOk = SOk.fillna(1)
@@ -220,7 +221,7 @@ def STOK(df, n = 14, SK = 1):
     # Instead of computing the min and max of each n-window,
     # we reuse the previous min and max :)
     if (SK > 1):
-        SOk = pd.ewma(SOk, span = SK, min_periods = SK - 1)
+        SOk = SOk.ewm( span = SK, min_periods = SK - 1).mean()
     SOk = 100 * ul.fnp(SOk)
     return SOk
 
@@ -228,17 +229,17 @@ def STOK(df, n = 14, SK = 1):
 def STOD(df, n = 14, SK = 3, SD = 3):  
     SOk = STOK(df, n = n )
 #    SOd = pd.ewma(SOk, span = n, min_periods = n - 1)
-    SOd = pd.rolling_mean(SOk, window = SD, min_periods = SD - 1)
+    SOd = pd.Series.rolling(pd.Series(SOk.flatten()), window = SD, min_periods = SD - 1).mean()
     SOd = 1 * ul.fnp(SOd)
     return SOd
 
 #MACD, MACD Signal and MACD difference  
 def MACD(df, n_fast = 26, n_slow = 12, n_smooth = 9):  
-    EMAfast = pd.ewma(df['Close'], span = n_fast, min_periods = n_slow - 1)
-    EMAslow = pd.ewma(df['Close'], span = n_slow, min_periods = n_slow - 1) 
+    EMAfast = df['Close'].ewm( span = n_fast, min_periods = n_slow - 1).mean()
+    EMAslow = df['Close'].ewm( span = n_slow, min_periods = n_slow - 1).mean()
     
     MACD = EMAfast - EMAslow
-    MACDsign = pd.ewma(MACD, span = 9, min_periods = 8)  
+    MACDsign = MACD.ewm( span = 9, min_periods = 8).mean()
     MACDdiff = MACD - MACDsign
 
     MACD = ul.fnp(MACD)
@@ -251,9 +252,9 @@ def MACD(df, n_fast = 26, n_slow = 12, n_smooth = 9):
 #Trix  
 ## Oscillator similar to MACD
 def TRIX(df, n1 = 12, n2 = 12, n3 = 12):  
-    EX1 = pd.ewma(df['Close'], span = n1, min_periods = n1 - 1)  
-    EX2 = pd.ewma(EX1, span = n2, min_periods = n2 - 1)  
-    EX3 = pd.ewma(EX2, span = n3, min_periods = n3 - 1)  
+    EX1 = df['Close'].ewm( span = n1, min_periods = n1 - 1).mean()
+    EX2 = EX1.ewm( span = n2, min_periods = n2 - 1).mean()
+    EX3 = EX2.ewm( span = n3, min_periods = n3 - 1).mean()  
 
     # Get the returns 
     Trix = EX3.pct_change(periods = 1)
@@ -272,15 +273,15 @@ def RSI(df, n = 20):
     ## Vector of positive and negative
     dUp[dUp < 0] = 0
     dDown[dDown > 0] = 0
-    print (dUp)
+    # print (dUp)
     # Calculate the rolling mean, the Window !!
     # Calculates the average dUp and dDown in time
-    RolUp = pd.rolling_mean(dUp, n)
-    RolDown = np.abs(pd.rolling_mean(dDown, n))
+    RolUp = np.array(dUp.rolling( n).mean().values).flatten()
+    RolDown =np.array( dDown.rolling( n).mean().values).flatten()
 
     # Finally compute the shit
-    RS = RolUp / (RolDown +0.0000001) # To avoid division by 0
-    RSI = 100. - 100. / (1. + RS)
+    RS = np.abs(RolUp / (RolDown +0.0000001)) # To avoid division by 0
+    RSI = 100. - (100. / (1. + RS))
 
     return [RS,RSI]
     
@@ -337,6 +338,22 @@ def ACCDIST(df, n = 14):
     return ADL
     
 
+# We would like to have an indicator that tell us how many contracts of the volume have been used
+# to move the price up, and how many to move it down. This is hard to know from daily data but we can get a better representation from 15M
+## TODO: Redesign this operator
+def get_DV_i(df):
+    DV = np.sum((df["Close"]-df["Open"])*df["Volume"])/(np.sum(df["Volume"])*(np.max(df["High"] -np.min(df["Low"]))))
+    return DV
+def get_DrivingVolume(df):
+    days_keys, day_dict = df.get_indexDictByDay()
+    Driving_volume = []
+    for day in days_keys:
+        Driving_volume.append(get_DV_i(df.TD.ix[day_dict[day]]))
+        
+    
+    DV = np.cumsum(np.nan_to_num(Driving_volume))
+
+    return DV
     
 #Mass Index  
 def MassI(df, n = 9):  

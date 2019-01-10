@@ -174,7 +174,7 @@ def windowSample (sequence, L):
 
 def sort_and_get_order (x, reverse = True ):
     # Sorts x in increasing order and also returns the ordered index
-    x = x.flatten()  # Just in case we are given a matrix vector.
+    x = np.array(x).flatten()  # Just in case we are given a matrix vector.
     order = range(len(x))
     
     if (reverse == True):
@@ -415,6 +415,42 @@ def get_allPaths(rootFolder, fullpath = "yes"):
     
     return allPaths
 
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+    class K(object):
+        def __init__(self, obj, *args):
+            self.obj = obj
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0  
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+    return K
+
+def filenames_comp(x1,x2):
+    number1 = int(x1.split("/")[-1].split(".")[0])
+    number2 = int(x2.split("/")[-1].split(".")[0])
+    
+    if (number1 > number2):
+        return 1
+    else:
+        return -1
+
+def filenames_comp_model_param(x1,x2):
+    number1 = int(x1.split("/")[-1].split(".")[0].split(":")[-1])
+    number2 = int(x2.split("/")[-1].split(".")[0].split(":")[-1])
+    
+    if (number1 > number2):
+        return 1
+    else:
+        return -1
 def type_file(filedir):
     mime = magic.Magic()
     filetype = mime.id_filename(filedir)
@@ -443,7 +479,20 @@ def copy_file(file_source, file_destination, new_name = ""):
     
     shutil.copy2(file_source, file_destination + "/" + file_name)
 
-
+def remove_files(folder, remove_subdirectories = False):
+    """
+    This function removes all the files in a folder
+    """
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            elif (remove_subdirectories):
+                if os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            print(e)
+        
 def simmilarity(patterns,query,algo):
     # This funciton computes the similarity measure of every pattern (time series)
     # with the given query signal and outputs a list of with the most similar and their measure.

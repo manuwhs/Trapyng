@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import datetime as dt
 #####  BUILDING FUNCTIONS #####
 
 def twin_axes(self, ax = None):
@@ -69,6 +69,7 @@ def manage_axes(self, na = 0,
     # Or the reusing of the previous one.
    
    # If we indicated an axes, we just plot on it
+   ## TODO: Change to update axes ?
     if (type(ax) != type(None)):    
         self.axes = ax
         self.axes_list.append(ax)
@@ -128,13 +129,17 @@ def manage_axes(self, na = 0,
 
 # Advanced settings for the zoom
 def set_zoom(self, ax = None, xlim = None ,X =None, Y = None, ylim = None, xlimPad = None ,ylimPad = None):
+#    print ("Zoom in")
     if (type(ax) == type(None)):
         ax = self.axes
     if (type(Y) == type(None)):
         Y = self.Y[self.start_indx:self.end_indx]
     if (type(X) == type(None)):
         X = self.X[self.start_indx:self.end_indx]
-        
+    
+#    if(np.array(X).size <=1):
+#        return;
+    
     # Set the padding relative to the maximum
     if (type(ylimPad) != type(None)):
 
@@ -156,8 +161,14 @@ def set_zoom(self, ax = None, xlim = None ,X =None, Y = None, ylim = None, xlimP
 #        print type(self.X.flatten()[0])
 #        max_signal = np.max(self.X[~np.isnan(self.X.flatten())])
 #        min_signal = np.min(self.X[~np.isnan(self.X)])
-        max_signal = np.max(X[~np.isnan(X)])
-        min_signal = np.min(X[~np.isnan(X)])
+#        print (X)
+        try:
+            max_signal = np.max(X[~np.isnan(X)])
+            min_signal = np.min(X[~np.isnan(X)])
+        except:
+            ## This will work for dates !
+            max_signal = X[-1]
+            min_signal = X[0]
 #        min_signal = np.min([min_signal,0])
         signal_range = max_signal - min_signal
         if (signal_range == 0):
@@ -166,7 +177,20 @@ def set_zoom(self, ax = None, xlim = None ,X =None, Y = None, ylim = None, xlimP
                 min_signal = 0
             else:
                 max_signal = 0
-        self.set_xlim(ax = ax, xmin = min_signal - signal_range* xlimPad[0] ,xmax = max_signal + signal_range*xlimPad[1])
+#            print ("===============================================================================================")
+#            print (X,Y)
+                
+#        print(min_signal, max_signal, signal_range)
+#        print (type(X[0]))
+#        print (type(X[0]) == type(dt.datetime.now()))
+        
+#    def timedelta_total_seconds(td):
+#        return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / float(10**6)
+    
+        if (type(X[0]) == type(dt.datetime.now())):
+             self.set_xlim(ax = ax, xmin = min_signal, xmax = max_signal)
+        else:
+            self.set_xlim(ax = ax, xmin = min_signal - signal_range* xlimPad[0] ,xmax = max_signal + signal_range*xlimPad[1])
 
     elif (type(xlim) != type(None)):
         self.set_xlim(ax = ax, xmin = xlim[0], xmax =xlim[1])

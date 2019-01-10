@@ -71,13 +71,3 @@ else:
     #        print Cartera.get_symbolIDs()
 
 
-"""
-W H I L E
-5" B U D D H I S M "
-SUGGESTS
-another belief sys-
-tem, "dharma practice" suggests a course of action. The four
-ennobling truths are not propositions to believe; they are
-challenges to act
-i
-"""

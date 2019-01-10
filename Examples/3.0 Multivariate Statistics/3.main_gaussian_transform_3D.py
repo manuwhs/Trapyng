@@ -28,8 +28,8 @@ folder_images = "../pics/Trapying/MultivariateStat/"
 ##############################################
 ########## FLAGS ############################
 
-graph_ellipse = 1
-distribution_graph_3D_slices = 0;
+graph_ellipse = 0
+distribution_graph_3D_slices = 1;
 
 ##########################################################################
 ################# DATA OBTAINING ######################################
@@ -151,7 +151,7 @@ if (graph_ellipse):
 
     
 if(distribution_graph_3D_slices):
-    A = np.array([[0.9,2],[2,0.9]])
+    A = 2* np.array([[0.9,2],[2,0.9]])
     mu = [-1.5,2]
     
     i_1 = 0

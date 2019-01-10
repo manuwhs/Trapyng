@@ -1,0 +1,48 @@
+        ########### REMOVE PREVIOUS VALUES #################
+#        for artist in self.data_axes.lines:
+#            artist.remove()
+#        for artist in self.data_axes.collections:
+#            artist.remove()
+
+         ## TODO: For some reason the collecitons will give an error when resizing the
+         # window probably because they are not completely properly removed and in the 
+         # drawing loop they are None
+#        canvas = FigureCanvas(self.fig)
+
+#        try:
+#            gl.axes_list.remove(self.data_axes);
+#        except:
+#            pass
+        
+#        self.data_axes.clear();
+#        self.data_axes.remove()
+##        
+#        self.data_axes =  gl.subplot2grid((1,4), (0,0), rowspan=1, colspan=3);
+#        
+#        self.data_axes.cla()
+
+        ########### PLOT NEW VALUES ############################
+        ## Plot the Warning lines 
+        if(0):
+            ax_aux, plots_data = gl.plot([time[s_indx],time[e_indx]], [desired_value + range_warning, desired_value + range_warning],  ax = self.data_axes,
+                    color = "y", lw = 3, ls="--"); #, legend = ["Warning area"]
+            
+            
+            gl.plot([time[s_indx],time[e_indx]], [desired_value - range_warning, desired_value - range_warning],  ax = self.data_axes,
+                    color = "y", lw = 3, ls="--");
+            
+    #        gl.plot_filled(time[s_indx:e_indx+1],[],axis = 1), 
+    #                        alpha = 0.5, nf = 0, color = "k")
+    #        print np.where(data[s_indx:e_indx+1] > desired_value + range_warning)
+    #        print data[s_indx:e_indx+1] > desired_value + range_warning
+    
+    #        gl.fill_between(time[s_indx:e_indx+1], data[s_indx:e_indx+1], desired_value + range_warning,  
+    #                        where = data[s_indx:e_indx+1] > desired_value + range_warning, color = "y", alpha = 0.7,
+    #                        ax = self.data_axes)
+    #        
+            ## Plot the Error lines  
+            gl.plot([time[s_indx],time[e_indx]], [desired_value + range_stop, desired_value + range_stop],  ax = self.data_axes,
+                    color = "r", lw = 3, ls="--"); # , legend = ["Stop area"]
+    
+            gl.plot([time[s_indx],time[e_indx]], [desired_value - range_stop, desired_value - range_stop],  ax = self.data_axes,
+                    color = "r", lw = 3, ls="--");

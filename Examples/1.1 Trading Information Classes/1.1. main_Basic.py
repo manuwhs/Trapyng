@@ -23,10 +23,10 @@ plt.close("all") # Close all previous Windows
 #### print options ####
 storage_f = 0
 show_data_shape = 0
-guessing_markerhours = 1
+guessing_markerhours = 0
 basic_timeSeries_functions = 0
 # Plotting  Options !
-basic_plotting = 0  # Basic chart with signal, volume, return
+basic_plotting = 1  # Basic chart with signal, volume, return
 intrabydays_f = 0   # We divide the intraday data into its dayly components and plot all days on top of each other
 Candlestick_f = 0   # Plot the CandleStick charts.
 
@@ -34,7 +34,7 @@ Candlestick_f = 0   # Plot the CandleStick charts.
 plot_trials_f = 0 # Some stupid trial I cannot remember.
 
 own_plotting_func_f = 0 # Plotting function from timeData class, not supported anymore
-plot_gaps_scattering = 1
+plot_gaps_scattering = 0
 dayly_data_f = 0
 
 

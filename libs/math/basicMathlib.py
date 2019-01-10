@@ -16,6 +16,7 @@ from sklearn import linear_model
 import utilities_lib as ul
 import scipy.stats as stats
 from scipy.stats import multivariate_normal
+from scipy.stats import norm
 import scipy
 
 from sklearn.decomposition import PCA    
@@ -188,9 +189,11 @@ def diff(X, lag = 1, n = 1, cval = np.nan): # cval=np.NaN
     X = np.concatenate((unk_vec,X), axis = 0)
     return X
     
-def shift(X, lag = 1, cval = 0): # cval=np.NaN
+def shift(X, lag = 1, cval = np.nan): # cval=np.NaN
     # It shifts the X[Nsam][Ndim] lag positions to the right. or left if negative
     X = ul.fnp(X)
+    if (len (X.shape) == 1):
+        X = np.atleast_2d(X).T
     Nsa, Nsig = X.shape
     
     if (lag > 0):
@@ -240,8 +243,8 @@ def gaussian1D_points(X = None, mean = None, std = None,
     
     if (type(x_grid) == type(None)):
         x_grid = np.linspace(mean - std_K*std, mean + std_K*std, num = num).T
-        print (mean - std_K*std, mean + std_K*std)
-    y_values = multivariate_normal.pdf(x_grid,mean,std*std)
+#        print (mean - std_K*std, mean + std_K*std)
+    y_values = norm.pdf(x_grid,mean,std*std)
 #    Z = (x_grid - mean)/std
 #    y_values = stats.norm.pdf(Z) / std# * stats.norm.pdf(-mean/std)
 

@@ -27,9 +27,9 @@ def MDD(timeSeries, window):
     Roll_Max = pd.rolling_max(timeSeries, window, min_periods=1)
     
     Roll_Max = ul.fnp(Roll_Max)
-    print (Roll_Max.shape)
+    # print (Roll_Max.shape)
     # How much we have lost compared to the maximum so dar
-    Daily_Drawdown = timeSeries/Roll_Max - 1.0
+    ## Daily_Drawdown = timeSeries/Roll_Max - 1.0
     print (Daily_Drawdown.shape)
     # Next we calculate the minimum (negative) daily drawdown in that window.
     # Again, use min_periods=1 if you want to allow the expanding window

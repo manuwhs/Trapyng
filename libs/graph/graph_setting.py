@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import utilities_lib as ul
+import basicMathlib as bMl
 import copy
+from collections import OrderedDict
 
 from trapyngColors import cd
 #####  BUILDING FUNCTIONS #####
@@ -71,10 +73,12 @@ def set_labels(self, labels):
     # labels: If new figure, we expect 3 strings.
     # Set the main labels !!
     ax = self.axes
+#    print ax
     if (len(labels) > 0):
         title = labels[0]
 #        ax.title.set_text(title)
-        plt.title(title, y=1.01)
+#        ax.title(title, y=1.01)
+        ax.set_title(title, pad = 20)
 #        plt.suptitle("frgrrg")
     if (len(labels) > 1):
         xlabel = labels[1]
@@ -93,14 +97,19 @@ def update_legend(self, legend, NcY, ax = None, loc = "best"):
         self.legend.extend(legend)
     else:
         self.legend.extend(["Line"]*NcY)
+        
     # Plot the legend
 #    self.axes.legend(self.legend, loc=loc)
 #    l = plt.legend()
+    if(len(legend) > 0):   
+        if (ax.legend()):
+#            ax.legend().set_zorder(0) # Set legend on top
+            ax.legend(loc=loc)
+    else:
+        handles, labels = ax.get_legend_handles_labels()
+        by_label = OrderedDict(zip(labels, handles))
+        ax.legend(by_label.values(), by_label.keys())
         
-    if (ax.legend()):
-        ax.legend().set_zorder(100000) # Set legend on top
-        ax.legend(loc=loc)
-
 #from matplotlib.ticke
 
 def convert_dates_str(X):
@@ -119,10 +128,12 @@ def detect_AxisFormat(values):
 #    print (type(values))
 #    print (values.shape)
     V_type = type(values[0,0]).__name__ 
-    if ( V_type == "str" or V_type == "string_" or  V_type == 'numpy.string_'):
+    
+#    print (V_type)
+    if ( V_type == "str" or V_type == "string_" or  V_type == 'numpy.string_' or  V_type =="str_"):
         V_format = "categorical"
         
-    elif(V_type == "datetime64" or V_type == "Timestamp"):
+    elif(V_type == "datetime64" or V_type == "Timestamp" or  V_type == "datetime"):
         V_format = "dates"
         
     else:
@@ -194,6 +205,9 @@ def get_color(self, color = None):
         # If no color specified. We use one of the list
         colorFinal = self.colors[self.colorIndex]
         self.colorIndex = (self.colorIndex + 1) %len(self.colors)
+        
+    elif(type(color) == type([])):
+        colorFinal = color
     else:
         if(color in cd.keys()):
             colorFinal = cd[color]
@@ -208,7 +222,7 @@ def add_text(self, positionXY = [], text = r'an equation: $E=mc^2$',fontsize = 1
     if (len(positionXY) == 0):
         positionXY = [0,0]
         
-    self.axes.text(positionXY[0], positionXY[1], text, fontsize=fontsize)
+    return self.axes.text(positionXY[0], positionXY[1], text, fontsize=fontsize)
 
 
 def get_barwidth(self,X, width = None):
@@ -219,11 +233,13 @@ def get_barwidth(self,X, width = None):
         width = 1
 #        print width
     if (type(X[0]).__name__ == "Timestamp"):
-        width_size = min(ul.diff(X))
+    
+        width_size = min(bMl.diff(X)[1:])
         
         width_size = (width_size.total_seconds())/ (24.0*60*60) 
     else:
-        width_size = (X[1] - X[0]) 
+        
+        width_size = min(bMl.diff(X)[1:]) # (X[1] - X[0]) 
 #        print type(X[0,0])
 #        print X.shape
 #        width_size = min(bMa.diff(X, cval = 10000))

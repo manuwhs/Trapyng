@@ -78,7 +78,7 @@ opentime, closetime = mySymbol.get_timeData(periods[1]).guess_openMarketTime()
 dataTransform = ["intraday", opentime, closetime]
 folder_images = "../pics/gl/"
 gl.set_subplots(4,1)
- # TODO: Be able to automatize the shareX thing
+ # TODO: Align the transformation of the daily prices to 
 axeshare = None
 for i in range(len(periods)):
     period = periods[i]

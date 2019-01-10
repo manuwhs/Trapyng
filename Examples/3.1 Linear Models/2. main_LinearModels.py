@@ -85,7 +85,7 @@ if (model_sklearn):
     print("sklearn model Parameters")
     print(params)
     print("Residual")
-    print residual
+    print (residual)
 
 if (lag_analysis):
     def get_Residuals_LinearModel(X_data, price, lag = 20):
