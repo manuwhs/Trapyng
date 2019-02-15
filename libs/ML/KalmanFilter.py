@@ -1,29 +1,20 @@
+"""
+####### Customized implementation of the Kalman Filter ###########
+"""
 
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import os as os
-import matplotlib.colors as ColCon
-from scipy import spatial
-import datetime as dt
-from sklearn import linear_model
-import utilities_lib as ul
-from graph_lib import gl
 from scipy.optimize import fmin
 import copy
 
 class KalmanFilter(object):
     """
-    Implements a GP with mean zero and a custom kernel
+    Implements a Kalman Filter
     """
     def __init__(self,
-             A = None, B = None, C = None, # System Dynamics
-             SigmaXXpred0 = None, Xpred0 = None, # Initial prediction
+             A = None, B = None, C = None,          # System Dynamics
+             SigmaXXpred0 = None, Xpred0 = None,    # Initial prediction
              SystemCovNoise = None, MeasurCovNoise = None):  # System and Measuring noise
         """
-        Initialize the GP with the given kernel and a noise parameter for the variance
-        Optionally initialize this GP with given X and Y
-        
         # System of equations A
         #   Xt = A*Xt-1 + B*Ut + SystemNoise  
         #   Yt = Cx_k  + MeasurementNoise
@@ -84,8 +75,8 @@ class KalmanFilter(object):
         
         return A,B,C, Xpred0, SigmaXXpred0, SystemCovNoise, MeasurCovNoise
     
-    def fit (self, X, y,                   # Data
-             A = None, B = None, C = None, # System Dynamics
+    def fit (self, X, y,                        # Data
+             A = None, B = None, C = None,      # System Dynamics
              SigmaXXpred0 = None, Xpred0 = None, # Initial prediction
              SystemCovNoise = None, MeasurCovNoise = None):  # System and Measuring noise
         """
@@ -118,7 +109,7 @@ class KalmanFilter(object):
         # Maybe same as the measurement noise would be appropiate.
         SigmaYYpred = C.dot(SigmaXYpred) + MeasurCovNoise
     
-        ################## RECONSTRUCTION OF THE STATE and ONE prediction ############################
+        ################## RECONSTRUCTION OF THE STATE and ONE prediction #################
         for n in range (0,Ns):
           #############   ESTIMATING STEP  ###################
           # Estimation of theparameters ("hat" variables V(t|t))
@@ -192,7 +183,7 @@ class KalmanFilter(object):
           XpredtestList.append(Xpredtest)
           SigmaXXpredtestList.append(SigmaXXpredtest)
          
-        ##################  Transform data and preprocess  #########################################v
+        ##################  Transform data and preprocess  ################################
         XpredtestList = np.concatenate(XpredtestList, axis = 1)
         Ypredtest = C.dot(XpredtestList)
         ## Now we transpose things back to our normal Nsamxdim

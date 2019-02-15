@@ -29,7 +29,7 @@ from graph_lib import gl
 import CTimeData as CTD
 # Specific utilities
 import utilities_lib as ul
-import toptal_utils as tut
+import t_utils as tut
 
 plt.close("all") # Close all previous Windows
 
@@ -38,8 +38,8 @@ plt.close("all") # Close all previous Windows
 ################### EXECUTING OPTIONS ###################
 """
 
-folder_images = "../pics/Toptal/"
-storage_folder = ".././storage/Toptal/"
+folder_images = "../pics/EURUSD/"
+storage_folder = ".././storage/EURUSD/"
 file_name = "EURUSD_15m_BID_01.01.2010-31.12.2016.csv"
 
 # Using the library of function built in using the dataFrames in pandas

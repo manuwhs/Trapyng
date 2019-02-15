@@ -22,7 +22,7 @@ import basicMathlib as bMl
 import pandas as pd
 
 import baseClassifiersLib as bCL
-import toptal_utils as tut
+import t_utils as tut
 from sklearn import linear_model
 
 plt.close("all") # Close all previous Windows
@@ -31,8 +31,8 @@ plt.close("all") # Close all previous Windows
 $$$$$$$$$$$$$$$$$$$$$$$ OPTIONS $$$$$$$$$$$$$$$$$$$$$$$$$
 """
 
-folder_images = "../pics/Toptal/"
-storage_folder = ".././storage/Toptal/"
+folder_images = "../pics/EURUSD/"
+storage_folder = ".././storage/EURUSD/"
 file_name = "EURUSD_15m_BID_01.01.2010-31.12.2016.csv"
 
 load_data = 0

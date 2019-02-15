@@ -26,7 +26,7 @@ from graph_lib import gl
 # Data Structures Data
 import CTimeData as CTD
 # Specific utilities
-import toptal_utils as tut
+import t_utils as tut
 import baseClassifiersLib as bCL
 import basicMathlib as bMl
 import indicators_lib as indl
@@ -39,8 +39,8 @@ plt.close("all") # Close all previous Windows
 ################### EXECUTING OPTIONS ###################
 """
 
-folder_images = "../pics/Toptal/"
-storage_folder = ".././storage/Toptal/"
+folder_images = "../pics/EURUSD/"
+storage_folder = ".././storage/EURUSD/"
 file_name = "EURUSD_15m_BID_01.01.2010-31.12.2016.csv"
 
 load_data = 1

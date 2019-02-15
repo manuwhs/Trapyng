@@ -1,6 +1,9 @@
 
-# Official libraries
-import matplotlib.pyplot as plt
+"""
+####### Basic classifier's library used for initial analysis #####
+"""
+
+# Import common useful libraries
 import numpy as np
 import pandas as pd
 import copy
@@ -9,14 +12,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
 from sklearn import cross_validation
 
-    
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC,LinearSVC
-from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier,ExtraTreesClassifier,BaggingClassifier,AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier,ExtraTreesClassifier
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import accuracy_score
@@ -25,15 +26,23 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 
 
-    # GridSearchCV implements a CV over a variety of Parameter values !! 
-    # In this case, over C fo the linear case, C and "degree" for the poly case
-    # and C and "gamma" for the rbf case. 
-    # The parameters we have to give it are:
-    # 1-> Classifier Object: SVM, LR, RBF... or any other one with methods .fit and .predict
-    # 2 -> Subset of parameters to validate. C 
-    # 3 -> Type of validation: K-fold
-    # 4 -> Scoring function. sklearn.metrics.accuracy_score
-
+"""
+All of this functions implement a different classifier that follows the same format:
+    - It takes as input:
+        
+        - Xtrain, Ytrain: The input data and labels used to train the algorithm 
+        in the form of matrices (Nsam x Nfeatures).
+        
+        - Xtest = None , Ytest = None: Optional analogous input data to compute
+        a measure of generalization of the trained model.
+        
+        - verbose = 0: If set to 1, it will print the scores of the train and test
+        datasets given as input.
+        
+    - It returns:
+        - The trained model.
+        
+"""
 
 def get_LogReg(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
         lr = LogisticRegression()
@@ -103,24 +112,22 @@ def get_LSVM(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
     param_grid_linear.update({'C':C})
     
     # The folds of "StratifiedKFold" are made by preserving the percentage of samples for each class.
-            # Validation is useful for validating a parameter, it uses a subset of the 
-        # training set as "test" in order to know how good the generalization is.
-        # The folds of "StratifiedKFold" are made by preserving the percentage of samples for each class.
-        
+    
     stkfold = StratifiedKFold(Ytrain, n_folds = 5)
-        # GridSearchCV implements a CV over a variety of Parameter values !! 
-        # In this case, over C fo the linear case, C and "degree" for the poly case
-        # and C and "gamma" for the rbf case. 
-        # The parameters we have to give it are:
-        # 1-> Classifier Object: SVM, LR, RBF... or any other one with methods .fit and .predict
-        # 2 -> Subset of parameters to validate. C 
-        # 3 -> Type of validation: K-fold
-        # 4 -> Scoring function. sklearn.metrics.accuracy_score
+    # GridSearchCV implements a CV over a variety of Parameter values !! 
+    # In this case, over C fo the linear case, C and "degree" for the poly case
+    # and C and "gamma" for the rbf case. 
+    # The parameters we have to give it are:
+    # 1-> Classifier Object: SVM, LR, RBF... or any other one with methods .fit and .predict
+    # 2 -> Subset of parameters to validate. C 
+    # 3 -> Type of validation: K-fold
+    # 4 -> Scoring function. sklearn.metrics.accuracy_score
     # The score function is the one we want to minimize or maximize given the label and the predicted.
     acc_scorer = make_scorer(accuracy_score)
 
     classifier =  SVC(class_weight='balanced',probability = True)
-    gsvml = GridSearchCV(classifier,param_grid_linear, scoring = acc_scorer,cv = stkfold, refit = True,n_jobs=-1)
+    gsvml = GridSearchCV(classifier,param_grid_linear, scoring = acc_scorer,
+                         cv = stkfold, refit = True,n_jobs=-1)
     gsvml.fit(Xtrain,Ytrain)
     
     if (verbose == 1):
@@ -150,7 +157,8 @@ def get_SVM_poly(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
         # The score function is the one we want to minimize or maximize given the label and the predicted.
         acc_scorer = make_scorer(accuracy_score)
         classifier =  SVC(class_weight='balanced',probability = True)
-        gsvmr = GridSearchCV(classifier,param_grid_pol, scoring =acc_scorer,cv = stkfold, refit = True,n_jobs=-1)
+        gsvmr = GridSearchCV(classifier,param_grid_pol, scoring =acc_scorer,
+                             cv = stkfold, refit = True,n_jobs=-1)
 
         gsvmr.fit(Xtrain,Ytrain)
         
@@ -175,11 +183,11 @@ def get_SVM_rf(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
         param_grid_rbf.update({'gamma':gamma})
         
         stkfold = StratifiedKFold(Ytrain, n_folds = 5)
-        
-        # The score function is the one we want to minimize or maximize given the label and the predicted.
+
         acc_scorer = make_scorer(accuracy_score)
         classifier =  SVC(class_weight='balanced',probability = True)
-        gsvmr = GridSearchCV(classifier,param_grid_rbf, scoring =acc_scorer,cv = stkfold, refit = True,n_jobs=-1)
+        gsvmr = GridSearchCV(classifier,param_grid_rbf, scoring =acc_scorer,
+                             cv = stkfold, refit = True,n_jobs=-1)
 
         gsvmr.fit(Xtrain,Ytrain)
         
@@ -196,7 +204,8 @@ def get_SVM_rf(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
 def get_KNN(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
     # Perform authomatic grid search
     params = [{'n_neighbors':np.arange(1,10)}]
-    gknn = GridSearchCV(KNeighborsClassifier(),params,scoring='precision',cv=4,refit=True,n_jobs=-1)
+    gknn = GridSearchCV(KNeighborsClassifier(),params,scoring='precision',
+                        cv=4,refit=True,n_jobs=-1)
     gknn.fit(Xtrain,Ytrain)
     
     if (verbose == 1):
@@ -220,7 +229,8 @@ def get_TreeCl(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
     param_grid.update({'max_features':['auto',"log2", 'sqrt']})
     param_grid.update({'max_depth':np.arange(1,21)})
     param_grid.update({'min_samples_split':np.arange(2,11)})
-    gtree = GridSearchCV(DecisionTreeClassifier(),param_grid,scoring='precision',cv=5,refit=True,n_jobs=-1)
+    gtree = GridSearchCV(DecisionTreeClassifier(),param_grid,scoring='precision',
+                         cv=5,refit=True,n_jobs=-1)
     gtree.fit(Xtrain,Ytrain)
     
     if (verbose == 1):
@@ -234,11 +244,11 @@ def get_TreeCl(Xtrain, Ytrain, Xtest = None , Ytest = None, verbose = 0):
     
     return gtree
     
-def get_RF(Xtrain, Ytrain, tree, Xtest = None , Ytest = None, verbose = 0):
+def get_RF(Xtrain, Ytrain, baseTree, Xtest = None , Ytest = None, verbose = 0):
     # Random Forest
-    rf = RandomForestClassifier(n_estimators=1000,max_features=tree.best_estimator_.max_features,
-                                max_depth=tree.best_estimator_.max_depth,
-                                min_samples_split=tree.best_estimator_.min_samples_split,oob_score=True,n_jobs=-1)
+    rf = RandomForestClassifier(n_estimators=1000,max_features=baseTree.best_estimator_.max_features,
+                                max_depth=baseTree.best_estimator_.max_depth,
+                                min_samples_split=baseTree.best_estimator_.min_samples_split,oob_score=True,n_jobs=-1)
     rf.fit(Xtrain,Ytrain)
     
     if (verbose == 1):
@@ -252,11 +262,11 @@ def get_RF(Xtrain, Ytrain, tree, Xtest = None , Ytest = None, verbose = 0):
 
     return rf
     
-def get_ERT(Xtrain, Ytrain,tree, Xtest = None , Ytest = None, verbose = 0):
+def get_ERT(Xtrain, Ytrain, baseTree, Xtest = None , Ytest = None, verbose = 0):
     # Extremely Randomized Trees
-    ert = ExtraTreesClassifier(n_estimators=1000,max_features=tree.best_estimator_.max_features,
-                               max_depth=tree.best_estimator_.max_depth,
-                               min_samples_split=tree.best_estimator_.min_samples_split,n_jobs=-1)
+    ert = ExtraTreesClassifier(n_estimators=1000,max_features=baseTree.best_estimator_.max_features,
+                               max_depth=baseTree.best_estimator_.max_depth,
+                               min_samples_split=baseTree.best_estimator_.min_samples_split,n_jobs=-1)
     ert.fit(Xtrain,Ytrain)
     
     if (verbose == 1):

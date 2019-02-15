@@ -1,16 +1,9 @@
 
-import pandas as pd
+"""
+####### Customized implementation of the Gaussian Process ###########
+"""
+
 import numpy as np
-import matplotlib.pyplot as plt
-import os as os
-import matplotlib.colors as ColCon
-from scipy import spatial
-import datetime as dt
-from sklearn import linear_model
-import utilities_lib as ul
-from graph_lib import gl
-
-
 from scipy import spatial
 from sklearn import preprocessing
 from scipy.optimize import fmin
@@ -18,28 +11,20 @@ from scipy.optimize import fmin
 # These funcitons expect a price sequences:
 #     has to be a np.array [Nsamples][Nsec]
 
-def compute_Kernel(X1, X2, params = {}):
-    
-#    print X1.shape, X2.shape
-    dist = spatial.distance.cdist(X1,X2,'euclidean')
-    l = params["l"]
-    sigma_0 = params["sigma_0"]
-    K = (sigma_0**2) * np.exp(-np.power(dist,2)/(2*l))
-    return K
     
 class GaussianProcessRegressor(object):
     """
-    Implements a GP with mean zero and a custom kernel
+    Implements a GP with zero mean and a custom kernel
     """
     def __init__(self, kernel = None, 
                  sigma_eps = 0.00001, x = None, y = None, 
                  ws = -1, params = None):
         """
-        Initialize the GP with the given kernel and a noise parameter for the variance
+        Initialize the GP with the given kernel and a obsservation noise
         Optionally initialize this GP with given X and Y
  
         :param kernel: kernel function, has to be an instance of Kernel
-        :param noise_variance:
+        :param sigma_eps: variance of the observations
         :param x: given input data
         :param y: given input label
         :param ws: the size of the window if we only want to use the past ws samples.
@@ -171,13 +156,8 @@ class GaussianProcessRegressor(object):
 #            nlls[i,0] = self.negative_ll_func(L,Yw,K + Cov_eps)                    
         return mus, Covs
         
-        
-#        What if clever people were crazy because they find more complex patters in the universe
-#        Sometime they learn noise and chaos, or very unlikely bad events. Get distracted
-#        Is information the paterns ? More complex systems need less samples of the pattern to reproduce it 
-        
     def generate_process(self, X, N = 1, noise = True):
-        """ This function will generate a Random Execution of the shit.
+        """ This function will generate a random sample of the process.
             It computes the posterior distribution of the data points and draws samples from it.
         """
         Ns,Nd= X.shape
@@ -197,10 +177,6 @@ class GaussianProcessRegressor(object):
         if (noise):
             Cov_s = Cov_s + np.eye(Ns) * self.Cov_eps[0,0]
         
-#        f_s = np.random.multivariate_normal(mu_s.flatten(),Cov_s, size = N)
-#        f_s = f_s.T
-        # We could have generated the process ourselved by  
-        
         L = np.linalg.cholesky(Cov_s)
         f_s = L.dot(np.random.randn(Ns,N)) + mu_s
         
@@ -212,9 +188,6 @@ class GaussianProcessRegressor(object):
         
         X,Y = args
         sigma_0, l, sigma_eps = params
-#        X = self.X
-#        Y = self.Y
-#        print params
         Ns,Nd = X.shape
 
         params = dict([["l",l],["sigma_0",sigma_0]])
@@ -223,11 +196,7 @@ class GaussianProcessRegressor(object):
         K_reg = K + Cov_eps 
         L = np.linalg.inv(K_reg)
         
-#        caca = self.K + self.Cov_eps  
-#        print np.linalg.det(caca)
-#        print caca
         nll = self.negative_ll_func(L,Y,K_reg)
-#        print nll
         return nll
     
     def negative_ll_func(self,L,Y,K_reg):
@@ -239,10 +208,17 @@ class GaussianProcessRegressor(object):
         return nll
         
     def optimize_parameters(self, sigma_0, l, sigma_eps):
-        """ This function should optimize the parameters """
+        """ This function optimizes the parameters """
         # We give as intial guess the desired values
         xopt = fmin(func= self.negative_ll, 
                     x0 = np.array([sigma_0, l, sigma_eps]), 
                     args=(self.X,self.Y))    
         
         return xopt
+    
+def compute_Kernel(X1, X2, params = {}):
+    dist = spatial.distance.cdist(X1,X2,'euclidean')
+    l = params["l"]
+    sigma_0 = params["sigma_0"]
+    K = (sigma_0**2) * np.exp(-np.power(dist,2)/(2*l))
+    return K

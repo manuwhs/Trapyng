@@ -20,28 +20,24 @@ import warnings
 
 ################################################################################
 ################## Mother function #############################################
+
 def get_Watson_muKappa_ML(X, rk = None, parameters = None):
-    """ This function obtains efficiently obtains the parameters. (mu, kappa),
-    for a single cluster, given the weight vectors rk.
+    """ 
+    This function efficiently computes the parameters: (mu, kappa),
+    for a single Waton distribution, given the weight vectors rk from the EM algorithm.
     If the estimation is ill-posed (degenerated cluster), then it will trigger a RuntimeError
     which will be handled later to deal with the degenerated cluster and take
     an action, like deleting the cluster or changing its parameters.
-    If there is ever an error, then we create the RunTime Error to comunicate it later.
-    
-    If we could not estimate the parameters we just return None. 
-    The entire code is in a try cath to avoid being broken.
-    But to be honest our EM arquitecture also does that so no problem
     """
     
     Niter = parameters["Num_Newton_iterations"]
     try:
         # We compute the Weighted correlation matrix for the component
         # Sk = (N*pimix_k) * B_ik (*) X*X.T
-        # If No rk specified it is just one 
+        # If No rk specified, it is just one 
         N,D = X.shape
         if(type(rk) == type(None)):
             rk = np.ones((N,1))*(1/float(N))
-            ## TODO: better manage this
         if (1):
             # For the combination of Gaussian and Watson, we need to do the preprocessing here
             X = gf.remove_module (X)
@@ -64,12 +60,13 @@ def get_Watson_muKappa_ML(X, rk = None, parameters = None):
         r_pos = np.dot(mu_pos.T,Sk).dot(mu_pos)
     
         
-        """ If the explained variance of r_neg is too low, close to 0, then it is illposed
-            and we cannot compute it. We choose the other one directly.
-            If the explained variance of r_pos is too high, close to 1, then it is also illposed
-            and we cannot compute it. We choose the other one directly.
-            If both can be computed, then we choose the one with highest likelihood.
-            If None can be computed then we have a degenerated cluster and we create the exeption.
+        """ 
+        If the explained variance of r_neg is too low, close to 0, then it is illposed
+        and we cannot compute it. We choose the other one directly.
+        If the explained variance of r_pos is too high, close to 1, then it is also illposed
+        and we cannot compute it. We choose the other one directly.
+        If both can be computed, then we choose the one with highest likelihood.
+        If None can be computed then we have a degenerated cluster and we create the exeption.
         """
         
         tolerance =  1e-3
@@ -77,15 +74,14 @@ def get_Watson_muKappa_ML(X, rk = None, parameters = None):
         if(parameters["Allow_negative_kappa"] == "yes"):
             if (r_neg < tolerance and r_pos > 1-tolerance):
                 # Case where we have a degenerated cluster
-        #        print "Degenerated cluster"
-                raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', "Degenerated_Cluster_Error",np.sum(rk)/N)
+                raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', 
+                                   "Degenerated_Cluster_Error",np.sum(rk)/N)
             
             elif (r_neg < tolerance and r_pos < 1-tolerance):
                 # Case where the negative kappa case is very unilikely
                 kappa_pos = get_Watson_kappa_ML(X, mu_pos,  Sk = Sk, rk = rk, Niter = Niter)
                 kappa = kappa_pos
                 mu = mu_pos
-        #        print "TODO: Warninig we do not try negative Kappa coz explained variance is too low !"
             elif (r_neg > tolerance and r_pos > 1-tolerance):
                 # Case where the positive kappa case is very unilikely
                 kappa_neg = get_Watson_kappa_ML(X, mu_neg,  Sk = Sk, rk = rk, Niter = Niter)
@@ -95,20 +91,10 @@ def get_Watson_muKappa_ML(X, rk = None, parameters = None):
                 # Case where both are possible.
                 kappa_pos = get_Watson_kappa_ML(X, mu_pos,  Sk = Sk, rk = rk, Niter = Niter)
                 kappa_neg = get_Watson_kappa_ML(X, mu_neg,  Sk = Sk, rk = rk, Niter = Niter)
-            
-                # The maximum weighted likelihood estimator
-        #        print "rk", rk.shape
-        #        print "X",X.shape
-        #        print "mup",mu_pos.shape, "kappap", kappa_pos
-        #        print "mun",mu_neg.shape, "kappan", kappa_neg
-        #        print "Watsonpdf", Wad.Watson_pdf_log(X.T,mu_pos,kappa_pos).shape
-        
                 likelihood_pos = np.sum(Wad.Watson_pdf_log(X.T,[mu_pos,kappa_pos])*rk.T)
                 likelihood_neg = np.sum(Wad.Watson_pdf_log(X.T,[mu_neg,kappa_neg])*rk.T)
-        
-            #    print likelihood_pos, likelihood_neg
-            
-            ## Check that there are not duplicated eigenvalues
+
+            ## Check that there are no duplicated eigenvalues
                 if (likelihood_pos > likelihood_neg):
                     if (EigenValues[0] == EigenValues[1]):
                         print ("Warning: Eigenvalue1 = EigenValue2 in MLmean estimation")
@@ -122,7 +108,8 @@ def get_Watson_muKappa_ML(X, rk = None, parameters = None):
         else:
             if ( r_pos > 1-tolerance):
                 # Case where we have a degenerated cluster
-                raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', "Degenerated_Cluster_Error",np.sum(rk)/N)
+                raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', 
+                                   "Degenerated_Cluster_Error",np.sum(rk)/N)
             
             else:
                 # Case where the negative kappa case is very unilikely
@@ -155,7 +142,8 @@ def get_eigenDV_ML(X, rk = None):
     if (sum_rk < 0.0001):
         # Case where we have a degenerated cluster
     #        print "Degenerated cluster"
-        raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', "Degenerated_Cluster_Error",np.sum(rk)/N)
+        raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', 
+                           "Degenerated_Cluster_Error",np.sum(rk)/N)
                 
     Sk = Sk/np.sum(rk)  #  /unbiased_factor  # np.sum(rk)            # Not really necesarry
 
@@ -170,7 +158,8 @@ def get_eigenDV_ML(X, rk = None):
         V = V.astype(float)
     except np.linalg.linalg.LinAlgError:
         print ("Sk has failed to have good parameters ")
-        raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', "Degenerated_Cluster_Error",np.sum(rk)/N)
+        raise RuntimeError('Degenerated cluster focus in one sample. Percentage_samples = %f', 
+                           "Degenerated_Cluster_Error",np.sum(rk)/N)
 
         
     return Sk, D,V #  mu_pos, mu_neg
@@ -187,14 +176,14 @@ def get_Watson_mus_ML(X, rk = None):
     
 def get_Watson_kappa_ML(X, mu,  Sk = None, rk = None, Niter = None):
     """
-    This functions gets the estimated kappa of the Watson distribution 
+    This function gets the estimated kappa of the Watson distribution 
     It first computes an approximation and then uses Newton's method.
     Note that even though we could have obtained a valid mu,
-    its corresponding kappa might not my tractable since we have to 
+    its corresponding kappa might not be tractable since we have to 
     compute its normalizing constant which could not be computable.
     
     The Newtons method implemented is the same as the optimized in the paper
-    where we only need to compute the kummer function twice
+    where we only need to compute the kummer function twice.
     """
     
     n,d = X.shape
@@ -202,7 +191,7 @@ def get_Watson_kappa_ML(X, mu,  Sk = None, rk = None, Niter = None):
     c = float(d)/2
     
     if (type(Sk) == type(None)):
-        Sk = np.dot(X.T,rk*X)   # Correlation # We weight the samples by the cluster responsabilities r[:,k]
+        Sk = np.dot(X.T,rk*X)   # Correlation, we weight the samples by the cluster responsabilities r[:,k]
         Sk = Sk/(np.sum(rk))
     
     # Variance explained by the direction
@@ -218,12 +207,11 @@ def get_Watson_kappa_ML(X, mu,  Sk = None, rk = None, Niter = None):
     else:            # General approximation
         BGG = (c*r -a)/(r*(1-r)) + r/(2*c*(1-r))
 
-#    print "Num iterations Newton %i"%Niter
 #    BGG_opt = newton(get_kappaNewton, BGG, args=([d,r],))
     BGG_opt = Newton_kappa_log(BGG,d,r,Niter)
     return BGG_opt
 
-## Own implementation of newton
+## Own implementation of the Newton method
 def Newton_kappa_log(kappa0,Ndim,r, Niter = None):
     kappa = kappa0
     a = 0.5
@@ -241,7 +229,7 @@ def Newton_kappa_log(kappa0,Ndim,r, Niter = None):
 
     return kappa
 
-## Function to be used if we use the implementation of Newton from python
+## Function to be used if we use the implementation of the Newton from the optimize library
 def get_kappaNewton(k, args):  # The r is computed outsite
     Ndim = args[0]
     r = args[1]
@@ -254,7 +242,6 @@ def get_kappaNewton(k, args):  # The r is computed outsite
     dM_log = np.log((a/c)) + Mplus_log
 
     g = np.exp(dM_log - M_log)
-#    kummer = 
-#    print Ndim, k, r
+
     return g - r
     

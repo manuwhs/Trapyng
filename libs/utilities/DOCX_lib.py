@@ -5,7 +5,6 @@ from graph_lib import gl
 import pandas as pd
 import datetime as dt
 import os
-# Creare new Word Document
 
 class CleaningReport():
     def __init__(self):
@@ -44,16 +43,13 @@ class CleaningReport():
 
     def load_administration_data(self, administration_data = [None, None, None, None,None]):
         # Loading the Administration Data
-        # This should feel the information for the company
-        # With the cleaning ID we should be able to get all info
-        # hard code in worst scenario.
+        # This should fill the information of the company
+        # Using the cleaning ID we can get all info from the DDBB
         self.machine_ID, self.piping_ID, self.cleaning_ID,self.FDA_cleaning_procedure,self.Responsibles  = administration_data;
-        
-        pass
 
     def load_sensors_data(self, data, column_names = ["Temp","PH","Pressure","Conductivity"]):
         # Loading the cleaning process Data.
-        # TODO: Working under the assumption that all the sensors are sampled at the same time.
+        # Working under the assumption that all the sensors are sampled at the same time.
         # Otherwise we would have different time labels and the SQL dabase would need a table per sensor to be efficient,.
         # data is the pandas dataframe table. 
         # The data should be provided externally, probably with a DDBB call.
@@ -67,15 +63,12 @@ class CleaningReport():
         self.sensors_data_pd = df
         self.sensor_names = column_names;
 
-        
-        pass
-    
     def process_cleaning_data(self, Monitors):
         # This function should tell us if there has been any violation in the data.
         # For this purpose, it needs the Data and the Monitoring information
         # Monitors is a list of Monitor objects, the "ID" of the object would the columns of data
         self.Monitors = Monitors;
-        # TODO
+
 
     def generate_images(self, folder_path):
         self.sensor_images_path = folder_path
@@ -90,10 +83,6 @@ class CleaningReport():
             path_image = self.sensor_images_path + sensor_column + ".png"
             gl.savefig( path_image,
                dpi = 100, sizeInches = [])  # [2*8, 2*3]
-            
-            
-        pass
-
 
     def add_FDA_requirements_table(self):
         # Just created the word table showing the parameters of the cleaning process

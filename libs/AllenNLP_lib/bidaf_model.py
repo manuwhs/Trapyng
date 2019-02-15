@@ -45,40 +45,11 @@ from HighwayVB import HighwayVB
 
 class BidirectionalAttentionFlow_1(Model):
     """
-    This class implements Minjoon Seo's `Bidirectional Attention Flow model
+    This class implements a Bayesian version of Minjoon Seo's `Bidirectional Attention Flow model
     <https://www.semanticscholar.org/paper/Bidirectional-Attention-Flow-for-Machine-Seo-Kembhavi/7586b7cca1deba124af80609327395e613a20e9d>`_
     for answering reading comprehension questions (ICLR 2017).
-    The basic layout is pretty simple: encode words as a combination of word embeddings and a
-    character-level encoder, pass the word representations through a bi-LSTM/GRU, use a matrix of
-    attentions to put question information into the passage word representations (this is the only
-    part that is at all non-standard), pass this through another few layers of bi-LSTMs/GRUs, and
-    do a softmax over span start and span end.
-    Parameters
-
     """
     
-    """
-    BAYESIAN NECESSARY FUNCTIONS
-    """
-    sample_posterior = GeneralVBModel.sample_posterior
-    get_KL_divergence = GeneralVBModel.get_KL_divergence
-    set_posterior_mean = GeneralVBModel.set_posterior_mean
-    combine_losses = GeneralVBModel.combine_losses
-    
-    def save_VB_weights(self):
-        """
-        Function that saves only the VB weights of the model.
-        """
-        pretrained_dict = ...
-        model_dict = self.state_dict()
-        
-        # 1. filter out unnecessary keys
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
-        # 2. overwrite entries in the existing state dict
-        model_dict.update(pretrained_dict) 
-        # 3. load the new state dict
-        self.load_state_dict(pretrained_dict)
-
     def __init__(self, vocab: Vocabulary, cf_a, preloaded_elmo = None) -> None:
         super(BidirectionalAttentionFlow_1, self).__init__(vocab, cf_a.regularizer)
         
@@ -101,7 +72,6 @@ class BidirectionalAttentionFlow_1(Model):
                 text_field_embedder = bidut.download_Elmo(cf_a.ELMO_num_layers, cf_a.ELMO_droput )
                 print ("ELMO loaded from disk or downloaded")
         else:
-            # TODO: Only implemented for ELMO
             text_field_embedder = None
         
 #        embedder_out_dim  = text_field_embedder.get_output_dim()
@@ -799,39 +769,25 @@ class BidirectionalAttentionFlow_1(Model):
         return  total_size_w, total_removed_w, total_size_b, total_removed_b
 #    print (weights_to_remove_W.shape)
 
-
-#def general_validation_runner(model):
-#    self = model
-#    
-#    self.set_posterior_mean(True)
-#    self.eval()
-#    data_loss_validation = 0
-#    loss_validation = 0
-#    
-#    # Remove the 
-#    metrics = self.get_metrics(reset = True)
-#    
-#    with torch.no_grad():
-#        # Compute the validation accuracy by using all the Validation dataset but in batches.
-#        for j in range(num_batches_validation):
-#            tensor_dict = next(validation_iterable)
-#            tensor_dict = pytut.move_to_device(tensor_dict, device) ## Move the tensor to cuda
-#            output_batch = self.forward(**tensor_dict)
-#            
-#            data_loss_validation += output_batch["loss"].detach().cpu().numpy() 
-#            del tensor_dict["question"]; del tensor_dict["passage"]
-#            del tensor_dict
-#            torch.cuda.empty_cache()
-#            del output_batch
-#            gc.collect()
-#            
-#        data_loss_validation = data_loss_validation/num_batches_validation
-##            loss_validation = loss_validation/num_batches_validation
-#
-#        # Training Epoch final metrics
-#    metrics = self.get_metrics(reset = True)
-#
-#    self.train()
-#    self.set_posterior_mean(False)
-#        
-#    return metrics, data_loss_validation
+    
+    """
+    BAYESIAN NECESSARY FUNCTIONS
+    """
+    sample_posterior = GeneralVBModel.sample_posterior
+    get_KL_divergence = GeneralVBModel.get_KL_divergence
+    set_posterior_mean = GeneralVBModel.set_posterior_mean
+    combine_losses = GeneralVBModel.combine_losses
+    
+    def save_VB_weights(self):
+        """
+        Function that saves only the VB weights of the model.
+        """
+        pretrained_dict = ...
+        model_dict = self.state_dict()
+        
+        # 1. filter out unnecessary keys
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+        # 2. overwrite entries in the existing state dict
+        model_dict.update(pretrained_dict) 
+        # 3. load the new state dict
+        self.load_state_dict(pretrained_dict)
