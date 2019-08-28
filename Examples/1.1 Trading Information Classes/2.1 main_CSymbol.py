@@ -25,7 +25,7 @@ dataSource =  "MQL5"  # Hanseatic  FxPro GCI Yahoo
 [storage_folder, updates_folder] = ul5.get_foldersData(source = dataSource)
 #### Load the info about the available symbols #####
 Symbol_info = CSy.load_symbols_info(storage_folder)
-Symbol_names = Symbol_info["Symbol_name"].tolist()
+Symbol_names = Symbol_info["Symbol"].tolist()
 Nsym = len(Symbol_names)
 
 ############################### OUR SYMBOL ############################

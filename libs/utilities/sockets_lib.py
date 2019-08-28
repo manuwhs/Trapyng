@@ -13,14 +13,14 @@ class socketserver:
     
     def buy_sell_command(self, BUYSELL, symbol, volume, magicNumber):
         message = BUYSELL + " " + symbol + str(volume) + str(magicNumber)
-        self.conn.send(bytes(message, "utf-8"))
+        self.send_all(message)
     
     def request_csv_symbol_info(self):
         
         print ("Requesting csv with symbol information")
         command = "DOWNLOAD_SYMBOLS_INFO"
         message = command 
-        self.conn.send(bytes(message, "utf-8"))
+        self.send_all(message)
         
         response = self.read_all()
         print("Response: ", response)
@@ -42,7 +42,7 @@ class socketserver:
         command = "CSV_DATA_REQUEST"
         message = command +" "+ symbol + " " + str(period)+" " + sdate
         print ("Requesting csv with symbol information: ", message)
-        self.conn.send(bytes(message, "utf-8"))
+        self.send_all(message);
         
         response = self.read_all()
         print("Response: ", response)
@@ -50,8 +50,13 @@ class socketserver:
             pass 
         
         return response
+    
+    def send_all(self, message):
+        message += "#"
+        self.conn.send(bytes(message, "utf-8"))
         
     def read_all(self,  min_charts_to = 4096):
+        
         # TODO: Make polict of read all based on time or size of the message.
         # There is no automatic way to know. We could have a special message delimiter.
         
@@ -66,7 +71,14 @@ class socketserver:
 #            
 #            if not data:
 #                break
-        cummdata = self.conn.recv(10000)
+        cummdata = "" 
+        cummdata += self.conn.recv(10000).decode("utf-8")
+        
+        if (len(cummdata) > 0):
+            while (cummdata[-1] != "#"):
+                 cummdata += self.conn.recv(10000).decode("utf-8")
+            
+            cummdata = cummdata[0:-1] # Remove the #
         return cummdata
     
     def listen(self, backlog = 1):
