@@ -196,8 +196,8 @@ class email_handler():
 #################### USAGE ###########################################
 #########################################################################
             
-user = "manuwhs@gmail.com"
-password = "manumon7g.@"
+user = ""
+password = ""
 ## Instantiate the class
 my_email_handler = email_handler(user, password)
 

@@ -58,7 +58,6 @@ if (success):
                 print ("Updated database")
                 
                 
-    
 serv.sock.close()
 
 
