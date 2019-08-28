@@ -738,54 +738,6 @@ def get_stepValues(x, y1, y2=0, step_where='pre'):
     # now to the plotting part:
     return xx, yy1, yy2
     
-def get_foldersData(source = "FxPro", symbol_info_list = "Current", rrf = "../" ):
-    # Returns the folders where we can find the previously stored data,
-    # new data to download and the info about the symbols we have or 
-    # want to download.
-
-#    rrf = "../" # relative_root_folder
-
-    if (source == "Hanseatic"):
-        storage_folder = rrf + "./storage/Hanseatic/"
-        updates_folder = rrf +"../Hanseatic/MQL4/Files/"
-        if (symbol_info_list == "Current"):
-            info_folder = storage_folder # updates_folder
-        else:
-            info_folder = updates_folder
-    elif (source == "FxPro" ):
-        storage_folder = rrf +"./storage/FxPro/"
-        updates_folder = rrf +"../FxPro/MQL4/Files/"
-        if (symbol_info_list == "Current"):
-            info_folder = storage_folder # updates_folder
-        else:
-            info_folder = updates_folder
-    #    updates_folder = "../FxPro/history/CSVS/"
-
-    elif (source == "GCI" ):
-        storage_folder = rrf +"./storage/GCI/"
-        updates_folder = rrf +"../GCI/MQL4/Files/"
-        if (symbol_info_list == "Current"):
-            info_folder = storage_folder # updates_folder
-        else:
-            info_folder = updates_folder
-    #    updates_folder = "../GCI/history/CSVS/"
-    
-    elif (source == "Yahoo"):
-        storage_folder = rrf +"./storage/Yahoo/"
-        updates_folder = rrf +"internet"
-        if (symbol_info_list == "Current"):
-            info_folder = storage_folder # updates_folder
-        else:
-            info_folder = updates_folder
-        
-    elif (source == "Google"):
-        storage_folder = rrf +"./storage/Google/"
-        updates_folder = rrf +"internet"
-        if (symbol_info_list == "Current"):
-            info_folder = storage_folder # updates_folder
-        else:
-            info_folder = updates_folder
-    return storage_folder, info_folder, updates_folder
 
 def datesToNumbers(dates):
     # This funciton is suposed to transform the datetimes to numbers

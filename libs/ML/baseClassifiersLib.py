@@ -10,7 +10,7 @@ import copy
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
-from sklearn import cross_validation
+from sklearn.model_selection import cross_validate
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
@@ -18,8 +18,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC,LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier,ExtraTreesClassifier
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.grid_search import GridSearchCV
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import  make_scorer     # To make a scorer for the GridSearch.
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA

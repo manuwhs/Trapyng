@@ -186,7 +186,11 @@ def diff(X, lag = 1, n = 1, cval = np.nan): # cval=np.NaN
 #        print sd
         # Shift to the right npossitions
     unk_vec = np.ones((lag*n,Nsig)) * cval
-    X = np.concatenate((unk_vec,X), axis = 0)
+
+    try:
+        X = np.concatenate((unk_vec,X), axis = 0)
+    except:
+        print("Exception in diff function. Probably the input vector is dates")
     return X
     
 def shift(X, lag = 1, cval = np.nan): # cval=np.NaN

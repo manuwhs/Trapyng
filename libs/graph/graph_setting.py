@@ -171,7 +171,6 @@ def preprocess_data(self,X,Y, dataTransform = None ):
     if (type(dataTransform) != type(None)):
         if (dataTransform[0] == "intraday"):
             # In this case we are going to need to transform the dates.
-        
             openhour = dataTransform[1] 
             closehour = dataTransform[2]
             self.formatXaxis = "intraday"
@@ -183,15 +182,18 @@ def preprocess_data(self,X,Y, dataTransform = None ):
             # Setting the static object of the function
             ul.detransformer_Formatter.format_data = Mydetransfromdata
             self.X = ul.fnp(transfomedTimes) 
-        
+            
     if (self.formatXaxis == "categorical"): # Transform to numbers and later we retransform
         self.Xcategories = self.X
-        self.X = ul.fnp(range(NpY)) 
+        self.X = ul.fnp(range(NpX)) 
     
     if (self.formatYaxis == "categorical"): # Transform to numbers and later we retransform
         self.Ycategories = self.Y
         self.Y = ul.fnp(range(NpY)) 
     
+#    if (self.formatXaxis == "dates"): # Transform to numbers and later we retransform
+#        self.Xcategories = self.X
+#        self.X = ul.preprocess_dates(range(NpX)) 
         
     return self.X,self.Y
 
@@ -229,13 +231,15 @@ def get_barwidth(self,X, width = None):
     # The Xaxis could be dates and so on, so we want to calculate
     # the with of this bastard independently of that
 
+    if (len(X.shape)):
+        X = X.flatten()
+    print (X.shape)
+    print("X axis type: ", type(X[0]).__name__ )
     if (type(width) == type(None)):
         width = 1
 #        print width
-    if (type(X[0]).__name__ == "Timestamp"):
-    
+    if (type(X[0]).__name__ == "Timestamp" ): #  or (type(X[0]).__name__ == "datetime64" )
         width_size = min(bMl.diff(X)[1:])
-        
         width_size = (width_size.total_seconds())/ (24.0*60*60) 
     else:
         
@@ -247,7 +251,7 @@ def get_barwidth(self,X, width = None):
     width = width_size * width
 #    print type(X[0])
     width = float(width)
-    
+    print("width is: ", width)
     return width
     
 

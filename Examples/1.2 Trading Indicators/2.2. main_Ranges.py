@@ -10,29 +10,22 @@ import import_folders
 import datetime as dt
 import matplotlib.pyplot as plt
 import numpy as np
-import copy as copy
-import pylab
 # Own graphical library
 from graph_lib import gl
-import graph_tsa as grtsa
 # Data Structures Data
 import CTimeData as CTD
 # Import functions independent of DataStructure
-import utilities_lib as ul
-import indicators_lib as indl
-import indicators_pandas as indp
-import oscillators_lib as oscl
-plt.close("all") # Close all previous Windows
-######## SELECT DATASET, SYMBOLS AND PERIODS ########
-dataSource =  "GCI"  # Hanseatic  FxPro GCI Yahoo
-[storage_folder, info_folder, 
- updates_folder] = ul.get_foldersData(source = dataSource)
+import utilities_MQL5 as ul5
 
-symbols = ["Amazon"]
+plt.close("all")
+######## SELECT DATASET, SYMBOLS AND PERIODS ########
+dataSource =  "MQL5"  # Hanseatic  FxPro GCI Yahoo
+[storage_folder, updates_folder] = ul5.get_foldersData(source = dataSource)
+
+symbols = ["EURUSD"]
 periods = [1440]
 ######## SELECT DATE LIMITS ###########
-sdate_str = "01-10-2015"; 
-edate_str = "20-6-2016"
+sdate_str = "01-02-2018"; edate_str = "2-2-2019"
 sdate = dt.datetime.strptime(sdate_str, "%d-%m-%Y")
 edate = dt.datetime.strptime(edate_str, "%d-%m-%Y")
 ######## CREATE THE OBJECT AND LOAD THE DATA ##########
@@ -46,7 +39,7 @@ timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 
 NormalPivot_Points = 1
 FiboPivot_Points = 1
-BB_f = 1
+BB_f = 0
 randomPrice_f = 1
 BBfuture_f = 1
 ATR_AHLR_f =1
@@ -133,7 +126,12 @@ if (BB_f):
 #    gl.plot(dates, price, ax = ax1,  AxesStyle = "Normal - No xaxis",
 #            labels = ["Volatility indicator BB", "", "Price"],
 #            legend = ["Price"], color = "dark navy blue")
-    title = "Bollinger Bands. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")" 
+    title = "Bollinger Bands. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")" 
+    
+    
+    ##### The problem is that we are using dataTrasnform so the X axis is not being transformed into integers
+    ##### but fed directly, we need to still make such a transformation for this to work?
+    
     gl.barchart(dates, dataHLOC, ax = ax1, color = color1,
             labels = [title, "", r"Price ($\$$)"],
             legend = ["HLOC Price"])
@@ -256,7 +254,7 @@ if (BBfuture_f):
 #    gl.plot(dates, price, ax = ax1,  AxesStyle = "Normal - No xaxis",
 #            labels = ["Volatility indicator BB", "", "Price"],
 #            legend = ["Price"], color = "dark navy blue")
-    title = "Bollinger Bands. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")" 
+    title = "Bollinger Bands. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")" 
     gl.barchart(dates, dataHLOC, ax = ax1, color = color1,
             labels = [title, "", r"Price ($\$$)"],
             legend = ["HLOC Price"])

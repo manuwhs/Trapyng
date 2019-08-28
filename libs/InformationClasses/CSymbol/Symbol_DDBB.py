@@ -64,7 +64,7 @@ def set_info(self, infoCSV):
     # Given the dataFrame with the info of symbols,
     # This function finds the symbol name and initializes the attibutes.
     # Symbol_name,PointSize,MinTickValue,ContractSize,Currency,PriceNow
-    self.info = infoCSV.loc[infoCSV['Symbol_name'] == self.symbolID]
+    self.info = infoCSV.loc[infoCSV['Symbol'] == self.symbolID]
     return infoCSV
 #def save_symbol_info(file_dir = "./storage/"):
 #    # This functions loads the symbol info
@@ -101,11 +101,10 @@ def fill_data(self):
         self.timeDatas[period].fill_data()
         
 
-def update_csv (self,file_dir_current = "./storage/", file_dir_new = "../Trader/MQL4/Files/",
-                symbolID = None, periods = []):
-    self.set_csv(file_dir_current, symbolID, periods)
-    self.add_csv(file_dir_new, symbolID, periods)
-    self.save_to_csv(file_dir_current)
+def update_csv (self,storage_folder, updates_folder, symbolID = None, periods = []):
+    self.set_csv(storage_folder, symbolID, periods)
+    self.add_csv(updates_folder, symbolID, periods)
+    self.save_to_csv(storage_folder)
 
 #######################################################################
 ############## Yahoo func ##########################################

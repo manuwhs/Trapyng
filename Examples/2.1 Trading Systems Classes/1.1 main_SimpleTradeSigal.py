@@ -6,12 +6,11 @@ the events
  
 """
 
-
 import os
 os.chdir("../../")
 import import_folders
 # Classical Libraries
-import copy as copy
+
 import datetime as dt
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,24 +18,24 @@ import numpy as np
 from graph_lib import gl 
 # Data Structures Data
 
-import CSymbol as CSy
+
 import CPortfolio as CPfl
 import CStrategy_XingMA as CX
 # Import functions independent of DataStructure
+import utilities_MQL5 as ul5
 import utilities_lib as ul
+
 
 plt.close("all")
 ######## SELECT DATASET, SYMBOLS AND PERIODS ########
-source = "Yahoo" # Hanseatic  FxPro GCI Yahoo
-[storage_folder, info_folder, 
- updates_folder] = ul.get_foldersData(source = source)
+source = "MQL5" # Hanseatic  FxPro GCI Yahoo
+[storage_folder, updates_folder] = ul5.get_foldersData(source = source)
 ################## Date info ###################
-sdate_str = "01-01-2010"
-edate_str = "21-12-2016"
+sdate_str = "01-11-2016"; edate_str = "21-12-2016"
 sdate = dt.datetime.strptime(sdate_str, "%d-%m-%Y")
 edate = dt.datetime.strptime(edate_str, "%d-%m-%Y")
-symbolIDs =  ["GE", "HPQ","XOM","DANSKE.CO"]
-periods = [43200]  # 1440  43200
+symbolIDs =  ["EURUSD","USDCAD"]
+periods = [1440]  # 1440  43200
 period1 = periods[0]
 
 ####### LOAD SYMBOLS AND SET Properties   ###################
@@ -50,8 +49,8 @@ Cartera.set_seriesNames(["Close"])
 
 ########## Strategy setting ####################
 myEstrategia = CX.CStrategy_XingMA("caca",1440,Cartera)
-symbolID = "DANSKE.CO"
-Lslow, Lfast = 12,5
+symbolID = "EURUSD"
+Lslow, Lfast = 30,5
 myEstrategia.set_slowMA(symbolID, period1, L = Lslow, MAtype = "EMA")
 myEstrategia.set_fastMA(symbolID, period1, L = Lfast, MAtype = "EMA")
 crosses, dates = myEstrategia.get_TradeSignals()

@@ -9,32 +9,26 @@ import import_folders
 # Classical Libraries
 import datetime as dt
 import matplotlib.pyplot as plt
-import numpy as np
-import copy as copy
+
 # Own graphical library
 from graph_lib import gl
 # Data Structures Data
 import CTimeData as CTD
 # Import functions independent of DataStructure
-import utilities_lib as ul
+import utilities_MQL5 as ul5
 import basicMathlib as bMA
 import indicators_lib as indl
-import indicators_pandas as indp
-import oscillators_lib as oscl
+
 plt.close("all") # Close all previous Windows
 
 ######## SELECT DATASET, SYMBOLS AND PERIODS ########
-dataSource =  "GCI"  # Hanseatic  FxPro GCI Yahoo
-[storage_folder, info_folder, 
- updates_folder] = ul.get_foldersData(source = dataSource)
+dataSource =  "MQL5"  # Hanseatic  FxPro GCI Yahoo
+[storage_folder, updates_folder] = ul5.get_foldersData(source = dataSource)
 
-symbols = ["XAUUSD","Mad.ITX", "EURUSD"]
-symbols = ["Alcoa_Inc"]
-symbols = ["Amazon"]
+symbols = ["EURUSD"]
 periods = [1440]
 ######## SELECT DATE LIMITS ###########
-sdate_str = "01-02-2016"
-edate_str = "2-2-2017"
+sdate_str = "01-02-2018"; edate_str = "2-2-2019"
 sdate = dt.datetime.strptime(sdate_str, "%d-%m-%Y")
 edate = dt.datetime.strptime(edate_str, "%d-%m-%Y")
 ######## CREATE THE OBJECT AND LOAD THE DATA ##########
@@ -48,11 +42,11 @@ timeData.set_interval(sdate,edate) # Set the interval period to be analysed
 ###########################################################################
 folder_images = "../pics/Trapying/MA/"
 # Using the library of function built in using the dataFrames in pandas
-comparing_SEW_MAs = 0
-comparing_lags = 0
-viewing_SEW_windows = 0
-MAMAs = 0
-HullsMA = 0
+comparing_SEW_MAs = 1
+comparing_lags = 1
+viewing_SEW_windows = 1
+MAMAs = 1
+HullsMA = 1
 
 if (comparing_SEW_MAs):
     # Some basic indicators.
@@ -66,7 +60,7 @@ if (comparing_SEW_MAs):
     EMA1 = timeData.EMA(seriesNames = ["Close"], n = nMA1)
     MWA1 = timeData.get_WMA(nMA1)
     # Plotting the 3 of them at the same time.
-    title = "Comparing MAs. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")" 
+    title = "Comparing MAs. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")" 
     gl.plot(dates, [price, SMA1, MWA1, EMA1], nf = 1,
             labels = [title,"",r"Price ($\$$)"],
             legend = [r"$P_{CLOSE}$", "SMA(%i)"%nMA1, "WMA(%i)"%nMA1, "EMA(%i)"%nMA1],
@@ -98,7 +92,7 @@ if (comparing_lags):
     legend.extend([ "SMA(" +str(x) +")" for x in nSMAs])
     SMAs.insert(0, price)
     
-    title = "Influence of L in the lag. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")"
+    title = "Influence of L in the lag. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")"
     ax1 = gl.plot(dates,  SMAs , nf = 1,
             labels = [title,"",r"Price ($\$$)"],
             legend = legend,  AxesStyle = "Normal - No xaxis")
@@ -136,7 +130,7 @@ if (viewing_SEW_windows):
     """ 1st GRAPH """
     ############## Average and Window ################
     ax1 = gl.subplot2grid((1,5), (0,0), rowspan=1, colspan=3)
-    title = "Price and SMA. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")"
+    title = "Price and SMA. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")"
 
     gl.plot(dates, [price, SMA] ,AxesStyle = "Normal",
             labels = [title,"",r"Price ($\$$)"],
@@ -260,7 +254,7 @@ if (HullsMA):
     # For lag and noise
 
     # Plotting the 3 of them at the same time.
-    title = "Hull's MA. " + str(symbols[0]) + "(" + ul.period_dic[timeData.period]+ ")"
+    title = "Hull's MA. " + str(symbols[0]) + "(" + ul5.period_dic[timeData.period]+ ")"
 
     gl.plot(dates, [price, HMA, HMAg, WMA] , nf = 1 ,AxesStyle = "Normal",
             labels = [title,"",r"Price ($\$$)"],

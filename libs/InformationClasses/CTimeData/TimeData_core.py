@@ -191,6 +191,7 @@ def get_dates(self, indexes = []):
     if (len(indexes) == 0):
         indexes = self.time_mask
     dates = self.TD.index[indexes]
+#    print (dates.shape)
 #    self.dates = dates
     return copy.deepcopy(dates)
 

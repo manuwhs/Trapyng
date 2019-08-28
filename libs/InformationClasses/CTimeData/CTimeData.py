@@ -37,9 +37,9 @@ Set of functions such as add values, delete values will be done.
 
 class CTimeData:
     
-    def __init__(self, symbolID = None, period = None, TD = ul.empty_df):
+    def __init__(self, symbolID: str = None, period: int = None,  TD: pd.DataFrame = ul.empty_df):
         self.symbolID = symbolID    # Symbol of the Security (GLD, AAPL, IDX...)
-        self.period = period
+        self.period = period        # It is the number of minutes of the period: 1 5 15....
         
         ## Time constraining variables
         self.start_time = None  # Start and end of period to operate from the TD
@@ -67,7 +67,7 @@ class CTimeData:
     set_csv = TDDB.set_csv    # Set and add timeData from csv's
     add_csv = TDDB.add_csv
     save_to_csv = TDDB.save_to_csv # Save timeData to csv
-    update_csv = TDDB.add_csv
+    update_csv = TDDB.update_csv
     
     set_TD_from_google = TDDB.set_TD_from_google
     

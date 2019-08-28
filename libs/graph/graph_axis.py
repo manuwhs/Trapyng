@@ -48,6 +48,7 @@ def format_xaxis (self, ax = None,
     #        ax.get_xaxis().get_major_formatter().set_useOffset(False)
             
         elif(self.formatXaxis == "dates"):
+            print("Now in")
             # Set the formatting of the numbers, dates or strings.
             # We could specify the formatting of the dates,if not we use a general one
             if (type(formatting) == type(None)):

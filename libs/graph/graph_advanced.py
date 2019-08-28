@@ -38,9 +38,7 @@ def barchart(self, X = [],Y = [],  # X-Y points in the graph.
 #    self.X = self.X.astype(dt.datetime)
 #    print X.shape
     High,Low, Open,Close = Y[:,0], Y[:,1], Y[:,2], Y[:,3]
-    X = ul.preprocess_dates(X)
-    self.X = X
-    
+
 #    print X
     width_unit = self.get_barwidth(X)
     dist = width_unit /2.2
@@ -55,7 +53,11 @@ def barchart(self, X = [],Y = [],  # X-Y points in the graph.
     colorFinal = self.get_color(color)
     
     # TODO: Handle the legend better
-    lcHL = mc.LineCollection(linesHL, colors= colorFinal, linewidths=lw, antialiased=True, label = legend[0])
+    if len(legend)>0:
+        label_legend = legend[0]
+    else:
+        label_legend = None
+    lcHL = mc.LineCollection(linesHL, colors= colorFinal, linewidths=lw, antialiased=True, label = label_legend)
     lcO = mc.LineCollection(linesO, colors= colorFinal, linewidths=lw2, antialiased=True)
     lcC = mc.LineCollection(linesC, colors= colorFinal, linewidths=lw2, antialiased=True)
     ax.add_collection(lcHL)

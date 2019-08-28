@@ -46,8 +46,7 @@ sys.path.append(base_path + "/libs/Distributions/vonMisesFisher")
 sys.path.append(base_path + "/libs/BBBLSTM")
 sys.path.append(base_path + "/libs/Pytorch")
 sys.path.append(base_path + "/libs/AllenNLP_lib")
-
+sys.path.append(base_path + "/libs/HBM")
 sys.path.append(base_path + "/RainMaking/")
 #imp_folders(os.path.abspath(''))
-    
 # Change code to only make it one ? main1, change folder name and database

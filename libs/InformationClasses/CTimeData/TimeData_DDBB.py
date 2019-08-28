@@ -91,7 +91,8 @@ def save_to_csv(self, file_dir = "./storage/", force = False):
         ul.create_folder_if_needed(file_dir + ul.period_dic[self.period] + "/")
         self.TD.to_csv(whole_path, sep=',')
 
-def set_csv(self, file_dir = "./storage/", file_name = None, symbolID = None, period = None):
+def set_csv(self, file_dir = "./storage/", symbolID = None, period = None, file_name = None):
+    
 
     # This function loads the data from the file  file_dir + file_name if file_name is provided
     # Otherwise it uses the naming convention to find it from the root folder:
@@ -101,21 +102,24 @@ def set_csv(self, file_dir = "./storage/", file_name = None, symbolID = None, pe
     # initialization it will get them from there
     # specific and adds its values to the main structure
     symbolID, period = self.get_final_SymbolID_period(symbolID, period)
-    TD = DBl.load_TD_from_csv(file_dir,file_name,symbolID,period)
+#    print("Setting csv: ", file_dir, ",symbol: ", symbolID,", period: ", period, ".File_name:",file_name)
+    
+    TD = DBl.load_TD_from_csv(file_dir,symbolID,period,file_name)
     self.set_TD(TD)
     
 def add_csv(self, file_dir = "./storage/", symbolID = None, period = None):
+    print("Setting csv: ", file_dir, ",symbol: ", symbolID,", period: ", period)
     # Loads a CSV and adds its values to the main structure
     symbolID, period = self.get_final_SymbolID_period(symbolID, period)
     newTD = DBl.load_TD_from_csv(file_dir,symbolID,period)
     self.add_TD(newTD)
 
-def update_csv (self,file_dir_current = "./storage/", file_dir_new = "../Trader/MQL4/Files/",
+def update_csv (self,storage_folder, updates_folder,
                  symbolID = None, period = None):
     # Function that loads from 2 different folders, joins the data and saves it back
-    self.set_csv(file_dir_current,symbolID,period)
-    self.add_csv(file_dir_new,symbolID,period)
-    self.save_to_csv(file_dir_current)
+    self.set_csv(storage_folder,symbolID,period)
+    self.add_csv(updates_folder,symbolID,period)
+    self.save_to_csv(storage_folder)
 
     
 ########### WEBSOURCES ################################

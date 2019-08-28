@@ -9,6 +9,7 @@ sys.path.append(base_path + "/")
 os.chdir("../../")
 base_path = os.path.abspath('')
 sys.path.append(base_path + "/")
+
 import import_folders
 
 # Public Libraries
@@ -20,12 +21,16 @@ import pandas as pd
 # Own graphical library
 from graph_lib import gl
 # Data Structures Data
+
 import plotting_func as pf
+
 # Specific utilities
 import utilities_lib as ul
 
 import data_loaders as dl
 import config_files as cf 
+
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -53,7 +58,7 @@ plot_evolution_loss =1
 
 create_video_training = 1
 plot_weights = 0
-Step_video = cf.cf_a_Regression_1D.Nepochs
+Step_video = 1 # cf.cf_a_Regression_1D.Nepochs
 
 ## We can do this for more than 1 hyperparameter
 eta_values = [0, 0.01,0.05, 0.1,0.2,0.5,1,2,5]

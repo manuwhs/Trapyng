@@ -150,6 +150,14 @@ class GeneralVBModel(nn.Module):
         with torch.no_grad():
             return self.loss_func(self.forward(X),Y)
 
+    def get_KL_loss(self):
+        """
+        Computes the KL div but without creating a graph !!
+        """
+        with torch.no_grad():
+            KL_div = self.get_KL_divergence();
+        return KL_div
+    
     def get_loss(self, X, Y):
         """ 
         Data Loss + VB loss
@@ -163,14 +171,6 @@ class GeneralVBModel(nn.Module):
             total_loss =  self.combine_losses(data_loss, KL_div)
         
         return total_loss
-    
-    def get_KL_loss(self):
-        """
-        Computes the KL div but without creating a graph !!
-        """
-        with torch.no_grad():
-            KL_div = self.get_KL_divergence();
-        return KL_div
     
     """
     ############################### Training FUNCTIONS ###########################

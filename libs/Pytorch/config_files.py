@@ -23,7 +23,7 @@ class cf_a_Regression_1D():  # configuration cf_a
     ### Training 
     loss_func = nn.MSELoss()
     Nepochs = 100       # Number of epochs
-    batch_size_train = 3     # Batch size
+    batch_size_train =  3    # Batch size
 
     ## The optimizer could be anything 
 #    optimizer_type = "SGD"
@@ -151,4 +151,104 @@ class cf_RNN_2():  # configuration cf_a
     
     # Outp
     dop = 0.0 # Dropout p 
+
+
+class cf_a_VAE_EURUSD():  # configuration cf_a
+    task_type = "regression"
+    ## Data dependent:
+    D_in = None     # Dimensionality of input features
+    D_out = None   # Dimensionality of output features
+
+    ## DEVICES
+    dtype = None  # Variable types
+    device = None
     
+    ################ ENCODER Architecture ################
+    H_enc1 = 10      # Number of hidden neurons
+    H_enc2 = 20      # Number of hidden neurons
+    ### Nonlinearity
+    activation_func_enc1 = torch.tanh #   torch.cos  torch.clamp tanh
+    activation_func_enc2 = torch.tanh #   torch.cos  torch.clamp tanh
+    
+
+    ################ ENCODER Architecture ################
+    H_dec1 = 50      # Number of hidden neurons
+    H_dec2 = 10      # Number of hidden neurons
+    ### Nonlinearity
+    activation_func_dec1 = torch.tanh #   torch.cos  torch.clamp tanh
+    activation_func_dec2 = torch.tanh #   torch.cos  torch.clamp tanh
+    
+    ############## HIDDEN SPACE #########################
+    
+    Z_dim = 10
+    
+    ### Training 
+    loss_func = nn.MSELoss()
+    Nepochs = 100       # Number of epochs
+    batch_size_train = 1     # Batch size
+
+    ## The optimizer could be anything 
+#    optimizer_type = "SGD"
+#    optimizer_params = {"lr":1e-2, "weight_decay":0.01}
+    optimizer_type = "Adam"   
+    optimizer_params = {"lr":1e-4, "betas":(0.9, 0.9),"weight_decay":0.00}
+#    
+    # Outp
+    dop = 0.0 # Dropout p 
+    """
+    ################ BAYESIAN PARAMS ###################3
+    """
+    # Weight applied to tbe KL 
+    eta_KL = 1.000
+    Nsamples_train = None # We need this value together with batch_size 
+                            # for computing the loss of the ELBO
+
+    input_layer_prior  = \
+    {"pi":0.5, "log_sigma1":np.log(1), "log_sigma2":np.log(1)}
+    output_layer_prior  = input_layer_prior
+                
+
+class cf_a_GAN_EURUSD():  # configuration cf_a
+    task_type = "regression"
+    ## Data dependent:
+    D_in = None     # Dimensionality of input features
+    D_out = None   # Dimensionality of output features
+
+    ## DEVICES
+    dtype = None  # Variable types
+    device = None
+    
+    ################ ENCODER Architecture ################
+    H_enc1 = 100      # Number of hidden neurons
+    H_enc2 = 20      # Number of hidden neurons
+    ### Nonlinearity
+    activation_func_enc1 = torch.tanh #   torch.cos  torch.clamp tanh
+    activation_func_enc2 = torch.tanh #   torch.cos  torch.clamp tanh
+    
+
+    ################ ENCODER Architecture ################
+    H_dec1 = 100      # Number of hidden neurons
+    H_dec2 = 10      # Number of hidden neurons
+    ### Nonlinearity
+    activation_func_dec1 = torch.tanh #   torch.cos  torch.clamp tanh
+    activation_func_dec2 = torch.tanh #   torch.cos  torch.clamp tanh
+    
+    ############## HIDDEN SPACE #########################
+    
+    Z_dim = 96
+    
+    ### Training 
+    loss_func = nn.MSELoss()
+    Nepochs = 100       # Number of epochs
+    batch_size_train = 1     # Batch size
+
+    ## The optimizer could be anything 
+#    optimizer_type = "SGD"
+#    optimizer_params = {"lr":1e-2, "weight_decay":0.01}
+    optimizer_type = "Adam"   
+    optimizer_params = {"lr":1e-3, "betas":(0.9, 0.9),"weight_decay":0.00}
+#    
+    # Outp
+    dop = 0.0 # Dropout p 
+
+

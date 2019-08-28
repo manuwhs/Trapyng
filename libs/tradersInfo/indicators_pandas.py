@@ -134,8 +134,7 @@ def BBANDS(df, n = 20, MA = None, seriesNames = ["Close"]):
         MSD =df[seriesNames].rolling(n, min_periods = n).std()
     else:
         varis = (df[seriesNames] - MA)**2 
-        
-        MSD = pd.rolling_mean(varis,n,  min_periods = n)
+        MSD = varis.rolling(n,  min_periods = n).mean()
         MSD = np.sqrt(MSD)
         # TODO: do this properly
         

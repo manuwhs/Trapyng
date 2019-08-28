@@ -109,7 +109,7 @@ def stem(self, X = [],Y = [],  # X-Y points in the graph.
         dataTransform = None,
         xaxis_mode = None,yaxis_mode = None,AxesStyle = None,   # Automatically do some formatting :)
         marker = [" ", None, None],
-        bottom = None
+        bottom = 0
        ):         
 
     # Management of the figure and properties
@@ -126,19 +126,22 @@ def stem(self, X = [],Y = [],  # X-Y points in the graph.
         colorFinal = self.get_color(color)
         legend_i = None if i >= len(legend) else legend[i]
         markerline, stemlines, baseline = ax.stem(X,Y[:,i], 
-                 color = colorFinal, label = legend_i, zorder = self.zorder, 
-                 markerfmt = marker[0], markersize = marker[1], markerfacecolor =  colorFinal, #marker[2],
-                 antialiased = True, bottom = bottom)
+                use_line_collection = True,
+                 label = legend_i,#marker[2],
+                  bottom = bottom)
+        
+        # properties of the baseline
+        plt.setp(baseline, 'color', 'r', 'linewidth', 1)
+        plt.setp(baseline, visible=False)
+        # properties of the markerline
         plt.setp(markerline, 'markerfacecolor',colorFinal)
         plt.setp(markerline, 'color',colorFinal)
-        
-        plt.setp(baseline, 'color', 'r', 'linewidth', 2)
-        
+        plt.setp(markerline, visible=False)
         # Properties of the stemlines
         plt.setp(stemlines, 'linewidth', lw)
         plt.setp(stemlines, 'color', colorFinal)
         plt.setp(stemlines, 'alpha', alpha)
-#        plt.setp(stemlines, 'opacity', alpha)
+
      
     ############### Last setting functions ###########################
     self.update_legend(legend,NcY,ax = ax, loc = loc)    # Update the legend 

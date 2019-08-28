@@ -5,7 +5,7 @@ from torch.distributions.uniform import Uniform
 from torch.nn.parameter import Parameter
 import pyTorch_utils as pytut
 import math
-
+from torch.autograd import Variable
 # TODO: REMOVE THE NEED OF CALLING IT HERE
 dtype = torch.float
 device = pytut.get_device_name(cuda_index = 0)
@@ -37,6 +37,8 @@ def softplus(x):
 
 def logsumexp(x):
     return torch.logsumexp(x, 0)
+
+
 
 def get_KL_divergence_Samples(mu, sigma, Z, prior, mu_prior_fluid = 0):
     """
@@ -243,3 +245,25 @@ def trim_LinearVB_weights(VBmodel,  mu_sigma_ratio = 2):
         removed_b = float(torch.sum(cond))
         
         return size_w, removed_w, size_b, removed_b
+
+"""
+   ################## VARIATIONAL AUTOENCODER ################
+"""
+
+def sample_gaussian(mu,std):
+    eps = Variable(std.data.new(std.size()).normal_())
+    return eps.mul(std).add_(mu)
+
+    
+def get_KL_divergence_hidden_space_VAE(mu, std):
+    logvar = torch.log(std.pow(2))
+    KL_loss = -0.5 * torch.sum(1 + logvar  - mu.pow(2) - logvar.exp())
+
+    return KL_loss
+
+
+
+
+
+
+

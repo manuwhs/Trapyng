@@ -91,7 +91,19 @@ def load_symbols_info(file_dir = "./storage/"):
         infoCSV = pd.read_csv(whole_path,
                               sep = ',')
     except IOError:
+        error_msg = "File does not exist: " + whole_path 
+        print (error_msg)
+    
+    return infoCSV
+
+def save_symbols_info(file_dir, df):
+    # This functions loads the symbol info file, and gets the
+    # information about this symbol and puts it into the structure
+    whole_path = file_dir + "Symbol_info.csv"
+    try:
+        infoCSV = df.to_csv(whole_path)
+    except IOError:
         error_msg = "Empty file: " + whole_path 
         print (error_msg)
-        
+    
     return infoCSV
